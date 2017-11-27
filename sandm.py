@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy  as np
+import pylatex
 
 C_L = 1.4  # 最大揚力係数
 C_ROOT = 2.13 * 1000  # rootのchord長[mm]
