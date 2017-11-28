@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy  as np
 import matplotlib.pyplot as plt
+import padas as pd
 import math
 
 
@@ -82,6 +83,11 @@ def getM(y):
     ans =np.sum([getS(y+step*i)*step for i in np.arange (np.floor((HARF_SPAN-y)/step))])
     return ans/1000
 
+#前桁高さ
+def getHf(y):
+    HF_ARRAY=[130,320]
+    Y_ARRAY_FOR_HF=[5000,625]
+    return np.interp(y,Y_ARRAY_FOR_HF,HF_ARRAY)
 
 if __name__ == '__main__':
     M=[]
@@ -89,6 +95,16 @@ if __name__ == '__main__':
     for i in RIBS_ARRAY:
         M.append(getM(i))
         S.append(getS(i))
+    print("荷重分布")
     print("y",",","S",",","M")
     for i in range(len(RIBS_ARRAY)):
         print(RIBS_ARRAY[i],",",S[i],",",M[i])
+
+    print("内部荷重")
+    M=np.array(M)
+    S=np.array(S)
+    M_ULT=1.5*M
+    M_f=0.8*M_ULT
+    S_ULT=1.5*S
+    S_f=0.8*S_ULT
+    print(M_ULT)
