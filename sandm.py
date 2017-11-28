@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy  as np
+import matplotlib.pyplot as plt
 import math
 
 
@@ -21,6 +22,8 @@ C_D_REP = np.array([0.1679, 0.1303, 0.1105, 0.1065, 0.1163,
 Y_REP_FOR_W = np.array([625, 750, 1000, 1250, 1500, 1750,
                         2000, 2250, 2500, 2750, 3000, 3250, 3500,
                         3750, 4000, 4250, 4500, 4750, 5000])  # [mm]
+Y_MID_REP_FOR_W=np.array([687.5,875,1125,1375,1625,1875,2125,2375,2625,2875,3125,3375,
+3625,3825,4125,4375,4625,4875])
 
 RIBS_ARRAY=[625,1000,1500,2000,2500,3000,3500,4000,4500,5000]
 
@@ -45,7 +48,7 @@ def getC_d(y):
     return np.interp(y,Y_REP_FOR_C,C_D_REP)
 
 def getRHO(y):
-    return np.interp(y,Y_REP_FOR_W,RHO_REP)
+    return np.interp(y,Y_MID_REP_FOR_W,RHO_REP)
 
 def getCl(y):
     return C_L*getC_la(y)+getC_lb(y)
@@ -57,15 +60,34 @@ def getChoord(y):
     return np.interp(y,STA_FOR_CHOORD,CHOORD_ARRAY)
 
 def getCCzIntegral(y):
-    step=0.1
-    ans=sum([getChoord(y+step*i)*getCZ(y+step*i)*step for i in range(math.floor((HARF_SPAN-y)/step))])
+    step=1
+    ans=sum([getChoord(y+step*i)*getCZ(y+step*i)*step for i in np.arange(np.floor((HARF_SPAN-y)/step))])
     return ans/1000/1000
 
-
-
 def getSa(y):
-    ETA=44100/getCCzIntegral(0)
+    #ETA=44100/getCCzIntegral(0)
+    ETA=4038
     return ETA*getCCzIntegral(y)
 
+def getS1(y):
+    step=100
+    ans =N_Z*np.sum([getRHO(y+step*i)*step for i in np.arange (np.floor((HARF_SPAN-y)/step))])
+    return ans
+
+def getS(y):
+    return getSa(y)-getS1(y)
+
+def getM(y):
+    step=100
+    ans =np.sum([getS(y+step*i)*step for i in np.arange (np.floor((HARF_SPAN-y)/step))])
+    return ans/1000
+
+
 if __name__ == '__main__':
-    print(getSa(0))
+    M=[]
+    S=[]
+    for i in RIBS_ARRAY:
+        M.append(getM(i))
+        S.append(getS(i))
+    print(M)
+    print(S)
