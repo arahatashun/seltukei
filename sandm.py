@@ -61,5 +61,11 @@ def getCCzIntegral(y):
     ans=sum([getChoord(y+step*i)*getCZ(y+step*i)*step for i in range(math.floor((HARF_SPAN-y)/step))])
     return ans/1000/1000
 
+
+
+def getSa(y):
+    ETA=44100/getCCzIntegral(0)
+    return ETA*getCCzIntegral(y)
+
 if __name__ == '__main__':
-    print(getCCzIntegral(0))
+    print(getSa(0))
