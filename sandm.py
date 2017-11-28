@@ -89,5 +89,6 @@ if __name__ == '__main__':
     for i in RIBS_ARRAY:
         M.append(getM(i))
         S.append(getS(i))
-    print(M)
-    print(S)
+    print("y",",","S",",","M")
+    for i in range(len(RIBS_ARRAY)):
+        print(RIBS_ARRAY[i],",",S[i],",",M[i])
