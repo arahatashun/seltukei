@@ -5,7 +5,7 @@ import pylatex
 C_L = 1.4  # 最大揚力係数
 C_ROOT = 2.13 * 1000  # rootのchord長[mm]
 C_TIP = 1.07 * 1000  # tipのroot長[mm]
-ALPHA_F = np.rad2deg(14.5)# [rad]
+ALPHA_F = np.deg2rad(14.5)# [rad]
 W = 1500 * 9.8  # 自重[N]
 N_Z = 6  # 最大荷重倍数
 DELTA_Y = 25  # [mm]
@@ -34,11 +34,17 @@ def getC_la(y):
 def getC_lb(y):
     return np.interp(y,Y_REP_FOR_C,C_LB_REP)
 
-def getC_D(y):
+def getC_d(y):
     return np.interp(y,Y_REP_FOR_C,C_D_REP)
 
-def get_RHO(y):
+def getRHO(y):
     return np.interp(y,Y_REP_FOR_W,RHO_REP)
 
+def getCl(y):
+    return C_L*getC_la(y)+getC_lb(y)
+
+def getCZ(y):
+    return getCl(y)*np.cos(ALPHA_F)+getC_d(y)*np.sin(ALPHA_F)
+
 if __name__ == '__main__':
-    print(getC_la(1000))
+    print(getCZ(1000))
