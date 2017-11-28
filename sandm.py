@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy  as np
-import pylatex
+import math
+
 
 C_L = 1.4  # 最大揚力係数
 C_ROOT = 2.13 * 1000  # rootのchord長[mm]
@@ -21,12 +22,18 @@ Y_REP_FOR_W = np.array([625, 750, 1000, 1250, 1500, 1750,
                         2000, 2250, 2500, 2750, 3000, 3250, 3500,
                         3750, 4000, 4250, 4500, 4750, 5000])  # [mm]
 
+RIBS_ARRAY=[625,1000,1500,2000,2500,3000,3500,4000,4500,5000]
 
 Y_DISTANCE_FOR_W=np.array([Y_REP_FOR_W[i+1]-Y_REP_FOR_W[i] for i in range(0,Y_REP_FOR_W.shape[0]-1)])
 W_REP = 9.8 * np.array([15, 12, 11, 7, 6, 5, 4, 4, 3,
                         4, 4, 3, 3, 3, 2, 2, 2, 1])#[N]
 
 RHO_REP=W_REP/Y_DISTANCE_FOR_W
+
+
+
+CHOORD_ARRAY=[2130,1070]
+STA_FOR_CHOORD=[0,5000]
 
 def getC_la(y):
     return np.interp(y, Y_REP_FOR_C, C_LA_REP)
@@ -46,5 +53,13 @@ def getCl(y):
 def getCZ(y):
     return getCl(y)*np.cos(ALPHA_F)+getC_d(y)*np.sin(ALPHA_F)
 
+def getChoord(y):
+    return np.interp(y,STA_FOR_CHOORD,CHOORD_ARRAY)
+
+def getCCzIntegral(y):
+    step=0.1
+    ans=sum([getChoord(y+step*i)*getCZ(y+step*i)*step for i in range(math.floor((HARF_SPAN-y)/step))])
+    return ans/1000/1000
+
 if __name__ == '__main__':
-    print(getCZ(1000))
+    print(getCCzIntegral(0))
