@@ -90,6 +90,7 @@ def getHf(y):
     return np.interp(y,Y_ARRAY_FOR_HF,HF_ARRAY)
 
 if __name__ == '__main__':
+
     M=[]
     S=[]
     for i in RIBS_ARRAY:
@@ -100,11 +101,9 @@ if __name__ == '__main__':
     for i in range(len(RIBS_ARRAY)):
         print(RIBS_ARRAY[i],",",S[i],",",M[i])
 
-    print("内部荷重")
-    M=np.array(M)
-    S=np.array(S)
-    M_ULT=1.5*M
-    M_f=0.8*M_ULT
-    S_ULT=1.5*S
-    S_f=0.8*S_ULT
-    print(M_ULT)
+
+    df=pd.DataFrame()
+    df["y"]=RIBS_ARRAY[0:-1]
+    df["S"]=S[0:-1]
+    df["M"]=M[0:-1]
+    df.to_csv("SandM.csv")
