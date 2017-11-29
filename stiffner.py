@@ -20,7 +20,7 @@ class Stiffner(object):
 
     def getInertiaU(self,he,de,t):
         """
-        :param he 桁フランジ断面重心距離
+        :param he: 桁フランジ断面重心距離
         :param de: スティフナー間隔
         :param t:ウェブ厚さ
         """

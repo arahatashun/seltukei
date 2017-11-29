@@ -6,9 +6,12 @@ from unit_convert import *
 
 class Web(object):
     def __init__(self, thickness, height_a,width_b):
-        self.thickness_=thickness#ウェブ厚さ
-        self.height_a_=height_a#前桁高さ
-        self.width_b_=width_b#間隔de
+        """
+        :param thickness:web厚さ
+        :param height_a:前桁高さ
+        :param width_b:間隔de
+        """
+
 
     def getShearForce(self,q_max):#fs
         return q_max/self.thickness_/1000

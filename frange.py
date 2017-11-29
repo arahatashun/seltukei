@@ -6,6 +6,11 @@ from unit_convert import *
 
 class Frange:
     def __init__(self, thickness, b_bottome,b_height):
+        """
+        :param thickness:フランジ厚さ
+        :param b_bottom:フランジ底長さ
+        :param b_height:フランジ高さ
+        """
         self.thickness_=thickness
         self.b_bottom_=b_bottome
         self.b_height_=b_height
@@ -51,6 +56,11 @@ def test_frange():
 class CompressionFrange(Frange):
 
     def __init__(self,thickness, b_bottome,b_height):
+        """
+        :param thickness:フランジ厚さ
+        :param b_bottom:フランジ底長さ
+        :param b_height:フランジ高さ
+        """
         super(CompressionFrange, self).__init__(thickness, b_bottome,b_height)
         self.E=ksi2Mpa(10.3*10**3)
 
@@ -128,6 +138,11 @@ def test_compression():
 
 class TensionFrange(Frange):
     def __init__(self,thickness, b_bottome,b_height):
+        """
+        :param thickness:フランジ厚さ
+        :param b_bottom:フランジ底長さ
+        :param b_height:フランジ高さ
+        """
         super(TensionFrange, self).__init__(thickness, b_bottome,b_height)
 
     def getFtu(self):
