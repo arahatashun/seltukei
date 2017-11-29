@@ -4,7 +4,7 @@ import numpy as np
 import math
 from unit_convert import *
 
-class web(object):
+class Web(object):
     def __init__(self, thickness, height_a,width_b):
         self.thickness_=thickness#ウェブ厚さ
         self.height_a_=height_a#前桁高さ
@@ -39,7 +39,7 @@ class web(object):
 
 """
 def test():
-    unti=web(2.03,286,125)
+    unti=Web(2.03,286,125)
     print("fs",unti.getShearForce(129410))
     print("F_scr",unti.getBucklingShearForce())
     print("K",unti.getK())

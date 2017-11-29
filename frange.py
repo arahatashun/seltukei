@@ -4,7 +4,7 @@ import numpy as np
 import math
 from unit_convert import *
 
-class frange:
+class Frange:
     def __init__(self, thickness, b_bottome,b_height):
         self.thickness_=thickness
         self.b_bottom_=b_bottome
@@ -37,7 +37,7 @@ class frange:
 
 """
 def test_frange():
-    test=frange(6.0,34.5,34.5)
+    test=Frange(6.0,34.5,34.5)
     A=test.getArea(2.03)
     print("A",A)
     cofg=test.getCenterOfGravity()
@@ -48,17 +48,17 @@ def test_frange():
     print("fc[MPa]",f)
 """
 
-class compressionFrange(frange):
+class CompressionFrange(Frange):
 
     def __init__(self,thickness, b_bottome,b_height):
-        super(compressionFrange, self).__init__(thickness, b_bottome,b_height)
+        super(CompressionFrange, self).__init__(thickness, b_bottome,b_height)
         self.E=ksi2Mpa(10.3*10**3)
 
     def getFcy(self):
         thickness_in_inch=mm2inch(self.thickness_)
 
         if thickness_in_inch<0.012:
-            print("compression frange getFcy error")
+            print("compression Frange getFcy error")
             return NaN
         elif thickness_in_inch<0.040:
             return ksi2Mpa(61)
@@ -104,7 +104,7 @@ class compressionFrange(frange):
         return ms
 """
 def test_compression():
-    test=compressionFrange(6.0,34.5,34.5)
+    test=CompressionFrange(6.0,34.5,34.5)
 
     A=test.getArea(2.03)
     print("A",A)
@@ -126,9 +126,9 @@ def test_compression():
 """
 
 
-class tensionFrange(frange):
+class TensionFrange(Frange):
     def __init__(self,thickness, b_bottome,b_height):
-        super(tensionFrange, self).__init__(thickness, b_bottome,b_height)
+        super(TensionFrange, self).__init__(thickness, b_bottome,b_height)
 
     def getFtu(self):
         #cross section 云々は無視してます
@@ -160,7 +160,7 @@ class tensionFrange(frange):
 
 """
 def test_tension():
-    test=tensionFrange(6.60,36,42.5)
+    test=TensionFrange(6.60,36,42.5)
     A=test.getArea(2.03)
     print("A",A)
     cofg=test.getCenterOfGravity()
