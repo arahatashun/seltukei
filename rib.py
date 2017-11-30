@@ -7,13 +7,16 @@ from stiffner import Stiffner
 from web import Web
 from compression_frange import CompressionFrange
 from tesnsion_frange import TensionFrange
+from rivet_web_frange import RivetWebFrange
+from rivet_web_stiffner import RivetWebStiffner
 
 class Rib(object):
 
     def __init__(self,sta_index,num_of_stiffners,stiffner_thickness,
                 stiffner_bottom,web_thickness,compression_frange_thickness,
                 compression_frange_bottom,compression_frange_height,
-                tension_frange_thicknes,tension_frange_bottom,tension_frange_height):
+                tension_frange_thicknes,tension_frange_bottom,tension_frange_height
+                ribet_frange_D,ribet_frange_pdratio,ribet_frange_N):
 
         """
         :param sta_index:STA での位置625~5000で625がindex 0に対応する
@@ -28,6 +31,9 @@ class Rib(object):
         :param tension_frange_thicknes:引張側(下側)フランジの厚さ
         :param tension_frange_bottom:引張側(下側)フランジの底の長さb1
         :param tension_frange_height:引張側(下側)フランジの高さb2
+        :param ribet_frange_D:フランジとウェブをつなぐリベットの鋲径
+        :param ribet_frange_pdrati:リベットピッチ/リベットの鋲半径,一般に4D~6Dとすることが多い
+        :param riebt_framge_N:リベットフランジの列数
         """
         STA_ARRAY=[625,1000,1500,2000,2500,3000,3500,4000,4500]
         RIB_DISTANCE_ARRAY=[375,500,500,500,500,500,500]
@@ -39,10 +45,8 @@ class Rib(object):
         #:左端における前桁高さ
         self.rib_distance_ =RIB_DISTANCE_ARRAY[sta_index]
         #:リブ間隔
-        self.stiffner_distance_=self.rib_distance_/self.num_of_stiffners_
+        self.stiffner_distance_=self.rib_distance_/(self.num_of_stiffners_+1)
         #:スティフナー間隔
-        self.web_ = Web(web_thickness,self.height,)
-
         self.stiffner_ = Stiffner(stiffner_thickness,stiffner_bottom,stiffner_height)
         #:リブのsta最小でのスティフナー
         self.web_=Web(web_thickness,self.front_spar_height_,self.stiffner_distance_)
@@ -53,7 +57,7 @@ class Rib(object):
                                 tension_frange_bottom,tension_frange_height)
         self.he_=self.front_spar_height_-(self.compression_frange_.getCenterOfGravity()
         +self.tension_frange_.getCenterOfGravity())
-        #:前桁高さからFrangeの分引いたもの
+        #:前桁高さからFrangeの分引いたものheとなる
 
 
     def getHf(self,y=0):

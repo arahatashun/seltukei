@@ -25,13 +25,17 @@ class Web(object):
     def getK(self):
         x_axis=self.height_a_/self.width_b_
         if x_axis<0.9:
+            print("x_axis",x_axis)
             return math.nan
         elif x_axis<12:
             x= np.array([0.9,1.5, 2,   3,4,  5,  8,12])
             y= np.array([ 11,6.2,5.8,5.3,5.1  , 5,4.8,4.8])
             f = interpolate.interp1d(x, y,kind='linear')
-            return f(x_axis)
+            k=f(x_axis)
+            print("k",k)
+            return k
         else:
+            print("x_axis",x_axis)
             return math.nan
 
 
@@ -49,7 +53,9 @@ class Web(object):
         :param d:リベットの直径[mm]
         """
         f_sj=self.getShearForce(q_max)*p/(p-d)
+        #print(f_sj)
         ms=self.getBucklingShearForce()/f_sj-1
+        print("ms",ms)
         return ms
 
 

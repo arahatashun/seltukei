@@ -5,12 +5,14 @@ import math
 from unit_convert import *
 
 class Stiffner(object):
-    def __init__(self, thickness, bs1_bottome,bs2_height):
+    def __init__(self, thickness, bs1_bottom,bs2_height):
         """
         :param thickness: stiffner厚さ
+        :param bs1_bottom:stiffner bottom長さ
+        :param bs2_height:stiffner 高さ
         """
         self.thickness_=thickness
-        self.bs1_bottom_=bs1_bottome
+        self.bs1_bottom_=bs1_bottom
         self.bs2_height_=bs2_height
         self.E_=ksi2Mpa(10.3*10**3)
 

@@ -79,7 +79,7 @@ class RivetWebStiffner(Rivet):
         for rivet_spaceing in np.linspace(4*self.D_,6*self.D_,100):
             fir=self.getInterRivetBuckling(rivet_spaceing)
             print(fir,fcc)
-            if abs(fir-fcc)<5:
+            if abs(fir-fcc)<20:
                 return rivet_spaceing
 
         print("web stiffner rivet error")
@@ -106,7 +106,7 @@ class RivetWebStiffner(Rivet):
         return ms
 
     def calcWebMS(self,qmax):
-        self.web_.getWebHoleLossMS(self.rivet_pitch_,self.D_,qmax)
+        return self.web_.getWebHoleLossMS(self.rivet_pitch_,self.D_,qmax)
 
 
 def test():
