@@ -6,6 +6,7 @@ from unit_convert import *
 from rivet import Rivet
 from stiffner import Stiffner
 from web import Web
+import csv
 
 class RivetWebStiffner(Rivet):
     """
@@ -62,6 +63,7 @@ class RivetWebStiffner(Rivet):
 
     def getInterRivetBuckling(self,rivet_spaceing):
         """
+        Firを与える
         鋲間座屈の直線の式を作る
         :rivet_spaceing: リベット間隔mm
         :return fir_in_ksi:Fir[MPa]
@@ -87,7 +89,7 @@ class RivetWebStiffner(Rivet):
 
     def getRivetload(self,stiffner_pitch):
         """
-        ウェブとスティフナーを結合するリベット荷重
+        ウェブとスティフナーを結合するリベット荷重Pf
         :param stiffner_pitch:スティフナーピッチ
         """
         area=self.stiffner_.getArea()
@@ -105,16 +107,42 @@ class RivetWebStiffner(Rivet):
         ms=self.getPallow()/self.getRivetload(stiffner_pitch)-1
         return ms
 
-    def calcWebMS(self,qmax):
-        return self.web_.getWebHoleLossMS(self.rivet_pitch_,self.D_,qmax)
+    def getWebMS(self,Sf,he):
+        return self.web_.getWebHoleLossMS(self.rivet_pitch_,self.D_,Sf,he)
+
+    def makerow(self,writer,Sf,he,stiffner_pitch):
+        """
+        :param cav_file:csv.writer()で取得されるもの
+        :param Sf:前桁の分担荷重
+        :param he:桁フランジ断面重心距離
+        """
+        fir=self.getInterRivetBuckling(self.rivet_pitch_)
+        fcc=fcc=self.stiffner_.getClipplingStress()
+        ms=self.getMS(stiffner_pitch)
+        ms_web_hole=self.getWebMS(Sf,he)
+        pf=self.getRivetload(stiffner_pitch)
+        value=[Sf/he*1000,self.D_,self.rivet_pitch_,fir,fcc,pf,ms,ms_web_hole]
+        writer.writerow(value)
+
+
+    def makeheader(self,writer):
+        """
+        :param cav_file:csv.writer()で取得されるもの
+        """
+        header=["qmax","D","pitch","Fir","Fcc","Pf","M.S","M.S.web hole loss"]
+        writer.writerow(header)
 
 
 def test():
     stiffner=Stiffner(2.03,65,20)
     web=Web(1.8,317.2,60)
-    rivet=RivetWebStiffner(6.35,stiffner,web)
-    print("MS",rivet.getMS(125))
-    print("webMS",rivet.calcWebMS(129410))
+    test=RivetWebStiffner(6.35,stiffner,web)
+    print("MS",test.getMS(125))
+    print("webMS",test.getWebMS(37429,297))
+    with open('test.csv','a') as f:
+        writer = csv.writer(f)
+        test.makeheader(writer)
+        test.makerow(writer,38429,297,125)
 
 if __name__ == '__main__':
     test()

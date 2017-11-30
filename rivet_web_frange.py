@@ -66,7 +66,7 @@ class RivetWebFrange(Rivet):
         Ps=self.getShearForce(Sf,he)
         ms=self.getMS(Sf,he)
         ms_web_hole=self.getWebMS(Sf,he)
-        value=[Sf/he,self.N_,self.D_,self.p1_,Ps,ms,ms_web_hole]
+        value=[Sf/he*1000,self.N_,self.D_,self.p1_,Ps,ms,ms_web_hole]
         writer.writerow(value)
 
 
