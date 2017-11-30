@@ -2,6 +2,7 @@
 # Author: Shun Arahata
 import pandas as pd
 import numpy as np
+import csv
 from  scipy import interpolate
 from frange import Frange
 from stiffner import Stiffner
@@ -79,12 +80,14 @@ def calcsta625():
     """
     csv書き出し
     """
-    """
+
     with open('sta625.csv','a') as f:
         writer = csv.writer(f)
-        web.makeheader(f)
-        web.makerow(f,Sf,he)
-    """
+        web.makeheader(writer)
+        web.makerow(writer,Sf,he)
+
+
+
 
 
 

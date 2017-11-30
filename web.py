@@ -11,7 +11,7 @@ class Web(object):
         """
         :param thickness:web厚さ
         :param height_a:前桁高さ
-        :param width_b:間隔de
+        :param width_b:ウェブの長さ(リブ間で一定)
         """
         self.thickness_=thickness
         self.height_a_=height_a
@@ -40,7 +40,8 @@ class Web(object):
     def getK(self):
         x_axis=self.height_a_/self.width_b_
         if x_axis<0.9:
-            print("x_axis",x_axis)
+            #print("x_axis",x_axis)
+            print("x_axis is too small :in getK in web.py")
             return math.nan
         elif x_axis<12:
             x= np.array([0.9,1.5, 2,   3,4,  5,  8,12])
@@ -51,6 +52,7 @@ class Web(object):
             return k
         else:
             print("x_axis",x_axis)
+            print("x_axis is too large :in getK in web.py")
             return math.nan
 
 
@@ -67,6 +69,7 @@ class Web(object):
 
         thickness_in_inch=mm2inch(self.thickness_)
         if thickness_in_inch<0.011:
+            print("too small:nan in getFsu in web.py")
             return math.nan
         elif thickness_in_inch<0.039:
             return ksi2Mpa(42)
@@ -77,6 +80,7 @@ class Web(object):
         elif thickness_in_inch<0.000249:
             return ksi2Mpa(45)
         else:
+            print("too large :nan in getFsu in web.py")
             return math.nan
 
 
@@ -90,7 +94,7 @@ class Web(object):
         f_scr=self.getBucklingShearForce()
         f_su=self.getFsu()
         ms = min(f_su,f_scr)/self.getShearForce(Sf,he)-1
-        print(ms)
+        #print(ms)
         return ms
 
 
