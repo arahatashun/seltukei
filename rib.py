@@ -10,15 +10,6 @@ from tension_frange import TensionFrange
 from rivet_web_frange import RivetWebFrange
 from rivet_web_stiffner import RivetWebStiffner
 
-def getHf(self,y=0):
-    """
-    yにおける前桁高さHfを返す
-    """
-    x=np.array([625,5000])
-    y=np.array([320,130])
-    f = interpolate.interp1d(x, y,kind='linear')
-    return f(y)
-
 
 class Rib(object):
 
