@@ -19,9 +19,9 @@ class Web(object):
     def getQmax(self,Sf,he):
         """
         :param Sf:前桁の分担荷重
-        :param he:桁フランジ断面重心距離
+        :param he:桁フランジ断面重心距離[mm]
         """
-        q_max=Sf/he
+        q_max=Sf/he*1000
         return q_max
 
     def getShearForce(self,Sf,he):
@@ -59,6 +59,26 @@ class Web(object):
         """
         return self.getK()*self.getYoungModulus()*(self.thickness_/self.width_b_)**2
 
+    def getFsu(self):
+        """
+        表3のF_su
+        """
+
+        thickness_in_inch=mm2inch(self.thickness_)
+        if thickness_in_inch<0.011:
+            return math.nan
+        elif thickness_in_inch<0.039:
+            return ksi2Mpa(42)
+        elif thickness_in_inch<0.062:
+            return ksi2Mpa(42)
+        elif thickness_in_inch<0.187:
+            return ksi2Mpa(44)
+        elif thickness_in_inch<0.000249:
+            return ksi2Mpa(45)
+        else:
+            return math.nan
+
+
     def getMS(self,Sf,he):
         """
         安全率
@@ -66,7 +86,11 @@ class Web(object):
         :param he:桁フランジ断面重心距離
         """
         #F_SUを無視してる
-        return self.getBucklingShearForce()/self.getShearForce(Sf,he)-1
+        f_scr=self.getBucklingShearForce()
+        f_su=self.getFsu()
+        ms = min(f_su,f_scr)/self.getShearForce(Sf,he)-1
+        print(ms)
+        return ms
 
 
     def getWebHoleLossMS(self,p,d,Sf,he):
@@ -77,10 +101,10 @@ class Web(object):
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        q_max=self.getQmax(Sf,he)
-        f_sj=self.getShearForce(q_max)*p/(p-d)
+
+        f_sj=self.getShearForce(Sf,he)*p/(p-d)
         #print(f_sj)
-        ms=self.getBucklingShearForce()/f_sj-1
+        ms=self.getFsu()/f_sj-1
         print("ms",ms)
         return ms
 
@@ -88,7 +112,7 @@ class Web(object):
         """
         :param cav_file:csv.writer()で取得されるもの
         :param Sf:前桁の分担荷重
-        :param he:桁フランジ断面重心距
+        :param he:桁フランジ断面重心距離
         """
         fs=self.getShearForce(Sf,he)
         Fscr=self.getBucklingShearForce()
