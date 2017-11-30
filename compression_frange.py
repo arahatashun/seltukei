@@ -4,6 +4,7 @@ import numpy as np
 import math
 from unit_convert import *
 from frange import Frange
+import csv
 
 
 class CompressionFrange(Frange):
@@ -69,9 +70,33 @@ class CompressionFrange(Frange):
         ms=self.getFcc()/self.getStressForce(momentum,h_e,web_thickness)-1
         return ms
 
+    def makerow(self,writer,momentum,h_e,web_thickness):
+        """
+        :param cav_file:csv.writer()で取得されるもの
+        """
+        fcc=self.getFcc()
+        ms=self.getMS(momentum,h_e,web_thickness)
+        value=[web_thickness,momentum,self.thickness_,self.b_bottom_,self.b_height_,fcc,ms]
+        writer.writerow(value)
+
+
+    def makeheader(self,writer):
+        """
+        :param cav_file:csv.writer()で取得されるもの
+        """
+        header=["web_thickness[mm]","momentum","thickness","b_bottom_","b_height","Fcc","M.S"]
+        writer.writerow(header)
+
+
+
 def test_compression():
     test=CompressionFrange(6.0,34.5,34.5)
+    with open('test.csv','a') as f:
+        writer = csv.writer(f)
+        test.makeheader(writer)
+        test.makerow(writer,74623,297,2.03)
 
+    """
     A=test.getArea(2.03)
     print("A",A)
     cofg=test.getCenterOfGravity()
@@ -89,6 +114,7 @@ def test_compression():
     print("fcc",fcc)
     ms=test.getMS(74623,297,2.03)
     print("MS",ms)
+    """
 
 if __name__ == '__main__':
     test_compression()
