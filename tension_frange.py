@@ -1,4 +1,5 @@
-#coding:utf-8
+# coding:utf-8
+# Author: Shun Arahata
 import scipy as sp
 import numpy as np
 import math

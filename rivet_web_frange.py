@@ -1,4 +1,5 @@
 #coding:utf-8
+# Author: Shun Arahata
 from scipy import interpolate
 import numpy as np
 import math

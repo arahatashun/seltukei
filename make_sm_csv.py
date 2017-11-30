@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# Author: Shun Arahata
 import numpy  as np
 import matplotlib.pyplot as plt
 import pandas as pd

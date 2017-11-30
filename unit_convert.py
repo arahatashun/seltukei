@@ -1,4 +1,5 @@
 #coding:utf-8
+# Author: Shun Arahata
 def ksi2Mpa(ksi):
     return ksi*6.89475908677537
 
