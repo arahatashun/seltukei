@@ -75,6 +75,7 @@ class RivetWebStiffner(Rivet):
 
     def decideRivetPitch(self):
         fcc=self.stiffner_.getClipplingStress()
+        print("fcc",fcc)
         for rivet_spaceing in np.linspace(4*self.D_,6*self.D_,100):
             fir=self.getInterRivetBuckling(rivet_spaceing)
             print(fir,fcc)
@@ -82,7 +83,7 @@ class RivetWebStiffner(Rivet):
                 return rivet_spaceing
 
         print("web stiffner rivet error")
-        return math.math.nan
+        return math.nan
 
     def getRivetload(self,stiffner_pitch):
         """
@@ -106,10 +107,10 @@ class RivetWebStiffner(Rivet):
 
 
 def test():
-    stiffner=Stiffner(2.03,18,18)
-    web=Web(1.8,12.5,12.5)
+    stiffner=Stiffner(2.03,50,20)
+    web=Web(1.8,317.2,60)
     rivet=RivetWebStiffner(6.35,stiffner,web)
-    print("MS",rivet.getMS(287))
+    print("MS",rivet.getMS(125))
 
 if __name__ == '__main__':
     test()
