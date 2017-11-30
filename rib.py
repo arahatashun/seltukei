@@ -5,7 +5,8 @@ import math
 from unit_convert import *
 from stiffner import Stiffner
 from web import Web
-from frange import Frange
+from compression_frange import CompressionFrange
+from tesnsion_frange import TensionFrange
 
 class Rib(object):
 

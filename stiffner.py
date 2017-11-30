@@ -48,6 +48,21 @@ class Stiffner(object):
         """
         return self.getInertia()/self.getInertiaU(he,de,t)-1
 
+    def getClipplingStress(self):
+        """
+        クリップリング応力を求める
+        フランジと同じ
+        """
+        x_value=self.bs1_bottom_/self.thickness_
+        x=np.array([5,])
+        y=np.array([])
+
+        if x_value<5:
+            return NaN
+        elif x_value
+        elif:
+            return Nan
+
 
 """
 def test():

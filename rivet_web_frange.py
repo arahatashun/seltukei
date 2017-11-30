@@ -10,22 +10,17 @@ class RivetWebFrange(Rivet):
     ウェブフランジ結合のリベット
     """
 
-    def  __init__(self,D,p1,N):
+    def  __init__(self,D,pd_ration,N):
         """
         :param D:リベットの鋲径
-        :param p1:リベットピッチ,一般に4D~6Dとすることが多い
+        :param pd_ration:リベットピッチ/リベットの鋲半径,一般に4D~6Dとすることが多い
         :param N:リベット列数
         """
         super(RivetWebFrange, self).__init__(D)
-        self.p1_=p1
+        self.p1_=D*pd_ration
         self.N_=N
 
 
-    def getPDratio(self):
-        """
-        P/Dを返す一般に4D~6Dとなる
-        """
-        retio=self.p1_/self.D_
 
     def getShearForce(self,qmax):
         """
@@ -41,11 +36,9 @@ class RivetWebFrange(Rivet):
         ms=Pallow/Ps
         return ms
 
-"""
 def test():
     test=RivetWebFrange(3.175,19.05,2)
     print("test",test.getMS(129410))
 
 if __name__ == '__main__':
     test()
-"""
