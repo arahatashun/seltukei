@@ -14,7 +14,7 @@ class RivetWebFrange(Rivet):
     ウェブフランジ結合のリベット
     """
 
-    def  __init__(self,D,pd_ration,N,web):
+    def  __init__(self,D,pd_ratio,N,web):
         """
         :param D:リベットの鋲径
         :param pd_ration:リベットピッチ/リベットの鋲半径,一般に4D~6Dとすることが多い
@@ -22,7 +22,7 @@ class RivetWebFrange(Rivet):
         :param web:結合されるweb
         """
         super(RivetWebFrange, self).__init__(D)
-        self.p1_=D*pd_ration
+        self.p1_=D*pd_ratio
         self.N_=N
         self.web_=web
 
