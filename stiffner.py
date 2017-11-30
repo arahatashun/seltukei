@@ -9,6 +9,7 @@ class Stiffner(object):
         self.thickness_=thickness#stiffner厚さ
         self.bs1_bottom_=bs1_bottome
         self.bs2_height_=bs2_height
+        self.E_=ksi2Mpa(10.3*10**3)
 
     def getInertia(self):
         first=self.bs1_bottom_*self.thickness_**3
@@ -48,29 +49,64 @@ class Stiffner(object):
         """
         return self.getInertia()/self.getInertiaU(he,de,t)-1
 
+    def getFcy(self):
+        thickness_in_inch=mm2inch(self.thickness_)
+
+        if thickness_in_inch<0.012:
+            print("compression Frange getFcy error")
+            return NaN
+        elif thickness_in_inch<0.040:
+            return ksi2Mpa(61)
+
+        elif thickness_in_inch<0.062:
+            return ksi2Mpa(62)#上と同じ
+
+        elif thickness_in_inch<0.187:
+            return ksi2Mpa(64)
+
+        elif thickness_in_inch<0.249:
+            return ksi2Mpa(65)
+        else:
+            return NaN
+
+    def getXofGraph(self):
+        bpert=self.bs1_bottom_/self.thickness_
+        x_value=np.sqrt(self.getFcy()/self.E_)*bpert
+        return x_value
+
     def getClipplingStress(self):
         """
         クリップリング応力を求める
         フランジと同じ
         """
-        x_value=self.bs1_bottom_/self.thickness_
-        x=np.array([5,])
-        y=np.array([])
+        right_axis=self.getXofGraph()
 
-        if x_value<5:
+        if right_axis<0.1:
             return NaN
-        elif x_value
-        elif:
-            return Nan
+        elif right_axis<0.1*5**(27/33):
+            #直線部分
+            print("フランジ 直線部分")
+            left_axis = 0.5*2**(2.2/1.5)
+        elif right_axis<10:
+            left_axis=10**(-0.20761)*right_axis**(-0.78427)
+        else :
+            return NaN
+        denom=mpa2Ksi(self.getFcy())#分母
+        #print("left",left_axis)
+        #print("denom",denom)
+        numer=left_axis*denom
+        Fcc = ksi2Mpa(numer)
+
+        return Fcc
 
 
-"""
+
 def test():
     fuck=Stiffner(2.29,22,19.0)
     print("Inertia",fuck.getInertia())
     print("inertia_necessary",fuck.getInertiaU(289,125,2.03))
     print("MS",fuck.getMS(289,125,2.03))
+    print("FCC",fuck.getClipplingStress())
 
 if __name__ == '__main__':
     test()
-"""

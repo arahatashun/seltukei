@@ -15,7 +15,7 @@ class CompressionFrange(Frange):
         :param b_height:フランジ高さ
         """
         super(CompressionFrange, self).__init__(thickness, b_bottome,b_height)
-        self.E=ksi2Mpa(10.3*10**3)
+        self.E_=ksi2Mpa(10.3*10**3)
 
     def getFcy(self):
         thickness_in_inch=mm2inch(self.thickness_)
@@ -42,18 +42,21 @@ class CompressionFrange(Frange):
         return self.b_bottom_/self.thickness_
 
     def getXofGraph(self):
-        return np.sqrt(self.getFcy()/self.E)*self.getBperT()
+        return np.sqrt(self.getFcy()/self.E_)*self.getBperT()
 
     def getFcc(self):
         right_axis=self.getXofGraph()
-        denom=self.getFcy()#分母
 
-        if right_axis<0.1*5**(27/33):
+        if right_axis<0.1:
+            return NaN
+        elif right_axis<0.1*5**(27/33):
             #直線部分
             print("フランジ 直線部分")
             left_axis = 0.5*2**(2.2/1.5)
-        else :
+        elif right_axis<10:
             left_axis=10**(-0.20761)*right_axis**(-0.78427)
+        else :
+            return NaN
         denom=mpa2Ksi(self.getFcy())#分母
         #print("left",left_axis)
         #print("denom",denom)

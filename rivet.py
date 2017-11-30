@@ -34,11 +34,10 @@ class Rivet(object):
         return np.pi/4*self.D_**2*self.F_su_
 
 
-"""
+
 def test():
     r=Rivet(3.175)
     print("Pallow",r.getPallow())
 
 if __name__ == '__main__':
     test()
-"""
