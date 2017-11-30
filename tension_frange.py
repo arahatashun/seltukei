@@ -2,6 +2,7 @@
 import scipy as sp
 import numpy as np
 import math
+import csv
 from unit_convert import *
 from frange import Frange
 
@@ -42,19 +43,39 @@ class TensionFrange(Frange):
         ms=self.getFtu()/self.getStressForce(momentum,h_e,web_thickness)-1
         return ms
 
+    def makerow(self,writer,momentum,h_e,web_thickness):
+        """
+        :param cav_file:csv.writer()で取得されるもの
+        """
+        ftu=self.getFtu()
+        ms=self.getMS(momentum,h_e,web_thickness)
+        value=[web_thickness,momentum,self.thickness_,self.b_bottom_,self.b_height_,ftu,ms]
+        writer.writerow(value)
+
+
+    def makeheader(self,writer):
+        """
+        :param cav_file:csv.writer()で取得されるもの
+        """
+        header=["web_thickness","momentum","thickness","b_bottom_","b_height","ftu","M.S"]
+        writer.writerow(header)
+
+
+
 
 def test_tension():
     test=TensionFrange(6.60,36,42.5)
-    A=test.getArea(2.03)
-    print("A",A)
-    cofg=test.getCenterOfGravity()
-    print("cofg",cofg)
-    ax=test.getAxialForce(74623,297)
-    print("P[N]",ax)
     f=test.getStressForce(74623,297,2.03)
     print("fc[MPa]",f)
     MS=test.getMS(74623,297,2.03)
     print("MS",MS)
+    with open('test.csv','a') as f:
+        writer = csv.writer(f)
+        test.makeheader(writer)
+        test.makerow(writer,74623,297,2.03)
+
+
+
 
 
 if __name__ == '__main__':

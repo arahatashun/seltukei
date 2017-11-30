@@ -6,7 +6,7 @@ from unit_convert import *
 from stiffner import Stiffner
 from web import Web
 from compression_frange import CompressionFrange
-from tesnsion_frange import TensionFrange
+from tension_frange import TensionFrange
 from rivet_web_frange import RivetWebFrange
 from rivet_web_stiffner import RivetWebStiffner
 
@@ -49,7 +49,7 @@ class Rib(object):
 
 
 
-def test():
+def make_compression frange_index():
     frange_compression=CompressionFrange(7.0, 3.5,3.5)
 
 

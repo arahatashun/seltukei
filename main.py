@@ -5,6 +5,8 @@ import scipy as sp
 
 sm_df=pd.read_csv("SandM.csv")
 
+def compression_frange_table(compression_frange):
+    cfrage_table=pd.DataFrame()
 
 
 
