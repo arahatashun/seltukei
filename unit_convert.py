@@ -10,3 +10,6 @@ def mm2inch(mm):
 
 def mpa2Ksi(pa):
     return pa/6.89475908677537
+
+def lbs2N(lbs):
+    return 4.4482216282509*lbe
