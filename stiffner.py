@@ -38,6 +38,7 @@ class Stiffner(object):
         """
         x_value=he/de
         if x_value<1.0:
+            print("too small in getIntertialU in stiffner py")
             return math.nan
 
         elif x_value<=4.0:
@@ -50,6 +51,7 @@ class Stiffner(object):
             return inertia_necessary
 
         else :
+            print("too large in getIntertialU in stiffner py")
             return math.nan
 
     def getMS(self,he,de,t):
@@ -78,6 +80,7 @@ class Stiffner(object):
         elif thickness_in_inch<0.249:
             return ksi2Mpa(65)
         else:
+            print("too large in getFcy in stiffner py")
             return math.nan
 
     def getXofGraph(self):
@@ -121,7 +124,7 @@ class Stiffner(object):
         I_U=self.getInertiaU(he,de,t)
         I=self.getInertia()
         ms=self.getMS(he,de,t)
-        value=[t,self.thickness_,he,self.bs1_bottom_,self.bs2_height_,I,I_U,ms]
+        value=[t,self.thickness_,de,he,self.bs1_bottom_,self.bs2_height_,I,I_U,ms]
         writer.writerow(value)
 
 
@@ -129,7 +132,7 @@ class Stiffner(object):
         """
         :param cav_file:csv.writer()で取得されるもの
         """
-        header=["web_thickness[mm]","スティフナー間隔","he","bs1底","bs2高さ","I","I_U","M.S"]
+        header=["web_thickness[mm]","スティフナー厚さ","スティフナー間隔","he","bs1底","bs2高さ","I","I_U","M.S"]
         writer.writerow(header)
 
 def test():

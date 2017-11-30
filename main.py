@@ -54,11 +54,11 @@ def calcsta625():
     """
     以下パラメーターの設定
     """
-    stiffner_thickness=2.03#mm
-    stiffner_bs1=65
-    stiffner_bs2=20
+    stiffner_thickness=2.29#mm
+    stiffner_bs1=40
+    stiffner_bs2=30
     web_thickness=1.8
-    web_distance=60
+    web_distance=80
     hf=getHf(sta625+web_distance)
     rivet_web_stiffner_diameter= 6.25
     tension_frange_thickness = 5
@@ -71,7 +71,7 @@ def calcsta625():
     オブジェクト生成
     """
     stiffner=Stiffner(stiffner_thickness,stiffner_bs1,stiffner_bs2)
-    web=Web(web_thickness,getHf(sta625),60)
+    web=Web(web_thickness,getHf(sta625),web_distance)
     rivet_web_stiffner=RivetWebStiffner(rivet_web_stiffner_diameter,stiffner,web)
     tension_frange=TensionFrange(tension_frange_thickness,tension_frange_bottom,tension_frange_height)
     compression_frange=CompressionFrange(tension_frange_thickness,tension_frange_bottom,tension_frange_height)
@@ -81,10 +81,13 @@ def calcsta625():
     csv書き出し
     """
 
-    with open('sta625.csv','a') as f:
+    with open('sta625.csv','w') as f:
         writer = csv.writer(f)
         web.makeheader(writer)
         web.makerow(writer,Sf,he)
+        stiffner.makeheader(writer)
+        stiffner.makerow(writer,he,web_distance,web_thickness)
+
 
 
 
