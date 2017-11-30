@@ -15,6 +15,12 @@ def getHf(sta):
     hf=f(sta)
     return hf
 
+def getStiffnerCounts(rib_distance,stiffner_distance):
+    """
+    :param rib_distance:リブの間隙
+    :param stiffner_distance:スティフナーの距離
+    """
+
 def calcsta625():
     y=sm_df.ix[0][1]
     Sf=sm_df.ix[0][4]
