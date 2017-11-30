@@ -3,6 +3,13 @@
 import pandas as pd
 import numpy as np
 from  scipy import interpolate
+from frange import Frange
+from stiffner import Stiffner
+from tension_frange import TensionFrange
+from compression_frange import CompressionFrange
+from web  import Web
+from rivet_web_stiffner import RivetWebStiffner
+
 
 sm_df=pd.read_csv("SandM.csv")
 
@@ -25,12 +32,16 @@ def getStiffnerCounts(rib_distance,stiffner_distance):
     return stiffner_counts
 
 
-def gethe(hf):
+def getHe(hf: float,upper: Frange,lower: Frange) ->float :
     """
     hfを受け取りrivet重心位置計算によりheを返す
     :param hf:前桁高さ[mm]
-    :return he:
+    :return he:桁フランジ断面重心距離
     """
+    he = hf-upper.getCenterOfGravity()-lower.getCenterOfGravity()
+    return he
+
+
 def calcsta625():
     sta625=625
     y=sm_df.ix[0][1]
@@ -48,22 +59,32 @@ def calcsta625():
     web_thickness=1.8
     web_distance=60
     hf=getHf(sta625+web_distance)
-    rivet_web_stiffner_diameter=6.25
-    tension_frange_thickness=
+    rivet_web_stiffner_diameter= 6.25
+    tension_frange_thickness = 5
+    tension_frange_bottom = 45
+    tension_frange_height = 40
+    compression_frange_thickness = 6.0
+    compression_frange_bottom = 40
+    compression_frange_height = 35
     """
     オブジェクト生成
     """
     stiffner=Stiffner(stiffner_thickness,stiffner_bs1,stiffner_bs2)
     web=Web(web_thickness,hf,web_thickness)
     rivet_web_stiffner=RivetWebStiffner(rivet_web_stiffner_diameter,stiffner,web)
+    tension_frange=TensionFrange(tension_frange_thickness,tension_frange_bottom,tension_frange_height)
+    compression_frange=CompressionFrange(tension_frange_thickness,tension_frange_bottom,tension_frange_height)
+    he=getHe(hf,tension_frange,compression_frange)
+    #print("he",he)
     """
     csv書き出し
+    """
     """
     with open('sta625.csv','a') as f:
         writer = csv.writer(f)
         web.makeheader(f)
         web.makerow(f,Sf,he)
-
+    """
 
 
 
