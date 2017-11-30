@@ -71,7 +71,7 @@ def calcsta625():
     オブジェクト生成
     """
     stiffner=Stiffner(stiffner_thickness,stiffner_bs1,stiffner_bs2)
-    web=Web(web_thickness,getHf(sta625),1000-625)
+    web=Web(web_thickness,getHf(sta625),60)
     rivet_web_stiffner=RivetWebStiffner(rivet_web_stiffner_diameter,stiffner,web)
     tension_frange=TensionFrange(tension_frange_thickness,tension_frange_bottom,tension_frange_height)
     compression_frange=CompressionFrange(tension_frange_thickness,tension_frange_bottom,tension_frange_height)

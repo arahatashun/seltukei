@@ -11,7 +11,7 @@ class Web(object):
         """
         :param thickness:web厚さ
         :param height_a:前桁高さ
-        :param width_b:ウェブの長さ(リブ間で一定)
+        :param width_b:ウェブの長さ(stiffnerで殺されるのでstiffnerの間隔と同じ)
         height width長い方をaとするがアルゴリズム的に問題なし
         """
         self.thickness_=thickness
