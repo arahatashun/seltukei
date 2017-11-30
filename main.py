@@ -65,8 +65,8 @@ def calcsta625():
     tension_frange_bottom = 45
     tension_frange_height = 40
     compression_frange_thickness = 6.0
-    compression_frange_bottom = 40
-    compression_frange_height = 35
+    compression_frange_bottom = 45
+    compression_frange_height = 40
     """
     オブジェクト生成
     """
@@ -74,7 +74,7 @@ def calcsta625():
     web=Web(web_thickness,getHf(sta625),web_distance)
     rivet_web_stiffner=RivetWebStiffner(rivet_web_stiffner_diameter,stiffner,web)
     tension_frange=TensionFrange(tension_frange_thickness,tension_frange_bottom,tension_frange_height)
-    compression_frange=CompressionFrange(tension_frange_thickness,tension_frange_bottom,tension_frange_height)
+    compression_frange=CompressionFrange(compression_frange_thickness,compression_frange_bottom,compression_frange_height)
     he=getHe(hf,tension_frange,compression_frange)
     #print("he",he)
     """
@@ -87,6 +87,8 @@ def calcsta625():
         web.makerow(writer,Sf,he)
         stiffner.makeheader(writer)
         stiffner.makerow(writer,he,web_distance,web_thickness)
+        compression_frange.makeheader(writer)
+        compression_frange.makerow(writer,Mf,he,web_thickness)
 
 
 

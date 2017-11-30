@@ -75,7 +75,7 @@ class CompressionFrange(Frange):
         """
         :param cav_file:csv.writer()で取得されるもの
         :param momentum:前桁分担曲げモーメント
-        :param h_e:桁フランジ分担曲げモーメント
+        :param h_e:桁フランジ断面重心距離
         :param web_thickness:ウェブ厚さ
         """
         fcc=self.getFcc()

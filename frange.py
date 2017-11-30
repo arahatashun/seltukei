@@ -32,14 +32,19 @@ class Frange:
             return self.b_bottom_+residure/self.thickness_
 
     def getAxialForce(self,momentum,h_e):
-        #単位[N]
-        return momentum/h_e*1000
+        """
+        :param momentum:前桁負担分モーメント
+        :param h_e:桁フランジ断面重心距離
+        :return axialforce: [N]
+        """
+        axialforce=momentum/h_e*1000
+        return axialforce
 
     #f_c,f_t
     def getStressForce(self,momentum,h_e,web_thickness):
         """
         :param momentum:前桁分担曲げモーメント
-        :param h_e:桁フランジ分担曲げモーメント
+        :param h_e:桁フランジ断面重心距離
         :param web_thickness:ウェブ厚さ
         """
         #[MPa]
