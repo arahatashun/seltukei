@@ -16,7 +16,7 @@ class Rib(object):
                 tension_frange_thicknes,tension_frange_bottom,tension_frange_height):
 
         """
-        :param sta_index:STA での位置625~5000で625がindex 0に対応するので0
+        :param sta_index:STA での位置625~5000で625がindex 0に対応する
         :param num_of_stiffners:スティフナーの枚数
         :param stiffner_thickness: スティフナーの厚さts
         :param stiffner_bottom:スティフナーの底の長さbs1
@@ -33,9 +33,9 @@ class Rib(object):
         RIB_DISTANCE_ARRAY=[375,500,500,500,500,500,500]
         self.num_of_stiffners_=num_of_stiffners
         assert sta_index<=len(STA_ARRAY)-1,"sta_indexの値が大きすぎます"
-        self.y_=STA_ARRAY[sta_index]
+        self.left_=STA_ARRAY[sta_index]
         #:STAでの左端の座標を保持する
-        self.front_spar_height_=self.getHeight()
+        self.front_spar_height_=self.getHf()
         #:左端における前桁高さ
         self.rib_distance_ =RIB_DISTANCE_ARRAY[sta_index]
         #:リブ間隔
@@ -56,12 +56,15 @@ class Rib(object):
         #:前桁高さからFrangeの分引いたもの
 
 
-    def getHeight(self):
+    def getHf(self,y=0):
         """
-        左端に置ける前桁高さを返す
+        左端に置ける前桁高さHfを返す.
+        yが与えられた場合yにおける高さを返す
         """
         x=np.array([625,5000])
         y=np.array([320,130])
         f = interpolate.interp1d(x, y,kind='linear')
-        height=f(self,y)
-        return height
+        if(y==0):
+            return f(self.y)
+        else:
+            return f(y)

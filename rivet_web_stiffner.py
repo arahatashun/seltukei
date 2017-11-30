@@ -105,12 +105,16 @@ class RivetWebStiffner(Rivet):
         ms=self.getPallow()/self.getRivetload(stiffner_pitch)-1
         return ms
 
+    def calcWebMS(self,qmax):
+        self.web_.getWebHoleLossMS(self.rivet_pitch_,self.D_,qmax)
+
 
 def test():
-    stiffner=Stiffner(2.03,50,20)
+    stiffner=Stiffner(2.03,65,20)
     web=Web(1.8,317.2,60)
     rivet=RivetWebStiffner(6.35,stiffner,web)
     print("MS",rivet.getMS(125))
+    print("webMS",rivet.calcWebMS(129410))
 
 if __name__ == '__main__':
     test()

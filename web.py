@@ -42,14 +42,15 @@ class Web(object):
         return self.getBucklingShearForce()/self.getShearForce(qmax)-1
 
 
-    def getWebHoleLossMS(self,p,D):
+    def getWebHoleLossMS(self,p,d,q_max):
         """
         ウェブホールロスの計算
         :param p:リベット間隔
-        :param D:リベットの直径[mm]
+        :param d:リベットの直径[mm]
         """
-        f_sj=self.getShearForce()*p/(p-d)
+        f_sj=self.getShearForce(q_max)*p/(p-d)
         ms=self.getBucklingShearForce()/f_sj-1
+        return ms
 
 
 
