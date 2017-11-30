@@ -40,6 +40,9 @@ class TensionFrange(Frange):
             return math.nan
 
     def getMS(self,momentum,h_e,web_thickness):
+        """
+        :param web_thickness:[mm]
+        """
         ms=self.getFtu()/self.getStressForce(momentum,h_e,web_thickness)-1
         return ms
 
@@ -57,7 +60,7 @@ class TensionFrange(Frange):
         """
         :param cav_file:csv.writer()で取得されるもの
         """
-        header=["web_thickness","momentum","thickness","b_bottom_","b_height","ftu","M.S"]
+        header=["web_thickness[mm]","momentum","thickness","b_bottom_","b_height","Ftu","M.S"]
         writer.writerow(header)
 
 
