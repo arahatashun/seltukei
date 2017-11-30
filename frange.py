@@ -36,6 +36,11 @@ class Frange:
 
     #f_c,f_t
     def getStressForce(self,momentum,h_e,web_thickness):
+        """
+        :param momentum:前桁分担曲げモーメント
+        :param h_e:桁フランジ分担曲げモーメント
+        :param web_thickness:ウェブ厚さ
+        """
         #[MPa]
         return self.getAxialForce(momentum,h_e)/self.getArea(web_thickness)
 

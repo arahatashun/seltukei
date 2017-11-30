@@ -3,6 +3,8 @@ from scipy import interpolate
 import numpy as np
 import math
 from unit_convert import *
+import csv
+
 
 class Stiffner(object):
     def __init__(self, thickness, bs1_bottom,bs2_height):
@@ -108,10 +110,33 @@ class Stiffner(object):
 
         return Fcc
 
+    def makerow(self,writer,he,de,t):
+        """
+        :param cav_file:csv.writer()で取得されるもの
+        :param de:スティフナー間隔
+        :param h_e:桁フランジ断面重心距離
+        :param t:ウェブ厚さ
+        """
+        I_U=self.getInertiaU(he,de,t)
+        I=self.getInertia()
+        ms=self.getMS(he,de,t)
+        value=[t,self.thickness_,he,self.bs1_bottom_,self.bs2_height_,I,I_U,ms]
+        writer.writerow(value)
 
+
+    def makeheader(self,writer):
+        """
+        :param cav_file:csv.writer()で取得されるもの
+        """
+        header=["web_thickness[mm]","スティフナー間隔","he","bs1底","bs2高さ","I","I_U","M.S"]
+        writer.writerow(header)
 
 def test():
     fuck=Stiffner(2.29,22,19.0)
+    with open('test.csv','a') as f:
+        writer = csv.writer(f)
+        fuck.makeheader(writer)
+        fuck.makerow(writer,289,125,2.03)
     print("Inertia",fuck.getInertia())
     print("inertia_necessary",fuck.getInertiaU(289,125,2.03))
     print("MS",fuck.getMS(289,125,2.03))

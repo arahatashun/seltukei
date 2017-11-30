@@ -16,11 +16,21 @@ class Web(object):
         self.height_a_=height_a
         self.width_b_=width_b
 
+    def getQmax(self,Sf,he):
+        """
+        :param Sf:前桁の分担荷重
+        :param he:桁フランジ断面重心距離
+        """
+        q_max=Sf/he
+        return q_max
 
-    def getShearForce(self,q_max):
+    def getShearForce(self,Sf,he):
         """
         ウェブ剪断応力fs
+        :param Sf:前桁の分担荷重
+        :param he:桁フランジ断面重心距離
         """
+        q_max=self.getQmax(Sf,he)
         return q_max/self.thickness_/1000
 
     def getYoungModulus(self):
@@ -49,30 +59,40 @@ class Web(object):
         """
         return self.getK()*self.getYoungModulus()*(self.thickness_/self.width_b_)**2
 
-    def getMS(self,qmax):
+    def getMS(self,Sf,he):
+        """
+        安全率
+        :param Sf:前桁の分担荷重
+        :param he:桁フランジ断面重心距離
+        """
         #F_SUを無視してる
-        return self.getBucklingShearForce()/self.getShearForce(qmax)-1
+        return self.getBucklingShearForce()/self.getShearForce(Sf,he)-1
 
 
-    def getWebHoleLossMS(self,p,d,q_max):
+    def getWebHoleLossMS(self,p,d,Sf,he):
         """
         ウェブホールロスの計算
         :param p:リベット間隔
         :param d:リベットの直径[mm]
+        :param Sf:前桁の分担荷重
+        :param he:桁フランジ断面重心距離
         """
+        q_max=self.getQmax(Sf,he)
         f_sj=self.getShearForce(q_max)*p/(p-d)
         #print(f_sj)
         ms=self.getBucklingShearForce()/f_sj-1
         print("ms",ms)
         return ms
 
-    def makerow(self,writer,qmax):
+    def makerow(self,writer,Sf,he):
         """
         :param cav_file:csv.writer()で取得されるもの
+        :param Sf:前桁の分担荷重
+        :param he:桁フランジ断面重心距
         """
-        fs=self.getShearForce(qmax)
+        fs=self.getShearForce(Sf,he)
         Fscr=self.getBucklingShearForce()
-        ms=self.getMS(qmax)
+        ms=self.getMS(Sf,he)
         value=[self.thickness_,self.height_a_,self.width_b_,fs,Fscr,ms]
         writer.writerow(value)
 
@@ -91,7 +111,7 @@ def test():
     with open('test.csv','a') as f:
         writer = csv.writer(f)
         unti.makeheader(writer)
-        unti.makerow(writer,129410)
+        unti.makerow(writer,38429,297)
 
 if __name__ == '__main__':
     test()

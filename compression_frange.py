@@ -73,6 +73,9 @@ class CompressionFrange(Frange):
     def makerow(self,writer,momentum,h_e,web_thickness):
         """
         :param cav_file:csv.writer()で取得されるもの
+        :param momentum:前桁分担曲げモーメント
+        :param h_e:桁フランジ分担曲げモーメント
+        :param web_thickness:ウェブ厚さ
         """
         fcc=self.getFcc()
         ms=self.getMS(momentum,h_e,web_thickness)
