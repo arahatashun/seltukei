@@ -6,3 +6,8 @@ web_thickness,momentum,thickness,b_bottom_,b_height,ftu,M.S
 2.03,74623,6.6,36,42.5,413.6855452065222,0.05658490825908258
 web_thickness[mm],momentum,thickness,b_bottom_,b_height,Fcc,M.S
 2.03,74623,6.0,34.5,34.5,513.694478829,0.0991822682838
+web_thickness[mm],前桁高さ,間隔de,fs,Fscr,M.S
+web_thickness[mm],前桁高さ,間隔de,fs,Fscr,M.S
+web_thickness[mm],前桁高さ,間隔de,fs,Fscr,M.S
+web_thickness[mm],前桁高さ,間隔de,fs,Fscr,M.S
+2.03,286,125,63.74876847290641,105.934585392,0.661751088365
