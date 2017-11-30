@@ -54,15 +54,15 @@ def calcsta625():
     """
     以下パラメーターの設定
     """
-    stiffner_thickness=2.29#mm
+    stiffner_thickness=1.80#mm
     stiffner_bs1=40
     stiffner_bs2=30
     web_thickness=1.8
-    web_distance=80
+    web_distance=80#stiffner 間隔でもある
     hf=getHf(sta625+web_distance)
     rivet_web_stiffner_diameter= 6.25
-    tension_frange_thickness = 5
-    tension_frange_bottom = 45
+    tension_frange_thickness = 6.0
+    tension_frange_bottom = 50
     tension_frange_height = 40
     compression_frange_thickness = 6.0
     compression_frange_bottom = 45
@@ -89,6 +89,10 @@ def calcsta625():
         stiffner.makerow(writer,he,web_distance,web_thickness)
         compression_frange.makeheader(writer)
         compression_frange.makerow(writer,Mf,he,web_thickness)
+        tension_frange.makeheader(writer)
+        tension_frange.makerow(writer,Mf,he,web_thickness)
+        rivet_web_stiffner.makeheader(writer)
+        rivet_web_stiffner.makerow(writer,Sf,he,web_distance)
 
 
 

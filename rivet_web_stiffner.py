@@ -23,6 +23,7 @@ class RivetWebStiffner(Rivet):
         self.stiffner_=stiffner
         self.web_=web
         self.rivet_pitch_=self.decideRivetPitch()
+        self.F_su_=ksi2Mpa(41)#:DD錠を利用する
 
 
     def getSteepofInterRivetBuckling(self):
@@ -116,6 +117,7 @@ class RivetWebStiffner(Rivet):
         :param cav_file:csv.writer()で取得されるもの
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
+        :param stiffner_pitch: stiffner 間隔
         """
         fir=self.getInterRivetBuckling(self.rivet_pitch_)
         fcc=fcc=self.stiffner_.getClipplingStress()
@@ -130,7 +132,7 @@ class RivetWebStiffner(Rivet):
         """
         :param cav_file:csv.writer()で取得されるもの
         """
-        header=["qmax","D","pitch","Fir","Fcc","Pf","M.S","M.S.web hole loss"]
+        header=["qmax","D","rivet pitch","Fir","Fcc","Pf","M.S","M.S.web hole loss"]
         writer.writerow(header)
 
 
