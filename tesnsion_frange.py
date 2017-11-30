@@ -36,7 +36,7 @@ class TensionFrange(Frange):
         elif thickness_in_inch<4.499:
             return ksi2Mpa(70)
         else:
-            return NaN
+            return math.nan
 
     def getMS(self,momentum,h_e,web_thickness):
         ms=self.getFtu()/self.getStressForce(momentum,h_e,web_thickness)-1

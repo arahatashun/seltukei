@@ -6,7 +6,10 @@ from unit_convert import *
 
 class Stiffner(object):
     def __init__(self, thickness, bs1_bottome,bs2_height):
-        self.thickness_=thickness#stiffner厚さ
+        """
+        :param thickness: stiffner厚さ
+        """
+        self.thickness_=thickness
         self.bs1_bottom_=bs1_bottome
         self.bs2_height_=bs2_height
         self.E_=ksi2Mpa(10.3*10**3)
@@ -18,6 +21,9 @@ class Stiffner(object):
         inertia=1/3*(first+second+third)
         return inertia
 
+    def getArea(self):
+        return (self.bs1_bottom_+self.bs2_height_)*self.thickness_-1/4*self.thickness_**2
+
 
     def getInertiaU(self,he,de,t):
         """
@@ -27,7 +33,7 @@ class Stiffner(object):
         """
         x_value=he/de
         if x_value<1.0:
-            return NaN
+            return math.nan
 
         elif x_value<=4.0:
             x= np.array([1.0,1.5,2.0,2.5,3.0,3.5,4.0])
@@ -39,7 +45,7 @@ class Stiffner(object):
             return inertia_necessary
 
         else :
-            return NaN
+            return math.nan
 
     def getMS(self,he,de,t):
         """
@@ -54,7 +60,7 @@ class Stiffner(object):
 
         if thickness_in_inch<0.012:
             print("compression Frange getFcy error")
-            return NaN
+            return math.nan
         elif thickness_in_inch<0.040:
             return ksi2Mpa(61)
 
@@ -67,7 +73,7 @@ class Stiffner(object):
         elif thickness_in_inch<0.249:
             return ksi2Mpa(65)
         else:
-            return NaN
+            return math.nan
 
     def getXofGraph(self):
         bpert=self.bs1_bottom_/self.thickness_
@@ -78,11 +84,12 @@ class Stiffner(object):
         """
         クリップリング応力を求める
         フランジと同じ
+        :return Fcc:Fcc[MPa]
         """
         right_axis=self.getXofGraph()
 
         if right_axis<0.1:
-            return NaN
+            return math.nan
         elif right_axis<0.1*5**(27/33):
             #直線部分
             print("フランジ 直線部分")
@@ -90,7 +97,7 @@ class Stiffner(object):
         elif right_axis<10:
             left_axis=10**(-0.20761)*right_axis**(-0.78427)
         else :
-            return NaN
+            return math.nan
         denom=mpa2Ksi(self.getFcy())#分母
         #print("left",left_axis)
         #print("denom",denom)

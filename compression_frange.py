@@ -22,7 +22,7 @@ class CompressionFrange(Frange):
 
         if thickness_in_inch<0.012:
             print("compression Frange getFcy error")
-            return NaN
+            return math.nan
         elif thickness_in_inch<0.040:
             return ksi2Mpa(61)
 
@@ -35,7 +35,7 @@ class CompressionFrange(Frange):
         elif thickness_in_inch<0.249:
             return ksi2Mpa(65)
         else:
-            return NaN
+            return math.nan
 
         #b/t
     def getBperT(self):
@@ -48,7 +48,7 @@ class CompressionFrange(Frange):
         right_axis=self.getXofGraph()
 
         if right_axis<0.1:
-            return NaN
+            return math.nan
         elif right_axis<0.1*5**(27/33):
             #直線部分
             print("フランジ 直線部分")
@@ -56,7 +56,7 @@ class CompressionFrange(Frange):
         elif right_axis<10:
             left_axis=10**(-0.20761)*right_axis**(-0.78427)
         else :
-            return NaN
+            return math.nan
         denom=mpa2Ksi(self.getFcy())#分母
         #print("left",left_axis)
         #print("denom",denom)
