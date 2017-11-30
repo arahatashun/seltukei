@@ -12,6 +12,7 @@ class Web(object):
         :param thickness:web厚さ
         :param height_a:前桁高さ
         :param width_b:ウェブの長さ(リブ間で一定)
+        height width長い方をaとするがアルゴリズム的に問題なし
         """
         self.thickness_=thickness
         self.height_a_=height_a
@@ -39,11 +40,9 @@ class Web(object):
 
     def getK(self):
         x_axis=self.height_a_/self.width_b_
-        if x_axis<0.9:
-            #print("x_axis",x_axis)
-            print("x_axis is too small :in getK in web.py")
-            return math.nan
-        elif x_axis<12:
+        if x_axis<1:
+            x_axis=1/x_axis
+        if x_axis<12:
             x= np.array([0.9,1.5, 2,   3,4,  5,  8,12])
             y= np.array([ 11,6.2,5.8,5.3,5.1  , 5,4.8,4.8])
             f = interpolate.interp1d(x, y,kind='linear')
