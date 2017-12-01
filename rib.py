@@ -20,13 +20,28 @@ class Rib(object):
     Componentオブジェクトの生成と
     csv のwriterオブジェクトを受け取るを追加する
     """
+    # リブ左端の座標
+    LEFT_ARRAY = [625, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
+    # リブの間隔
+    RIB_WIDTH = [375, 500, 500, 500, 500, 500, 500, 500, 500]
 
-    def __init__(self, y):
+    def __init__(self, rib_index, n_of_stiffner):
         """constructor.
 
-        :param y:staの値を受け取る
+        :param rib_index:ribのindex,左端が0,最大8
+        :param n_of_stiffner:stiffner 枚数
         """
-        self.y_ = y
+        assert rib_index < len(LEFT_ARRAY), "rib index too large"
+        self.rib_index_ = rib_index
+        # 左端のsta座標
+        self.sta_left_ = LEFT_ARRAY[rib_index]
+        # リブの間隔
+        self.rib_width_ = RIB_WIDTH[rib_index]
+        # スティフナー枚数
+        self.n_of_stiffner_ = n_of_stiffner
+
+
+
 
     def __get_hf(sta):
         """前桁高さ取得関数.
@@ -50,7 +65,7 @@ class Rib(object):
         :param stiffner_counts:スティフナーの個数
         :return web_interval:ウェブの間隔
         """
-        web_interval = rib_distance / stiffner_counts
+        web_interval = rib_distance / (stiffner_counts+1)
         return web_interval
 
     def __get_he(hf: float,
