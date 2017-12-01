@@ -86,7 +86,7 @@ def calcsta625():
     csv書き出し
     """
 
-    with open('sta625.csv','w') as f:
+    with open('sta625.csv','w',encoding='SHIFT-JIS') as f:
         writer = csv.writer(f)
         web.makeheader(writer)
         web.makerow(writer,Sf,he)
@@ -100,6 +100,14 @@ def calcsta625():
         rivet_web_stiffner.makerow(writer,Sf,he,web_distance)
         rivet_web_frange.makeheader(writer)
         rivet_web_frange.makerow(writer,Sf,he)
+
+
+def calcsta2500():
+    sta2500=2500
+    y=sm_df.ix[4][1]
+    Sf=sm_df.ix[4][4]
+    #print("Sf",Sf)
+    Mf=sm_df.ix[4][5]
 
 
 
