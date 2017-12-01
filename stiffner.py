@@ -1,4 +1,4 @@
-#coding:utf-8
+# coding:utf-8
 # Author: Shun Arahata
 from scipy import interpolate
 import numpy as np
@@ -8,84 +8,83 @@ import csv
 
 
 class Stiffner(object):
-    def __init__(self, thickness, bs1_bottom,bs2_height):
+    def __init__(self, thickness, bs1_bottom, bs2_height):
         """
         :param thickness: stiffner厚さ
         :param bs1_bottom:stiffner bottom長さ
         :param bs2_height:stiffner 高さ
         """
-        self.thickness_=thickness
-        self.bs1_bottom_=bs1_bottom
-        self.bs2_height_=bs2_height
-        self.E_=ksi2Mpa(10.3*10**3)
+        self.thickness_ = thickness
+        self.bs1_bottom_ = bs1_bottom
+        self.bs2_height_ = bs2_height
+        self.E_ = ksi2Mpa(10.3 * 10**3)
 
     def getInertia(self):
-        first=self.bs1_bottom_*self.thickness_**3
-        second=self.thickness_*self.bs2_height_**3
-        third=self.thickness_**4
-        inertia=1/3*(first+second+third)
+        first = self.bs1_bottom_ * self.thickness_**3
+        second = self.thickness_ * self.bs2_height_**3
+        third = self.thickness_**4
+        inertia = 1 / 3 * (first + second + third)
         return inertia
 
     def getArea(self):
-        return (self.bs1_bottom_+self.bs2_height_)*self.thickness_-1/4*self.thickness_**2
+        return (self.bs1_bottom_ + self.bs2_height_) * self.thickness_ - 1 / 4 * self.thickness_**2
 
-
-    def getInertiaU(self,he,de,t):
+    def getInertiaU(self, he, de, t):
         """
         :param he: 桁フランジ断面重心距離
         :param de: スティフナー間隔
         :param t:ウェブ厚さ
         """
-        x_value=he/de
-        if x_value<1.0:
+        x_value = he / de
+        if x_value < 1.0:
             print("too small in getIntertialU in stiffner py")
             return math.nan
 
-        elif x_value<=4.0:
-            x= np.array([1.0,1.5,2.0,2.5,3.0,3.5,4.0])
-            y= np.array([0.1,0.6,1.5,2.5,3.7,4.8,6.2])
-            f = interpolate.interp1d(x, y,kind='linear')
-            fraction=f(x_value)
-            denominator=he*t**3
-            inertia_necessary=denominator*fraction
+        elif x_value <= 4.0:
+            x = np.array([1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
+            y = np.array([0.1, 0.6, 1.5, 2.5, 3.7, 4.8, 6.2])
+            f = interpolate.interp1d(x, y, kind='linear')
+            fraction = f(x_value)
+            denominator = he * t**3
+            inertia_necessary = denominator * fraction
             return inertia_necessary
 
-        else :
+        else:
             print("too large in getIntertialU in stiffner py")
             return math.nan
 
-    def getMS(self,he,de,t):
+    def getMS(self, he, de, t):
         """
         :param he 桁フランジ断面重心距離
         :param de: スティフナー間隔
         :param t:ウェブ厚さ
         """
-        return self.getInertia()/self.getInertiaU(he,de,t)-1
+        return self.getInertia() / self.getInertiaU(he, de, t) - 1
 
     def getFcy(self):
-        thickness_in_inch=mm2inch(self.thickness_)
+        thickness_in_inch = mm2inch(self.thickness_)
 
-        if thickness_in_inch<0.012:
+        if thickness_in_inch < 0.012:
             print("compression Frange getFcy error")
             return math.nan
-        elif thickness_in_inch<0.040:
+        elif thickness_in_inch < 0.040:
             return ksi2Mpa(61)
 
-        elif thickness_in_inch<0.062:
-            return ksi2Mpa(62)#上と同じ
+        elif thickness_in_inch < 0.062:
+            return ksi2Mpa(62)  # 上と同じ
 
-        elif thickness_in_inch<0.187:
+        elif thickness_in_inch < 0.187:
             return ksi2Mpa(64)
 
-        elif thickness_in_inch<0.249:
+        elif thickness_in_inch < 0.249:
             return ksi2Mpa(65)
         else:
             print("too large in getFcy in stiffner py")
             return math.nan
 
     def getXofGraph(self):
-        bpert=self.bs1_bottom_/self.thickness_
-        x_value=np.sqrt(self.getFcy()/self.E_)*bpert
+        bpert = self.bs1_bottom_ / self.thickness_
+        x_value = np.sqrt(self.getFcy() / self.E_) * bpert
         return x_value
 
     def getClipplingStress(self):
@@ -94,57 +93,60 @@ class Stiffner(object):
         フランジと同じ
         :return Fcc:Fcc[MPa]
         """
-        right_axis=self.getXofGraph()
+        right_axis = self.getXofGraph()
 
-        if right_axis<0.1:
+        if right_axis < 0.1:
             return math.nan
-        elif right_axis<0.1*5**(27/33):
-            #直線部分
+        elif right_axis < 0.1 * 5**(27 / 33):
+            # 直線部分
             print("フランジ 直線部分")
-            left_axis = 0.5*2**(2.2/1.5)
-        elif right_axis<10:
-            left_axis=10**(-0.20761)*right_axis**(-0.78427)
-        else :
+            left_axis = 0.5 * 2**(2.2 / 1.5)
+        elif right_axis < 10:
+            left_axis = 10**(-0.20761) * right_axis**(-0.78427)
+        else:
             return math.nan
-        denom=mpa2Ksi(self.getFcy())#分母
-        #print("left",left_axis)
-        #print("denom",denom)
-        numer=left_axis*denom
+        denom = mpa2Ksi(self.getFcy())  # 分母
+        # print("left",left_axis)
+        # print("denom",denom)
+        numer = left_axis * denom
         Fcc = ksi2Mpa(numer)
 
         return Fcc
 
-    def makerow(self,writer,he,de,t):
+    def makerow(self, writer, he, de, t):
         """
         :param cav_file:csv.writer()で取得されるもの
         :param de:スティフナー間隔
         :param h_e:桁フランジ断面重心距離
         :param t:ウェブ厚さ
         """
-        I_U=self.getInertiaU(he,de,t)
-        I=self.getInertia()
-        ms=self.getMS(he,de,t)
-        value=[t,self.thickness_,de,he,self.bs1_bottom_,self.bs2_height_,I,I_U,ms]
+        I_U = self.getInertiaU(he, de, t)
+        I = self.getInertia()
+        ms = self.getMS(he, de, t)
+        value = [t, self.thickness_, de, he,
+                 self.bs1_bottom_, self.bs2_height_, I, I_U, ms]
         writer.writerow(value)
 
-
-    def makeheader(self,writer):
+    def makeheader(self, writer):
         """
         :param cav_file:csv.writer()で取得されるもの
         """
-        header=["web_thickness[mm]","スティフナー厚さ","スティフナー間隔","he","bs1底","bs2高さ","I","I_U","M.S"]
+        header = ["web_thickness[mm]", "スティフナー厚さ", "スティフナー間隔",
+                  "he", "bs1底", "bs2高さ", "I", "I_U", "M.S"]
         writer.writerow(header)
 
+
 def test():
-    fuck=Stiffner(2.29,22,19.0)
-    with open('test.csv','a') as f:
+    fuck = Stiffner(2.29, 22, 19.0)
+    with open('test.csv', 'a') as f:
         writer = csv.writer(f)
         fuck.makeheader(writer)
-        fuck.makerow(writer,289,125,2.03)
-    print("Inertia",fuck.getInertia())
-    print("inertia_necessary",fuck.getInertiaU(289,125,2.03))
-    print("MS",fuck.getMS(289,125,2.03))
-    print("FCC",fuck.getClipplingStress())
+        fuck.makerow(writer, 289, 125, 2.03)
+    print("Inertia", fuck.getInertia())
+    print("inertia_necessary", fuck.getInertiaU(289, 125, 2.03))
+    print("MS", fuck.getMS(289, 125, 2.03))
+    print("FCC", fuck.getClipplingStress())
+
 
 if __name__ == '__main__':
     test()

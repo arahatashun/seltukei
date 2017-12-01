@@ -1,9 +1,10 @@
-#coding:utf-8
+# coding:utf-8
 # Author: Shun Arahata
 from scipy import interpolate
 import numpy as np
 import math
 from unit_convert import *
+
 
 class Rivet(object):
     """
@@ -11,12 +12,12 @@ class Rivet(object):
     AD鋲のみに対応
     """
 
-    def  __init__(self,D):
+    def __init__(self, D):
         """
         :param D:リベットの鋲径
         """
-        self.D_=D
-        self.F_su_=ksi2Mpa(30)
+        self.D_ = D
+        self.F_su_ = ksi2Mpa(30)
         #:ファスナ船団許容応力
 
     """
@@ -32,13 +33,13 @@ class Rivet(object):
     """
 
     def getPallow(self):
-        return np.pi/4*self.D_**2*self.F_su_
-
+        return np.pi / 4 * self.D_**2 * self.F_su_
 
 
 def test():
-    r=Rivet(3.175)
-    print("Pallow",r.getPallow())
+    r = Rivet(3.175)
+    print("Pallow", r.getPallow())
+
 
 if __name__ == '__main__':
     test()
