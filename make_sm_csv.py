@@ -188,7 +188,8 @@ def get_csv():
              'S[N]', 'M[N*m]'])
         for i in range(625, 5000):
             writer.writerow(
-                [i, get_cla(i), get_clb(i), get_cd(i), get_cl(i), get_cz(i), get_chord(i), get_ccz(i), get_rho(i),
+                [i, get_cla(i), get_clb(i), get_cd(i), get_cl(i), get_cz(i), get_chord(i), get_ccz(i),
+                 get_rho(i),
                  get_sa(i, 1), get_si(i, 1), get_s(i, 1), get_m(i, 1)])
 
 
