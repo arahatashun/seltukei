@@ -4,7 +4,7 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import *
+from unit_convert import ksi2Mpa,mm2inch
 import csv
 
 
@@ -108,9 +108,10 @@ class Web(object):
         print("ms", ms)
         return ms
 
-    def make_row(self, writer, Sf, he):
+    def make_row(self, writer, y, Sf, he):
         """Csv output.
 
+        :param y: webの左端の座標(mm)
         :param cav_file:csv.writer()で取得されるもの
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
@@ -118,7 +119,8 @@ class Web(object):
         fs = self.__get_shear_force(Sf, he)
         Fscr = self.__get_buckling_shear_force()
         ms = self.__get_ms(Sf, he)
-        value = [self.thickness_, self.height_a_, self.width_b_, fs, Fscr, ms]
+        value = [y, self.thickness_, self.height_a_,
+                 self.width_b_, fs, Fscr, ms]
         writer.writerow(value)
 
     def make_header(self, writer):
@@ -126,7 +128,8 @@ class Web(object):
 
         :param cav_file:csv.writer()で取得されるもの
         """
-        header = ["web_thickness[mm]", "前桁高さ", "間隔de", "fs", "Fscr", "M.S"]
+        header = ["y[mm]", "web_thickness[mm]",
+                  "前桁高さ", "間隔de", "fs", "Fscr", "M.S"]
         writer.writerow(header)
 
 
@@ -136,7 +139,7 @@ def main():
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
         unti.make_header(writer)
-        unti.make_row(writer, 38429, 297)
+        unti.make_row(writer, 650, 38429, 297)
 
 
 if __name__ == '__main__':
