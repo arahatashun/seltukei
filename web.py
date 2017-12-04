@@ -4,23 +4,25 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa,mm2inch
+from unit_convert import ksi2Mpa, mm2inch
+from frange import get_hf
 import csv
 
 
 class Web(object):
     """ web class."""
 
-    def __init__(self, thickness, height_a, width_b):
+    def __init__(self, y, thickness, width_b):
         """ constructor.
 
+        :param y:staでの左端座標
         :param thickness:web厚さ[mm] 7075-T6で厚さが規定されている
-        :param height_a:前桁高さ web区間の翼根側
         :param width_b:ウェブの長さ(stiffnerで殺されるのでstiffnerの間隔と同じ)
         height width長い方をaとするがアルゴリズム的に問題なし
         """
+        self.y_=y
         self.thickness_ = thickness
-        self.height_a_ = height_a
+        self.height_a_ = get_hf(y)
         self.width_b_ = width_b
         self.E_ = ksi2Mpa(10.3 * 1000)
 
@@ -108,7 +110,7 @@ class Web(object):
         print("ms", ms)
         return ms
 
-    def make_row(self, writer, y, Sf, he):
+    def make_row(self, writer, Sf, he):
         """Csv output.
 
         :param y: webの左端の座標(mm)
@@ -119,7 +121,7 @@ class Web(object):
         fs = self.__get_shear_force(Sf, he)
         Fscr = self.__get_buckling_shear_force()
         ms = self.__get_ms(Sf, he)
-        value = [y, self.thickness_, self.height_a_,
+        value = [self.y_, self.thickness_, self.height_a_,
                  self.width_b_, fs, Fscr, ms]
         writer.writerow(value)
 
@@ -135,11 +137,11 @@ class Web(object):
 
 def main():
     """ Test fuction."""
-    unti = Web(2.03, 286, 125)
+    unti = Web(650, 2.03, 125)
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
         unti.make_header(writer)
-        unti.make_row(writer, 650, 38429, 297)
+        unti.make_row(writer, 38429, 297)
 
 
 if __name__ == '__main__':
