@@ -4,8 +4,7 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa, mm2inch
-from frange import get_hf
+from unit_convert import ksi2Mpa, mm2inch, get_hf
 import csv
 
 
