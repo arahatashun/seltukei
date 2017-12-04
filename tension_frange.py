@@ -1,23 +1,26 @@
+"""Frange(tension) implementation."""
 # coding:utf-8
 # Author: Shun Arahata
-import scipy as sp
-import numpy as np
 import math
 import csv
-from unit_convert import *
+from unit_convert import mm2inch, ksi2Mpa
 from frange import Frange
 
 
 class TensionFrange(Frange):
+    """ Frange(Tension) class."""
+
     def __init__(self, thickness, b_bottome, b_height):
-        """
+        """Constructor.
+
         :param thickness:フランジ厚さ
         :param b_bottom:フランジ底長さ
         :param b_height:フランジ高さ
         """
-        super(TensionFrange, self).__init__(thickness, b_bottome, b_height)
+        super().__init__(thickness, b_bottome, b_height)
 
-    def getFtu(self):
+    def get_f_tu(self):
+        """引張り許容応力 2024."""
         # cross section 云々は無視してます
         thickness_in_inch = mm2inch(self.thickness_)
 
@@ -41,30 +44,33 @@ class TensionFrange(Frange):
         else:
             return math.nan
 
-    def getMS(self, momentum, h_e, web_thickness):
-        """
+    def get_ms(self, momentum, h_e, web_thickness):
+        """ MS =Ftu/ft -1.
+
         :param momentum:前桁分担曲げモーメント
         :param h_e:桁フランジ分担曲げモーメント
         :param web_thickness:ウェブ厚さ
         """
-        ms = self.getFtu() / self.getStressForce(momentum, h_e, web_thickness) - 1
+        ms = self.get_f_tu() / self.get_stress_force(momentum, h_e, web_thickness) - 1
         return ms
 
-    def makerow(self, writer, momentum, h_e, web_thickness):
-        """
+    def make_row(self, writer, momentum, h_e, web_thickness):
+        """ Make row of csv.
+
         :param cav_file:csv.writer()で取得されるもの
         :param momentum:前桁分担曲げモーメント
         :param h_e:桁フランジ断面重心距離
         :param web_thickness:ウェブ厚さ
         """
-        ftu = self.getFtu()
-        ms = self.getMS(momentum, h_e, web_thickness)
+        ftu = self.get_f_tu()
+        ms = self.get_ms(momentum, h_e, web_thickness)
         value = [web_thickness, momentum, self.thickness_,
                  self.b_bottom_, self.b_height_, ftu, ms]
         writer.writerow(value)
 
-    def makeheader(self, writer):
-        """
+    def make_header(self, writer):
+        """ Make Header of csv.
+
         :param cav_file:csv.writer()で取得されるもの
         """
         header = ["web_thickness[mm]", "momentum",
@@ -72,17 +78,18 @@ class TensionFrange(Frange):
         writer.writerow(header)
 
 
-def test_tension():
+def main():
+    """Test Function."""
     test = TensionFrange(6.60, 36, 42.5)
-    f = test.getStressForce(74623, 297, 2.03)
+    f = test.get_stress_force(74623, 297, 2.03)
     print("fc[MPa]", f)
-    MS = test.getMS(74623, 297, 2.03)
+    MS = test.get_ms(74623, 297, 2.03)
     print("MS", MS)
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
-        test.makeheader(writer)
-        test.makerow(writer, 74623, 297, 2.03)
+        test.make_header(writer)
+        test.make_row(writer, 74623, 297, 2.03)
 
 
 if __name__ == '__main__':
-    test_tension()
+    main()
