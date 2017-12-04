@@ -20,7 +20,7 @@ class Web(object):
         :param width_b:ウェブの長さ(stiffnerで殺されるのでstiffnerの間隔と同じ)
         height width長い方をaとするがアルゴリズム的に問題なし
         """
-        self.y_=y
+        self.y_ = y
         self.thickness_ = thickness
         self.height_a_ = get_hf(y)
         self.width_b_ = width_b
