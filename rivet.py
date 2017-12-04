@@ -1,24 +1,20 @@
+"""Rivet Base Class."""
 # coding:utf-8
 # Author: Shun Arahata
-from scipy import interpolate
 import numpy as np
-import math
-from unit_convert import *
+from unit_convert import ksi2Mpa
 
 
 class Rivet(object):
-    """
-    Rivetのsupser class
-    AD鋲のみに対応
-    """
+    """ Rivet Base Class."""
 
     def __init__(self, D):
-        """
-        :param D:リベットの鋲径
+        """Constructor.
+
+        :param D:リベットの鋲径(直径mm)
         """
         self.D_ = D
-        self.F_su_ = ksi2Mpa(30)
-        #:ファスナ船団許容応力
+        self.F_su_ = ksi2Mpa(30)  # とりあえずAD鋲を仮定
 
     """
     def getAD8(self,thickness):
@@ -32,14 +28,14 @@ class Rivet(object):
         f=interpolate.interp1d(x, y,kind='linear')
     """
 
-    def getPallow(self):
+    def get_p_allow(self):
         return np.pi / 4 * self.D_**2 * self.F_su_
 
 
-def test():
-    r = Rivet(3.175)
-    print("Pallow", r.getPallow())
+def main():
+    r = Rivet(6.35)
+    print("Pallow", r.get_p_allow())
 
 
 if __name__ == '__main__':
-    test()
+    main()
