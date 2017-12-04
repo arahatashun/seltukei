@@ -30,9 +30,6 @@ W_REP = 9.8 * np.array([15, 12, 11, 7, 6, 5, 4, 4, 3,
 RHO_REP = W_REP / Y_DISTANCE_FOR_W
 RHO_REP = np.append(RHO_REP, [0])  # y=5000での線密度を0として便宜上追加
 
-HF_ARRAY = [130, 320]
-Y_ARRAY_FOR_HF = [5000, 625]
-
 ETA_A = 4039.29  # get_etaaで計算済み,計算モデルが変わったらget_etaa()で計算し直すこと
 
 
@@ -163,16 +160,6 @@ def get_m(y_w, limit_div=50):
     integral = quad(lambda yp, y: (ETA_A * get_ccz(yp) / 1000 - N_Z * get_rho(yp) * 1000) * (yp - y) / 1000, y_w,
                     HALF_SPAN, args=y_w, limit=limit_div)
     return integral[0] / 1000
-
-
-def get_hf(y):
-    """
-    yに於ける前桁の高さを計算
-    :param y:
-    :return:
-    """
-    f = interpolate.interp1d(Y_ARRAY_FOR_HF, HF_ARRAY, kind='linear')
-    return f(y)
 
 
 def get_csv():
