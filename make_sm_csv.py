@@ -1,3 +1,4 @@
+"""SとMを計算"""
 # -*- coding: utf-8 -*-
 # Author: Hirotaka Kondo
 import numpy as np
