@@ -33,7 +33,7 @@ RHO_REP = np.append(RHO_REP, [0])  # y=5000での線密度を0として便宜上
 ETA_A = 4039.29  # get_etaaで計算済み,計算モデルが変わったらget_etaa()で計算し直すこと
 
 
-def get_cla(y):
+def _get_cla(y):
     """
     yに於けるclaを計算
     :param y:
@@ -43,7 +43,7 @@ def get_cla(y):
     return f(y)
 
 
-def get_clb(y):
+def _get_clb(y):
     """
     yに於けるclbを計算
     :param y:
@@ -53,7 +53,7 @@ def get_clb(y):
     return f(y)
 
 
-def get_cd(y):
+def _get_cd(y):
     """
     yに於けるcdを計算
     :param y:
@@ -63,25 +63,25 @@ def get_cd(y):
     return f(y)
 
 
-def get_cl(y):
+def _get_cl(y):
     """
     yに於けるclを計算
     :param y:
     :return: cl[no dim]
     """
-    return C_L * get_cla(y) + get_clb(y)
+    return C_L * _get_cla(y) + _get_clb(y)
 
 
-def get_cz(y):
+def _get_cz(y):
     """
     yに於けるczを計算
     :param y:
     :return: cz[no dim]
     """
-    return get_cl(y) * np.cos(ALPHA_F) + get_cd(y) * np.sin(ALPHA_F)
+    return _get_cl(y) * np.cos(ALPHA_F) + _get_cd(y) * np.sin(ALPHA_F)
 
 
-def get_chord(y):
+def _get_chord(y):
     """
     yに於けるchord長を計算
     :param y:
@@ -91,13 +91,13 @@ def get_chord(y):
     return f(y)
 
 
-def get_ccz(y):
+def _get_ccz(y):
     """
     yに於けるc*czを計算
     :param y:
     :return: c*cz[mm]
     """
-    return get_chord(y) * get_cz(y)
+    return _get_chord(y) * _get_cz(y)
 
 
 """
@@ -107,18 +107,18 @@ def get_etaa():
 """
 
 
-def get_sa(y_w, limit_div=50):
+def _get_sa(y_w, limit_div=50):
     """
     y_wに於けるsaを計算
     :param y_w:
     :param limit_div:
     :return: sa[N]
     """
-    integral = quad(get_ccz, y_w, HALF_SPAN, limit=limit_div)
+    integral = quad(_get_ccz, y_w, HALF_SPAN, limit=limit_div)
     return ETA_A * integral[0] / 1000 / 1000  # 単位をmに揃える
 
 
-def get_rho(y):
+def _get_rho(y):
     """
     yに於ける荷重分布rho[N/mm]を計算
     :param y:
@@ -128,14 +128,14 @@ def get_rho(y):
     return f(y)
 
 
-def get_si(y_w, limit_div=50):
+def _get_si(y_w, limit_div=50):
     """
     y_wに於ける慣性力s1を計算
     :param y_w:
     :param limit_div:
     :return: s1[N]
     """
-    integral = quad(get_rho, y_w, HALF_SPAN, limit=limit_div)
+    integral = quad(_get_rho, y_w, HALF_SPAN, limit=limit_div)
     return N_Z * integral[0]  # 単位をmに揃える
 
 
@@ -146,7 +146,7 @@ def get_s(y_w, limit_div=50):
     :param limit_div:
     :return:
     """
-    s = get_sa(y_w, limit_div) - get_si(y_w, limit_div)
+    s = _get_sa(y_w, limit_div) - _get_si(y_w, limit_div)
     return s
 
 
@@ -157,12 +157,12 @@ def get_m(y_w, limit_div=50):
     :param limit_div: quadによる積分計算の分割幅を調整(defaultは50,大きくすると計算時間長くなる)
     :return:
     """
-    integral = quad(lambda yp, y: (ETA_A * get_ccz(yp) / 1000 - N_Z * get_rho(yp) * 1000) * (yp - y) / 1000, y_w,
+    integral = quad(lambda yp, y: (ETA_A * _get_ccz(yp) / 1000 - N_Z * _get_rho(yp) * 1000) * (yp - y) / 1000, y_w,
                     HALF_SPAN, args=y_w, limit=limit_div)
     return integral[0] / 1000
 
 
-def get_csv():
+def _get_csv():
     """
     全部の値をSTA625からSTA5000まで1刻みに出力
     :return:
@@ -175,12 +175,12 @@ def get_csv():
              'S[N]', 'M[N*m]'])
         for i in range(625, 5000):
             writer.writerow(
-                [i, get_cla(i), get_clb(i), get_cd(i), get_cl(i), get_cz(i), get_chord(i), get_ccz(i),
-                 get_rho(i),
-                 get_sa(i, 1), get_si(i, 1), get_s(i, 1), get_m(i, 1)])
+                [i, _get_cla(i), _get_clb(i), _get_cd(i), _get_cl(i), _get_cz(i), _get_chord(i), _get_ccz(i),
+                 _get_rho(i),
+                 _get_sa(i, 1), _get_si(i, 1), get_s(i, 1), get_m(i, 1)])
 
 
 if __name__ == "__main__":
-    # get_csv()
+    # _get_csv()
     for i in range(625, 5000):
         print("M at STA{0} is {1} [N*m]".format(i, get_m(i, 1)))
