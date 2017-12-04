@@ -23,7 +23,7 @@ class Stiffner(object):
         self.bs2_height_ = bs2_height
         self.E_ = ksi2Mpa(10.3 * 10**3)
 
-    def __get_inertia(self):
+    def get_inertia(self):
         """Inertia of Stiffner."""
         first = self.bs1_bottom_ * self.thickness_**3
         second = self.thickness_ * self.bs2_height_**3
@@ -31,11 +31,11 @@ class Stiffner(object):
         inertia = 1 / 3 * (first + second + third)
         return inertia
 
-    def __get_area(self):
+    def get_area(self):
         """ Stiffner断面積."""
         return (self.bs1_bottom_ + self.bs2_height_) * self.thickness_ - self.thickness_**2
 
-    def __get_inertia_u(self, he, de, t):
+    def get_inertia_u(self, he, de, t):
         """ Get Necessary Intertia.
 
         :param he: 桁フランジ断面重心距離
@@ -60,15 +60,15 @@ class Stiffner(object):
             print("too large in getIntertialU in stiffner py")
             return math.nan
 
-    def __get_ms(self, he, de, t):
+    def get_ms(self, he, de, t):
         """ MS (I>IU)
         :param he 桁フランジ断面重心距離
         :param de: スティフナー間隔
         :param t:ウェブ厚さ
         """
-        return self.__get_inertia() / self.__get_inertia_u(he, de, t) - 1
+        return self.get_inertia() / self.get_inertia_u(he, de, t) - 1
 
-    def __get_fcy(self):
+    def get_fcy(self):
         """ F_cy of 7075."""
         thickness_in_inch = mm2inch(self.thickness_)
 
@@ -90,11 +90,11 @@ class Stiffner(object):
             print("too large in getFcy in stiffner py")
             return math.nan
 
-    def __get_x_of_graph(self):
+    def get_x_of_graph(self):
         """Get X of Graph 7075(in page 12)."""
 
         bpert = self.bs1_bottom_ / self.thickness_  # b/t
-        x_value = np.sqrt(self.__get_fcy() / self.E_) * bpert
+        x_value = np.sqrt(self.get_fcy() / self.E_) * bpert
         return x_value
 
     def get_clippling_stress(self):
@@ -103,7 +103,7 @@ class Stiffner(object):
         フランジと同じ
         :return Fcc:Fcc[MPa]
         """
-        right_axis = self.__get_x_of_graphofGraph()
+        right_axis = self.get_x_of_graph()
 
         if right_axis < 0.1:
             return math.nan
@@ -114,7 +114,7 @@ class Stiffner(object):
             left_axis = 10**(-0.20761) * right_axis**(-0.78427)
         else:
             return math.nan
-        denom = mpa2Ksi(self.__get_fcy())  # 分母
+        denom = mpa2Ksi(self.get_fcy())  # 分母
         # print("left",left_axis)
         # print("denom",denom)
         numer = left_axis * denom
@@ -129,9 +129,9 @@ class Stiffner(object):
         :param h_e:桁フランジ断面重心距離
         :param t:ウェブ厚さ
         """
-        I_U = self.__get_inertia_u(he, de, t)
-        I = self.__get_inertia()
-        ms = self.__get_ms(he, de, t)
+        I_U = self.get_inertia_u(he, de, t)
+        I = self.get_inertia()
+        ms = self.get_ms(he, de, t)
         value = [t, self.thickness_, de, he,
                  self.bs1_bottom_, self.bs2_height_, I, I_U, ms]
         writer.writerow(value)

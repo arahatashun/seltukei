@@ -1,9 +1,10 @@
+"""Implementation of Rivet between Web and Stiffner."""
 # coding:utf-8
 # Author: Shun Arahata
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import *
+from unit_convert import ksi2Mpa, mm2inch
 from rivet import Rivet
 from stiffner import Stiffner
 from web import Web
@@ -11,26 +12,24 @@ import csv
 
 
 class RivetWebStiffner(Rivet):
-    """
-    ウェブとスティフナーを結合するリベット
-    """
+    """ウェブとスティフナーを結合するリベット."""
 
     def __init__(self, D, stiffner, web):
-        """
+        """Constructor.
+
         :param D:リベットの鋲径
         :param stiffner (Stiffner):スティフナーオブジェクト
         :param web (Web):webオブジェクト
         """
-        super(RivetWebStiffner, self).__init__(D)
+        super().__init__(D)
         self.stiffner_ = stiffner
         self.web_ = web
-        self.rivet_pitch_ = self.decideRivetPitch()
-        self.F_su_ = ksi2Mpa(41)  # :DD錠を利用する
+        self.rivet_pitch_ = self.decide_rivet_pitch()
+        self.F_su_ = ksi2Mpa(41)  # DD錠を利用する
 
-    def getSteepofInterRivetBuckling(self):
-        """
-        鋲間座屈のウェブthicknessによる
-        Firの直線の傾きを求める
+    def get_steep_of_inter_rivet_buckling(self):
+        """鋲間座屈のウェブthicknessによるFirの直線の傾きを求める.
+
         :return: steep [ksi/(inch/inch)]
         """
         thickness_in_inch = mm2inch(self.web_.thickness_)
@@ -52,10 +51,9 @@ class RivetWebStiffner(Rivet):
         steep = f(thickness_in_inch)
         return steep
 
-    def segmentOfInterRivetBuckling(self):
-        """
-        Firの傾きは別の関数で得られるのでp/t=20
-        におけるFirを提供する
+    def segment_of_inter_rivet_buckling(self):
+        """Firの傾きは別の関数で得られるのでp/t=20におけるFirを提供する.
+
         :return fir_at_20: [ksi]
         """
         skin_thickness = self.web_.thickness_
@@ -67,73 +65,77 @@ class RivetWebStiffner(Rivet):
         fir_at_20 = f(mm2inch(skin_thickness))
         return fir_at_20
 
-    def getInterRivetBuckling(self, rivet_spaceing):
+    def get_inter_rivet_buckling(self, rivet_spaceing):
         """
         Firを与える
         鋲間座屈の直線の式を作る
         :rivet_spaceing: リベット間隔mm
         :return fir_in_ksi:Fir[MPa]
         """
-        steep = self.getSteepofInterRivetBuckling()
-        fir_at_20 = self.segmentOfInterRivetBuckling()
+        steep = self.get_steep_of_inter_rivet_buckling()
+        fir_at_20 = self.segment_of_inter_rivet_buckling()
         x_value = rivet_spaceing / self.web_.thickness_
         fir_in_ksi = fir_at_20 + steep * (x_value - 20)
         fir_in_mpa = ksi2Mpa(fir_in_ksi)
         return fir_in_mpa
 
-    def decideRivetPitch(self):
-        fcc = self.stiffner_.getClipplingStress()
+    def decide_rivet_pitch(self):
+        """"リベットピッチ幅を決める"""
+        fcc = self.stiffner_.get_clippling_stress()
         print("fcc", fcc)
-        for rivet_spaceing in np.linspace(4 * self.D_, 6 * self.D_, 100):
-            fir = self.getInterRivetBuckling(rivet_spaceing)
+        for rivet_spaceing in np.linspace(6 * self.D_, 4 * self.D_, 100):
+            fir = self.get_inter_rivet_buckling(rivet_spaceing)
             print(fir, fcc)
-            if abs(fir - fcc) < 5:
+            if fir > fcc:
                 return rivet_spaceing
 
         print("web stiffner rivet error")
         return math.nan
 
-    def getRivetload(self, stiffner_pitch):
-        """
-        ウェブとスティフナーを結合するリベット荷重Pf
+    def get_rivet_load(self, stiffner_pitch):
+        """ウェブとスティフナーを結合するリベット荷重Pf.
+
         :param stiffner_pitch:スティフナーピッチ
         """
-        area = self.stiffner_.getArea()
+        area = self.stiffner_.get_area()
         p_2 = self.rivet_pitch_
         d_c = stiffner_pitch
         K = 172  # MPa
         p_f = (K * area / d_c) * p_2
         return p_f
 
-    def getMS(self, stiffner_pitch):
+    def get_ms(self, stiffner_pitch):
         """
         リベットの安全率
         :param stiffner_pitch:スティフナーピッチ
         """
-        ms = self.getPallow() / self.getRivetload(stiffner_pitch) - 1
+        ms = self.get_p_allow() / self.get_rivet_load(stiffner_pitch) - 1
         return ms
 
-    def getWebMS(self, Sf, he):
-        return self.web_.getWebHoleLossMS(self.rivet_pitch_, self.D_, Sf, he)
+    def get_web_ms(self, Sf, he):
+        """Web_hole_loss_ms."""
+        return self.web_.get_web_hole_loss_ms(self.rivet_pitch_, self.D_, Sf, he)
 
-    def makerow(self, writer, Sf, he, stiffner_pitch):
-        """
+    def make_row(self, writer, Sf, he, stiffner_pitch):
+        """CSVのrow出力.
+
         :param cav_file:csv.writer()で取得されるもの
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         :param stiffner_pitch: stiffner 間隔
         """
-        fir = self.getInterRivetBuckling(self.rivet_pitch_)
-        fcc = fcc = self.stiffner_.getClipplingStress()
-        ms = self.getMS(stiffner_pitch)
-        ms_web_hole = self.getWebMS(Sf, he)
-        pf = self.getRivetload(stiffner_pitch)
+        fir = self.get_inter_rivet_buckling(self.rivet_pitch_)
+        fcc = fcc = self.stiffner_.get_clippling_stress()
+        ms = self.get_ms(stiffner_pitch)
+        ms_web_hole = self.get_web_ms(Sf, he)
+        pf = self.get_rivet_load(stiffner_pitch)
         value = [Sf / he * 1000, self.D_, self.rivet_pitch_,
                  fir, fcc, pf, ms, ms_web_hole]
         writer.writerow(value)
 
-    def makeheader(self, writer):
-        """
+    def make_header(self, writer):
+        """CSV header.
+
         :param cav_file:csv.writer()で取得されるもの
         """
         header = ["qmax", "D", "rivet pitch", "Fir",
@@ -141,17 +143,18 @@ class RivetWebStiffner(Rivet):
         writer.writerow(header)
 
 
-def test():
+def main():
+    """Test Function."""
     stiffner = Stiffner(2.03, 65, 20)
-    web = Web(1.8, 317.2, 60)
+    web = Web(650, 1.8, 60)
     test = RivetWebStiffner(6.35, stiffner, web)
-    print("MS", test.getMS(125))
-    print("webMS", test.getWebMS(37429, 297))
+    print("MS", test.get_ms(125))
+    print("webMS", test.get_web_ms(37429, 297))
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
-        test.makeheader(writer)
-        test.makerow(writer, 38429, 297, 125)
+        test.make_header(writer)
+        test.make_row(writer, 38429, 297, 125)
 
 
 if __name__ == '__main__':
-    test()
+    main()
