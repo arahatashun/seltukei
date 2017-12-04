@@ -1,3 +1,4 @@
+"""web umplementation."""
 # coding:utf-8
 # Author: Shun Arahata
 from scipy import interpolate
@@ -8,38 +9,41 @@ import csv
 
 
 class Web(object):
+    """ web class."""
+
     def __init__(self, thickness, height_a, width_b):
-        """
-        :param thickness:web厚さ
-        :param height_a:前桁高さ
+        """ constructor.
+
+        :param thickness:web厚さ[mm] 7075-T6で厚さが規定されている
+        :param height_a:前桁高さ web区間の翼根側
         :param width_b:ウェブの長さ(stiffnerで殺されるのでstiffnerの間隔と同じ)
         height width長い方をaとするがアルゴリズム的に問題なし
         """
         self.thickness_ = thickness
         self.height_a_ = height_a
         self.width_b_ = width_b
+        self.E_ = ksi2Mpa(10.3 * 1000)
 
-    def getQmax(self, Sf, he):
-        """
+    def __get_qmax(self, Sf, he):
+        """ 剪断流を取得.
+
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離[mm]
         """
-        q_max = Sf / he * 1000
+        q_max = Sf / he
         return q_max
 
-    def getShearForce(self, Sf, he):
-        """
-        ウェブ剪断応力fs
+    def __get_shear_force(self, Sf, he):
+        """ウェブ剪断応力fs.
+
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        q_max = self.getQmax(Sf, he)
-        return q_max / self.thickness_ / 1000
+        q_max = self.__get_qmax(Sf, he)
+        return q_max / self.thickness_
 
-    def getYoungModulus(self):
-        return ksi2Mpa(10.3 * 1000)
-
-    def getK(self):
+    def __get_k(self):
+        """ ウェブ初期剪断座屈応力fscrを求める."""
         x_axis = self.height_a_ / self.width_b_
         if x_axis < 1:
             x_axis = 1 / x_axis
@@ -48,24 +52,19 @@ class Web(object):
             y = np.array([11, 6.2, 5.8, 5.3, 5.1, 5, 4.8, 4.8])
             f = interpolate.interp1d(x, y, kind='linear')
             k = f(x_axis)
-            print("k", k)
+            # print("k", k)
             return k
         else:
             print("x_axis", x_axis)
             print("x_axis is too large :in getK in web.py")
             return math.nan
 
-    def getBucklingShearForce(self):
-        """
-        剪断座屈応力Fscr
-        """
-        return self.getK() * self.getYoungModulus() * (self.thickness_ / self.width_b_)**2
+    def __get_buckling_shear_force(self):
+        """剪断座屈応力Fscr."""
+        return self.__get_k() * self.E_ * (self.thickness_ / self.width_b_)**2
 
-    def getFsu(self):
-        """
-        表3のF_su
-        """
-
+    def __get_fsu(self):
+        """表3のF_su."""
         thickness_in_inch = mm2inch(self.thickness_)
         if thickness_in_inch < 0.011:
             print("too small:nan in getFsu in web.py")
@@ -82,61 +81,63 @@ class Web(object):
             print("too large :nan in getFsu in web.py")
             return math.nan
 
-    def getMS(self, Sf, he):
-        """
-        安全率
+    def __get_ms(self, Sf, he):
+        """安全率を求める.
+
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        # F_SUを無視してる
-        f_scr = self.getBucklingShearForce()
-        f_su = self.getFsu()
-        ms = min(f_su, f_scr) / self.getShearForce(Sf, he) - 1
+        f_scr = self.__get_buckling_shear_force()
+        f_su = self.__get_fsu()
+        ms = min(f_su, f_scr) / self.__get_shear_force(Sf, he) - 1
         # print(ms)
         return ms
 
-    def getWebHoleLossMS(self, p, d, Sf, he):
-        """
-        ウェブホールロスの計算
+    def get_web_hole_loss_ms(self, p, d, Sf, he):
+        """ウェブホールロスの計算.
+
         :param p:リベット間隔
         :param d:リベットの直径[mm]
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
 
-        f_sj = self.getShearForce(Sf, he) * p / (p - d)
+        f_sj = self.__get_shear_force(Sf, he) * p / (p - d)
         # print(f_sj)
-        ms = self.getFsu() / f_sj - 1
+        ms = self.__get_fsu() / f_sj - 1
         print("ms", ms)
         return ms
 
-    def makerow(self, writer, Sf, he):
-        """
+    def make_row(self, writer, Sf, he):
+        """Csv output.
+
         :param cav_file:csv.writer()で取得されるもの
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        fs = self.getShearForce(Sf, he)
-        Fscr = self.getBucklingShearForce()
-        ms = self.getMS(Sf, he)
+        fs = self.__get_shear_force(Sf, he)
+        Fscr = self.__get_buckling_shear_force()
+        ms = self.__get_ms(Sf, he)
         value = [self.thickness_, self.height_a_, self.width_b_, fs, Fscr, ms]
         writer.writerow(value)
 
-    def makeheader(self, writer):
-        """
+    def make_header(self, writer):
+        """ Csv header.
+
         :param cav_file:csv.writer()で取得されるもの
         """
         header = ["web_thickness[mm]", "前桁高さ", "間隔de", "fs", "Fscr", "M.S"]
         writer.writerow(header)
 
 
-def test():
+def main():
+    """ Test fuction."""
     unti = Web(2.03, 286, 125)
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
-        unti.makeheader(writer)
-        unti.makerow(writer, 38429, 297)
+        unti.make_header(writer)
+        unti.make_row(writer, 38429, 297)
 
 
 if __name__ == '__main__':
-    test()
+    main()
