@@ -1,4 +1,4 @@
-"""web umplementation."""
+"""web implementation."""
 # coding:utf-8
 # Author: Shun Arahata
 from scipy import interpolate
