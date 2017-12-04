@@ -1,7 +1,6 @@
 """Frange Base Class."""
 # coding:utf-8
 # Author: Shun Arahata
-from unit_convert import inch2mm
 
 
 class Frange:
