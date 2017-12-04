@@ -29,10 +29,12 @@ class Rivet(object):
     """
 
     def get_p_allow(self):
+        """Pallow=pi/4*D^2*Fsu."""
         return np.pi / 4 * self.D_**2 * self.F_su_
 
 
 def main():
+    """Test Function."""
     r = Rivet(6.35)
     print("Pallow", r.get_p_allow())
 
