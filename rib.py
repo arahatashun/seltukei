@@ -1,9 +1,10 @@
+"""implementation of rib"""
 # coding:utf-8
 # Author: Shun Arahata
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import *
+from unit_convert import get_hf
 from stiffner import Stiffner
 from web import Web
 from compression_frange import CompressionFrange
@@ -12,6 +13,11 @@ from rivet_web_frange import RivetWebFrange
 from rivet_web_stiffner import RivetWebStiffner
 
 
+# リブ左端の座標
+LEFT_ARRAY = [625, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
+# リブの間隔
+RIB_WIDTH = [375, 500, 500, 500, 500, 500, 500, 500, 500]
+
 class Rib(object):
     """Ribのクラス.
 
@@ -19,42 +25,33 @@ class Rib(object):
     キーワード変数によるコンストラクタ
     csv のwriterオブジェクトを受け取るものを追加する
     """
-    # リブ左端の座標
-    LEFT_ARRAY = [625, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
-    # リブの間隔
-    RIB_WIDTH = [375, 500, 500, 500, 500, 500, 500, 500, 500]
 
-    def __init__(self, rib_index, n_of_stiffner):
+    def __init__(self, **kwargs):
         """constructor.
 
-        :param rib_index:ribのindex,左端が0,最大8
-        :param n_of_stiffner:stiffner 枚数
+        :param **kwargs:ウェブ諸元のdictionary
+        {
+            "y_index",Rib 左端の座標のindex
+            "web_thickness",ウェブの厚さ
+            "stiffner counts",stiffnerの枚数
+            "stiffner thickness",stiffner厚さ
+            "stiffner bottom",stiffner 底の長さ
+            "stiffner height",stiffner 高さ
+            "compression frange thickness",フランジ圧縮側厚さ
+            "comprssion frange height",フランジ圧縮側高さ
+            "compression frange width"フランジ圧縮側幅
+            "tension frange height",フランジ引張側高さ
+            "tension frange width",フランジ引張側幅
+            "tension frange thickenss",フランジ引張側厚さ
+            "rivet stifner D",スティフナーリベットの直径
+            "rivet frange D",フランジのリベット直径
+            "rivet frange pd ration",フランジのリベットピッチ/リベットの鋲半径
+            "rivet frange N",フランジのリベット列数
+        }
         """
-        assert rib_index < len(LEFT_ARRAY), "rib index too large"
-        self.rib_index_ = rib_index
-        # 左端のsta座標
-        self.sta_left_ = LEFT_ARRAY[rib_index]
-        # リブの間隔
-        self.rib_width_ = RIB_WIDTH[rib_index]
-        # スティフナー枚数
-        self.n_of_stiffner_ = n_of_stiffner
+        assert kwargs["y_index"] < len(LEFT_ARRAY), "rib index too large"
 
-
-
-
-    def __get_hf(sta):
-        """前桁高さ取得関数.
-
-        :param sta: staの値
-        :return hf: 前桁高さ
-        """
-        x = np.array([625, 5000])
-        y = np.array([320, 130])
-        f = interpolate.interp1d(x, y, kind='linear')
-        hf = f(sta)
-        return hf
-
-    def __get_web_iterval(rib_distance, stiffner_counts):
+    def get_web_iterval(rib_distance, stiffner_counts):
         """ウェブ(スティフナー)間隔取得.
 
         スティフナーの個数とリブの間隔を受け取りウェブの間隔を返す.
@@ -66,20 +63,3 @@ class Rib(object):
         """
         web_interval = rib_distance / (stiffner_counts+1)
         return web_interval
-
-    def __get_he(hf: float,
-                 compression: CompressionFrange, tension: TensionFrange) ->float:
-        """
-        桁フランジ断面重心距離heを取得.
-
-        :param hf:前桁高さ[mm]
-        :param compression:圧縮側フランジオブジェクト
-        :param tension:引張り側フランジオブジェクト
-        :return he:桁フランジ断面重心距離[mm]
-        """
-        he = hf - (tension.getCenterOfGravity() +
-                   compression.getCenterOfGravity())
-        return he
-
-
-if __name__ == '__main__':
