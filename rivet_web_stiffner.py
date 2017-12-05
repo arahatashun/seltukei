@@ -18,7 +18,7 @@ class RivetWebStiffner(Rivet):
         """Constructor.
 
         :param D:リベットの鋲径
-        :param stiffner (Stiffner):スティフナーオブジェクト
+        :param stiffener (Stiffener):スティフナーオブジェクト
         :param web (Web):webオブジェクト
         """
         super().__init__(D)
@@ -65,7 +65,7 @@ class RivetWebStiffner(Rivet):
         fir_at_20 = f(mm2inch(skin_thickness))
         return fir_at_20
 
-    def get_inter_rivet_buckling(self, rivet_spaceing):
+    def get_inter_rivet_buckling(self, rivet_spacing):
         """
         Firを与える
         鋲間座屈の直線の式を作る
@@ -74,7 +74,7 @@ class RivetWebStiffner(Rivet):
         """
         steep = self.get_steep_of_inter_rivet_buckling()
         fir_at_20 = self.segment_of_inter_rivet_buckling()
-        x_value = rivet_spaceing / self.web_.thickness
+        x_value = rivet_spacing / self.web_.thickness
         fir_in_ksi = fir_at_20 + steep * (x_value - 20)
         fir_in_mpa = ksi2Mpa(fir_in_ksi)
         return fir_in_mpa
@@ -83,11 +83,11 @@ class RivetWebStiffner(Rivet):
         """"リベットピッチ幅を決める"""
         fcc = self.stiffner_.get_clippling_stress()
         print("fcc", fcc)
-        for rivet_spaceing in np.linspace(6 * self.D_, 4 * self.D_, 100):
-            fir = self.get_inter_rivet_buckling(rivet_spaceing)
+        for rivet_spacing in np.linspace(6 * self.D_, 4 * self.D_, 100):
+            fir = self.get_inter_rivet_buckling(rivet_spacing)
             print(fir, fcc)
             if fir > fcc:
-                return rivet_spaceing
+                return rivet_spacing
 
         print("web stiffner rivet error")
         return math.nan
@@ -100,8 +100,8 @@ class RivetWebStiffner(Rivet):
         area = self.stiffner_.get_area()
         p_2 = self.rivet_pitch_
         d_c = stiffner_pitch
-        K = 172  # MPa
-        p_f = (K * area / d_c) * p_2
+        k = 172  # [MPa]
+        p_f = (k * area / d_c) * p_2
         return p_f
 
     def get_ms(self, stiffner_pitch):
@@ -117,15 +117,15 @@ class RivetWebStiffner(Rivet):
         return self.web_.get_web_hole_loss_ms(self.rivet_pitch_, self.D_, Sf, he)
 
     def make_row(self, writer, Sf, he, stiffener_pitch):
-        """CSVのrow出力.
-
-        :param cav_file:csv.writer()で取得されるもの
+        """
+        CSVのrow出力.
+        :param writer:csv.writer()で取得されるもの
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
-        :param stiffner_pitch: stiffener 間隔
+        :param stiffener_pitch: stiffener 間隔
         """
         fir = self.get_inter_rivet_buckling(self.rivet_pitch_)
-        fcc = fcc = self.stiffner_.get_clippling_stress()
+        fcc = self.stiffner_.get_clippling_stress()
         ms = self.get_ms(stiffener_pitch)
         ms_web_hole = self.get_web_ms(Sf, he)
         pf = self.get_rivet_load(stiffener_pitch)
@@ -136,7 +136,7 @@ class RivetWebStiffner(Rivet):
     def make_header(self, writer):
         """CSV header.
 
-        :param cav_file:csv.writer()で取得されるもの
+        :param writer:csv.writer()で取得されるもの
         """
         header = ["q_max", "D", "rivet pitch", "Fir",
                   "Fcc", "Pf", "M.S", "M.S.web hole loss"]
