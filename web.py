@@ -160,7 +160,7 @@ class Web(object):
 def main():
     """ Test fuction."""
     test = Web(625, 1000, 3, 2.03)
-    with open('test.csv', 'w', encoding="Shift_JIS") as f:  # Shift_JIS指定しないと文字化けする
+    with open('test.csv', 'w') as f: 
         writer = csv.writer(f)
         test.make_header(writer)
         test.make_row(writer, 38429, 297)
