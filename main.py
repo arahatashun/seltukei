@@ -6,11 +6,11 @@ import csv
 from  scipy import interpolate
 from flange import Flange
 from stiffener import Stiffener
-from tension_frange import TensionFrange
-from compression_frange import CompressionFrange
+from tension_flange import TensionFlange
+from compression_flange import CompressionFlange
 from web import Web
-from rivet_web_stiffner import RivetWebStiffner
-from rivet_web_frange import RivetWebFrange
+from rivet_web_stiffener import RivetWebStiffener
+from rivet_web_flange import RivetWebFlange
 
 sm_df = pd.read_csv("SandM.csv")
 
@@ -81,12 +81,12 @@ def calcsta625():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     # print("he",he)
     he_array.append(he)
     """
@@ -103,10 +103,10 @@ def calcsta625():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def calcsta1000():
@@ -141,12 +141,12 @@ def calcsta1000():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     # print("he",he)
     he_array.append(he)
     """
@@ -163,10 +163,10 @@ def calcsta1000():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def calcsta1500():
@@ -201,12 +201,12 @@ def calcsta1500():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     # print("he",he)
     he_array.append(he)
     """
@@ -223,10 +223,10 @@ def calcsta1500():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def calcsta2000():
@@ -261,12 +261,12 @@ def calcsta2000():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     # print("he",he)
     he_array.append(he)
     """
@@ -283,10 +283,10 @@ def calcsta2000():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def calcsta2500():
@@ -321,12 +321,12 @@ def calcsta2500():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     he_array.append(he)
     # print("he",he)
     """
@@ -343,10 +343,10 @@ def calcsta2500():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def calcsta3000():
@@ -382,12 +382,12 @@ def calcsta3000():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     # print("he",he)
     he_array.append(he)
     """
@@ -404,10 +404,10 @@ def calcsta3000():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def calcsta3500():
@@ -443,12 +443,12 @@ def calcsta3500():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     # print("he",he)
     he_array.append(he)
     """
@@ -465,10 +465,10 @@ def calcsta3500():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def calcsta4000():
@@ -504,12 +504,12 @@ def calcsta4000():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     # print("he",he)
     he_array.append(he)
     """
@@ -526,10 +526,10 @@ def calcsta4000():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def calcsta4500():
@@ -567,12 +567,12 @@ def calcsta4500():
     """
     stiffener = Stiffener(stiffner_thickness, stiffner_bs1, stiffner_bs2)
     web = Web(web_thickness, getHf(sta), web_distance)
-    rivet_web_stiffner = RivetWebStiffner(rivet_web_stiffner_diameter, stiffener, web)
+    rivet_web_stiffener = RivetWebStiffener(rivet_web_stiffner_diameter, stiffener, web)
     tension_frange = TensionFrange(tension_frange_thickness, tension_frange_bottom, tension_frange_height)
-    compression_frange = CompressionFrange(compression_frange_thickness, compression_frange_bottom,
+    compression_frange = CompressionFlange(compression_frange_thickness, compression_frange_bottom,
                                            compression_frange_height)
     he = getHe(hf, tension_frange, compression_frange)
-    rivet_web_frange = RivetWebFrange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
+    rivet_web_flange = RivetWebFlange(rivet_web_frange_D, rivet_web_pdratio, rivet_web_frange_N, web)
     # print("he",he)
     he_array.append(he)
     """
@@ -589,10 +589,10 @@ def calcsta4500():
         compression_frange.makerow(writer, Mf, he, web_thickness)
         tension_frange.makeheader(writer)
         tension_frange.makerow(writer, Mf, he, web_thickness)
-        rivet_web_stiffner.makeheader(writer)
-        rivet_web_stiffner.makerow(writer, Sf, he, web_distance)
-        rivet_web_frange.makeheader(writer)
-        rivet_web_frange.makerow(writer, Sf, he)
+        rivet_web_stiffener.makeheader(writer)
+        rivet_web_stiffener.makerow(writer, Sf, he, web_distance)
+        rivet_web_flange.makeheader(writer)
+        rivet_web_flange.makerow(writer, Sf, he)
 
 
 def printhe():

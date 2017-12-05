@@ -8,7 +8,7 @@ from rivet import Rivet
 from web import Web
 
 
-class RivetWebFrange(Rivet):
+class RivetWebFlange(Rivet):
     """ウェブフランジ結合のリベット."""
 
     def __init__(self, D, pd_ratio, N, web):
@@ -79,7 +79,7 @@ class RivetWebFrange(Rivet):
 def main():
     """Test Function."""
     unti = Web(625, 1000, 3, 2.03)
-    test = RivetWebFrange(3.175, 19.05, 2, unti)
+    test = RivetWebFlange(3.175, 19.05, 2, unti)
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
         test.make_header(writer)

@@ -1,4 +1,6 @@
 """Flange Base Class."""
+
+
 # coding:utf-8
 # Author: Shun Arahata,Hirotaka Kondo
 
@@ -6,7 +8,7 @@
 class Flange:
     """Flange Base Class."""
 
-    def __init__(self, thickness, b_bottome, b_height):
+    def __init__(self, thickness, b_bottom, b_height):
         """Constructor.
 
         :param thickness:フランジ厚さ
@@ -14,7 +16,7 @@ class Flange:
         :param b_height:フランジ高さ
         """
         self.thickness_ = thickness
-        self.b_bottom_ = b_bottome
+        self.b_bottom_ = b_bottom
         self.b_height_ = b_height
 
     def get_area(self, web_thickness):
@@ -22,8 +24,7 @@ class Flange:
 
         :@param web_thickness:web厚さ
         """
-        return (self.b_bottom_ + self.b_height_) * self.thickness_ + web_thickness**2 * 30
-
+        return (self.b_bottom_ + self.b_height_) * self.thickness_ + web_thickness ** 2 * 30
 
     def get_center_of_gravity(self):
         """フランジの底から重心高さを求める.heを求める."""
@@ -31,7 +32,7 @@ class Flange:
         bottom_area = (self.b_bottom_ + self.thickness_ / 2) * self.thickness_
         residure = area / 2 - bottom_area
 
-        if(residure < 0):
+        if residure < 0:
             # print("residure<0")
             return area / 2 / (self.b_bottom_ + self.thickness_ / 2)
         else:

@@ -7,10 +7,10 @@ import math
 from unit_convert import get_hf
 from stiffener import Stiffener
 from web import Web
-from compression_frange import CompressionFrange
+from compression_flange import CompressionFlange
 from tension_frange import TensionFrange
-from rivet_web_frange import RivetWebFrange
-from rivet_web_stiffner import RivetWebStiffner
+from rivet_web_flange import RivetWebFlange
+from rivet_web_stiffener import RivetWebStiffener
 
 
 # リブ左端の座標

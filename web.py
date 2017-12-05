@@ -1,6 +1,6 @@
 """web implementation."""
 # coding:utf-8
-# Author: Shun Arahata
+# Author: Hirotaka Kondo
 from scipy import interpolate
 import numpy as np
 import math
@@ -158,9 +158,9 @@ class Web(object):
 
 
 def main():
-    """ Test fuction."""
+    """ Test function."""
     test = Web(625, 1000, 3, 2.03)
-    with open('test.csv', 'w', encoding="Shift_JIS") as f: 
+    with open('test.csv', 'w', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         test.make_header(writer)
         test.make_row(writer, 38429, 297)

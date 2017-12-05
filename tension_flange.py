@@ -1,13 +1,13 @@
 """Flange(tension) implementation."""
 # coding:utf-8
-# Author: Shun Arahata
+# Author: Hirotaka Kondo
 import math
 import csv
 from unit_convert import mm2inch, ksi2Mpa
 from flange import Flange
 
 
-class TensionFrange(Flange):
+class TensionFlange(Flange):
     """ Flange(Tension) class."""
 
     def __init__(self, thickness, b_bottom, b_height):
@@ -73,13 +73,13 @@ class TensionFrange(Flange):
         :param writer:csv.writer()で取得されるもの
         """
         header = ["web_thickness[mm]", "momentum",
-                  "thickness", "b_bottom_", "b_height", "Ftu", "M.S"]
+                  "thickness", "b_bottom", "b_height", "Ftu", "M.S"]
         writer.writerow(header)
 
 
 def main():
     """Test Function."""
-    test = TensionFrange(6.60, 36, 42.5)
+    test = TensionFlange(6.60, 36, 42.5)
     f = test.get_stress_force(74623, 297, 2.03)
     print("fc[MPa]", f)
     MS = test.get_ms(74623, 297, 2.03)

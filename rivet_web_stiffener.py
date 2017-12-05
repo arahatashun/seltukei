@@ -11,7 +11,7 @@ from web import Web
 import csv
 
 
-class RivetWebStiffner(Rivet):
+class RivetWebStiffener(Rivet):
     """ウェブとスティフナーを結合するリベット."""
 
     def __init__(self, D, stiffener, web):
@@ -134,8 +134,8 @@ class RivetWebStiffner(Rivet):
         writer.writerow(value)
 
     def make_header(self, writer):
-        """CSV header.
-
+        """
+        CSV header.
         :param writer:csv.writer()で取得されるもの
         """
         header = ["q_max", "D", "rivet pitch", "Fir",
@@ -147,7 +147,7 @@ def main():
     """Test Function."""
     stiffener = Stiffener(2.03, 65, 20)
     web = Web(625, 1000, 1.8, 125)
-    test = RivetWebStiffner(6.35, stiffener, web)
+    test = RivetWebStiffener(6.35, stiffener, web)
     print("MS", test.get_ms(125))
     print("webMS", test.get_web_ms(37429, 297))
     with open('test.csv', 'a') as f:
