@@ -9,14 +9,14 @@ import csv
 
 
 class Stiffner(object):
-    """Stiffner class."""
+    """Stiffener class."""
 
     def __init__(self, thickness, bs1_bottom, bs2_height):
         """Constructor.
 
-        :param thickness: stiffner厚さ
-        :param bs1_bottom:stiffner bottom長さ
-        :param bs2_height:stiffner 高さ
+        :param thickness: stiffener厚さ
+        :param bs1_bottom:stiffener bottom長さ
+        :param bs2_height:stiffener 高さ
         """
         self.thickness_ = thickness
         self.bs1_bottom_ = bs1_bottom
@@ -24,7 +24,7 @@ class Stiffner(object):
         self.E_ = ksi2Mpa(10.3 * 10**3)
 
     def get_inertia(self):
-        """Inertia of Stiffner."""
+        """Inertia of Stiffener."""
         first = self.bs1_bottom_ * self.thickness_**3
         second = self.thickness_ * self.bs2_height_**3
         third = -self.thickness_**4
@@ -32,11 +32,11 @@ class Stiffner(object):
         return inertia
 
     def get_area(self):
-        """ Stiffner断面積."""
+        """ Stiffener断面積."""
         return (self.bs1_bottom_ + self.bs2_height_) * self.thickness_ - self.thickness_**2
 
     def get_inertia_u(self, he, de, t):
-        """ Get Necessary Intertia.
+        """ Get Necessary Inertia.
 
         :param he: 桁フランジ断面重心距離
         :param de: スティフナー間隔
