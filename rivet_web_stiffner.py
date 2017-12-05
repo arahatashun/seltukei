@@ -1,4 +1,4 @@
-"""Implementation of Rivet between Web and Stiffner."""
+"""Implementation of Rivet between Web and Stiffener."""
 # coding:utf-8
 # Author: Shun Arahata
 from scipy import interpolate
@@ -59,8 +59,8 @@ class RivetWebStiffner(Rivet):
         skin_thickness = self.web_.thickness_
         x = [0.125, 0.100, 0.090, 0.080, 0.071, 0.063,
              0.050, 0.040, 0.032, 0.025, 0.020, 0.016]
-        y = [50,    40,   35,    30, 27.5,    25,  20,
-             17,   13,   10, 10 * 10 / 14, 10 * 8 / 14]
+        y = [50, 40, 35, 30, 27.5, 25, 20,
+             17, 13, 10, 10 * 10 / 14, 10 * 8 / 14]
         f = interpolate.interp1d(x, y)
         fir_at_20 = f(mm2inch(skin_thickness))
         return fir_at_20
@@ -74,7 +74,7 @@ class RivetWebStiffner(Rivet):
         """
         steep = self.get_steep_of_inter_rivet_buckling()
         fir_at_20 = self.segment_of_inter_rivet_buckling()
-        x_value = rivet_spaceing / self.web_.thickness_
+        x_value = rivet_spaceing / self.web_.thickness
         fir_in_ksi = fir_at_20 + steep * (x_value - 20)
         fir_in_mpa = ksi2Mpa(fir_in_ksi)
         return fir_in_mpa
@@ -116,19 +116,19 @@ class RivetWebStiffner(Rivet):
         """Web_hole_loss_ms."""
         return self.web_.get_web_hole_loss_ms(self.rivet_pitch_, self.D_, Sf, he)
 
-    def make_row(self, writer, Sf, he, stiffner_pitch):
+    def make_row(self, writer, Sf, he, stiffener_pitch):
         """CSVのrow出力.
 
         :param cav_file:csv.writer()で取得されるもの
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
-        :param stiffner_pitch: stiffner 間隔
+        :param stiffner_pitch: stiffener 間隔
         """
         fir = self.get_inter_rivet_buckling(self.rivet_pitch_)
         fcc = fcc = self.stiffner_.get_clippling_stress()
-        ms = self.get_ms(stiffner_pitch)
+        ms = self.get_ms(stiffener_pitch)
         ms_web_hole = self.get_web_ms(Sf, he)
-        pf = self.get_rivet_load(stiffner_pitch)
+        pf = self.get_rivet_load(stiffener_pitch)
         value = [Sf / he * 1000, self.D_, self.rivet_pitch_,
                  fir, fcc, pf, ms, ms_web_hole]
         writer.writerow(value)
@@ -138,7 +138,7 @@ class RivetWebStiffner(Rivet):
 
         :param cav_file:csv.writer()で取得されるもの
         """
-        header = ["qmax", "D", "rivet pitch", "Fir",
+        header = ["q_max", "D", "rivet pitch", "Fir",
                   "Fcc", "Pf", "M.S", "M.S.web hole loss"]
         writer.writerow(header)
 
@@ -146,7 +146,7 @@ class RivetWebStiffner(Rivet):
 def main():
     """Test Function."""
     stiffner = Stiffner(2.03, 65, 20)
-    web = Web(650, 1.8, 60)
+    web = Web(625, 1000, 1.8, 125)
     test = RivetWebStiffner(6.35, stiffner, web)
     print("MS", test.get_ms(125))
     print("webMS", test.get_web_ms(37429, 297))

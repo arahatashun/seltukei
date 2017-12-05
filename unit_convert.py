@@ -22,7 +22,8 @@ def mpa2Ksi(pa):
 
 
 def lbs2N(lbs):
-    return 4.4482216282509 * lbe
+    return 4.4482216282509 * lbs
+
 
 def get_hf(sta):
     """前桁高さ取得関数.
