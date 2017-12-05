@@ -5,7 +5,7 @@ from scipy import interpolate
 import numpy as np
 import math
 from unit_convert import get_hf
-from stiffner import Stiffner
+from stiffener import Stiffener
 from web import Web
 from compression_frange import CompressionFrange
 from tension_frange import TensionFrange

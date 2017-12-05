@@ -1,23 +1,22 @@
-"""Frange(tension) implementation."""
+"""Flange(tension) implementation."""
 # coding:utf-8
 # Author: Shun Arahata
 import math
 import csv
 from unit_convert import mm2inch, ksi2Mpa
-from frange import Frange
+from flange import Flange
 
 
-class TensionFrange(Frange):
-    """ Frange(Tension) class."""
+class TensionFrange(Flange):
+    """ Flange(Tension) class."""
 
-    def __init__(self, thickness, b_bottome, b_height):
+    def __init__(self, thickness, b_bottom, b_height):
         """Constructor.
-
         :param thickness:フランジ厚さ
         :param b_bottom:フランジ底長さ
         :param b_height:フランジ高さ
         """
-        super().__init__(thickness, b_bottome, b_height)
+        super().__init__(thickness, b_bottom, b_height)
 
     def get_f_tu(self):
         """引張り許容応力 2024."""
@@ -57,7 +56,7 @@ class TensionFrange(Frange):
     def make_row(self, writer, momentum, h_e, web_thickness):
         """ Make row of csv.
 
-        :param cav_file:csv.writer()で取得されるもの
+        :param writer:csv.writer()で取得されるもの
         :param momentum:前桁分担曲げモーメント
         :param h_e:桁フランジ断面重心距離
         :param web_thickness:ウェブ厚さ
@@ -71,7 +70,7 @@ class TensionFrange(Frange):
     def make_header(self, writer):
         """ Make Header of csv.
 
-        :param cav_file:csv.writer()で取得されるもの
+        :param writer:csv.writer()で取得されるもの
         """
         header = ["web_thickness[mm]", "momentum",
                   "thickness", "b_bottom_", "b_height", "Ftu", "M.S"]

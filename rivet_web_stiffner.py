@@ -1,12 +1,12 @@
 """Implementation of Rivet between Web and Stiffener."""
 # coding:utf-8
-# Author: Shun Arahata
+# Author: Shun Arahata,Hirotaka Kondo
 from scipy import interpolate
 import numpy as np
 import math
 from unit_convert import ksi2Mpa, mm2inch
 from rivet import Rivet
-from stiffner import Stiffner
+from stiffener import Stiffener
 from web import Web
 import csv
 
@@ -14,7 +14,7 @@ import csv
 class RivetWebStiffner(Rivet):
     """ウェブとスティフナーを結合するリベット."""
 
-    def __init__(self, D, stiffner, web):
+    def __init__(self, D, stiffener, web):
         """Constructor.
 
         :param D:リベットの鋲径
@@ -22,7 +22,7 @@ class RivetWebStiffner(Rivet):
         :param web (Web):webオブジェクト
         """
         super().__init__(D)
-        self.stiffner_ = stiffner
+        self.stiffner_ = stiffener
         self.web_ = web
         self.rivet_pitch_ = self.decide_rivet_pitch()
         self.F_su_ = ksi2Mpa(41)  # DD錠を利用する
@@ -89,27 +89,27 @@ class RivetWebStiffner(Rivet):
             if fir > fcc:
                 return rivet_spacing
 
-        print("web stiffner rivet error")
+        print("web stiffener rivet error")
         return math.nan
 
-    def get_rivet_load(self, stiffner_pitch):
+    def get_rivet_load(self, stiffener_pitch):
         """ウェブとスティフナーを結合するリベット荷重Pf.
 
-        :param stiffner_pitch:スティフナーピッチ
+        :param stiffener_pitch:スティフナーピッチ
         """
         area = self.stiffner_.get_area()
         p_2 = self.rivet_pitch_
-        d_c = stiffner_pitch
+        d_c = stiffener_pitch
         k = 172  # [MPa]
         p_f = (k * area / d_c) * p_2
         return p_f
 
-    def get_ms(self, stiffner_pitch):
+    def get_ms(self, stiffener_pitch):
         """
         リベットの安全率
-        :param stiffner_pitch:スティフナーピッチ
+        :param stiffener_pitch:スティフナーピッチ
         """
-        ms = self.get_p_allow() / self.get_rivet_load(stiffner_pitch) - 1
+        ms = self.get_p_allow() / self.get_rivet_load(stiffener_pitch) - 1
         return ms
 
     def get_web_ms(self, Sf, he):
@@ -145,9 +145,9 @@ class RivetWebStiffner(Rivet):
 
 def main():
     """Test Function."""
-    stiffner = Stiffner(2.03, 65, 20)
+    stiffener = Stiffener(2.03, 65, 20)
     web = Web(625, 1000, 1.8, 125)
-    test = RivetWebStiffner(6.35, stiffner, web)
+    test = RivetWebStiffner(6.35, stiffener, web)
     print("MS", test.get_ms(125))
     print("webMS", test.get_web_ms(37429, 297))
     with open('test.csv', 'a') as f:

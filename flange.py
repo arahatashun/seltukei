@@ -1,10 +1,10 @@
-"""Frange Base Class."""
+"""Flange Base Class."""
 # coding:utf-8
-# Author: Shun Arahata
+# Author: Shun Arahata,Hirotaka Kondo
 
 
-class Frange:
-    """Frange Base Class."""
+class Flange:
+    """Flange Base Class."""
 
     def __init__(self, thickness, b_bottome, b_height):
         """Constructor.
@@ -18,7 +18,7 @@ class Frange:
         self.b_height_ = b_height
 
     def get_area(self, web_thickness):
-        """Get Area of Frange.
+        """Get Area of Flange.
 
         :@param web_thickness:web厚さ
         """
@@ -60,7 +60,7 @@ class Frange:
 
 def main():
     """Test Function."""
-    test = Frange(6.0, 34.5, 34.5)
+    test = Flange(6.0, 34.5, 34.5)
     A = test.get_area(2.03)
     print("A", A)
     cofg = test.get_center_of_gravity()

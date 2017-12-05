@@ -1,32 +1,32 @@
-"""Frange(compression) implementation."""
+"""Flange(compression) implementation."""
 # coding:utf-8
 # Author: Shun Arahata
 import numpy as np
 import math
 from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi
-from frange import Frange
+from flange import Flange
 import csv
 
 
-class CompressionFrange(Frange):
-    """Frange (Complesstion) Class."""
+class CompressionFlange(Flange):
+    """Flange (Compression) Class."""
 
-    def __init__(self, thickness, b_bottome, b_height):
+    def __init__(self, thickness, b_bottom, b_height):
         """ Constructor.
 
         :param thickness:フランジ厚さ
         :param b_bottom:フランジ底長さ
         :param b_height:フランジ高さ
         """
-        super().__init__(thickness, b_bottome, b_height)
-        self.E_ = ksi2Mpa(10.3 * 10**3)
+        super().__init__(thickness, b_bottom, b_height)
+        self.E_ = ksi2Mpa(10.3 * 10 ** 3)
 
     def get_fcy(self):
         """Get fcy og 7075."""
         thickness_in_inch = mm2inch(self.thickness_)
 
         if thickness_in_inch < 0.012:
-            print("compression Frange getFcy error")
+            print("compression Flange getFcy error")
             return math.nan
         elif thickness_in_inch < 0.040:
             return ksi2Mpa(61)
@@ -56,21 +56,21 @@ class CompressionFrange(Frange):
 
         if right_axis < 0.1:
             return math.nan
-        elif right_axis < 0.1 * 5**(27 / 33):
+        elif right_axis < 0.1 * 5 ** (27 / 33):
             # 直線部分
             # print("フランジ 直線部分")
-            left_axis = 0.5 * 2**(2.2 / 1.5)
+            left_axis = 0.5 * 2 ** (2.2 / 1.5)
         elif right_axis < 10:
-            left_axis = 10**(-0.20761) * right_axis**(-0.78427)
+            left_axis = 10 ** (-0.20761) * right_axis ** (-0.78427)
         else:
             return math.nan
         denom = mpa2Ksi(self.get_fcy())  # 分母
         # print("left",left_axis)
         # print("denom",denom)
         numer = left_axis * denom
-        Fcc = ksi2Mpa(numer)
+        fcc = ksi2Mpa(numer)
 
-        return Fcc
+        return fcc
 
     def get_ms(self, momentum, h_e, web_thickness):
         """MS = FCC/fc -1."""
@@ -79,7 +79,7 @@ class CompressionFrange(Frange):
 
     def make_row(self, writer, momentum, h_e, web_thickness):
         """
-        :param cav_file:csv.writer()で取得されるもの
+        :param writer:csv.writer()で取得されるもの
         :param momentum:前桁分担曲げモーメント
         :param h_e:桁フランジ断面重心距離
         :param web_thickness:ウェブ厚さ
@@ -92,7 +92,7 @@ class CompressionFrange(Frange):
 
     def make_header(self, writer):
         """
-        :param cav_file:csv.writer()で取得されるもの
+        :param writer:csv.writer()で取得されるもの
         """
         header = ["web_thickness[mm]", "momentum",
                   "thickness", "b_bottom_", "b_height", "Fcc", "M.S"]
@@ -101,7 +101,7 @@ class CompressionFrange(Frange):
 
 def main():
     """Test fucntion."""
-    test = CompressionFrange(6.0, 34.5, 34.5)
+    test = CompressionFlange(6.0, 34.5, 34.5)
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
         test.make_header(writer)

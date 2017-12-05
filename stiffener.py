@@ -1,4 +1,4 @@
-"""stiffner implementation"""
+"""stiffener implementation"""
 # coding:utf-8
 # Author: Shun Arahata
 from scipy import interpolate
@@ -8,7 +8,7 @@ from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi
 import csv
 
 
-class Stiffner(object):
+class Stiffener(object):
     """Stiffener class."""
 
     def __init__(self, thickness, bs1_bottom, bs2_height):
@@ -21,19 +21,19 @@ class Stiffner(object):
         self.thickness_ = thickness
         self.bs1_bottom_ = bs1_bottom
         self.bs2_height_ = bs2_height
-        self.E_ = ksi2Mpa(10.3 * 10**3)
+        self.E_ = ksi2Mpa(10.3 * 10 ** 3)
 
     def get_inertia(self):
         """Inertia of Stiffener."""
-        first = self.bs1_bottom_ * self.thickness_**3
-        second = self.thickness_ * self.bs2_height_**3
-        third = -self.thickness_**4
+        first = self.bs1_bottom_ * self.thickness_ ** 3
+        second = self.thickness_ * self.bs2_height_ ** 3
+        third = -self.thickness_ ** 4
         inertia = 1 / 3 * (first + second + third)
         return inertia
 
     def get_area(self):
         """ Stiffener断面積."""
-        return (self.bs1_bottom_ + self.bs2_height_) * self.thickness_ - self.thickness_**2
+        return (self.bs1_bottom_ + self.bs2_height_) * self.thickness_ - self.thickness_ ** 2
 
     def get_inertia_u(self, he, de, t):
         """ Get Necessary Inertia.
@@ -44,7 +44,7 @@ class Stiffner(object):
         """
         x_value = he / de
         if x_value < 1.0:
-            print("too small in getIntertialU in stiffner py")
+            print("too small in getIntertialU in stiffener py")
             return math.nan
 
         elif x_value <= 4.0:
@@ -52,12 +52,12 @@ class Stiffner(object):
             y = np.array([0.1, 0.6, 1.5, 2.5, 3.7, 4.8, 6.2])
             f = interpolate.interp1d(x, y, kind='linear')
             fraction = f(x_value)
-            denominator = he * t**3
+            denominator = he * t ** 3
             inertia_necessary = denominator * fraction
             return inertia_necessary
 
         else:
-            print("too large in getIntertialU in stiffner py")
+            print("too large in getIntertialU in stiffener py")
             return math.nan
 
     def get_ms(self, he, de, t):
@@ -73,7 +73,7 @@ class Stiffner(object):
         thickness_in_inch = mm2inch(self.thickness_)
 
         if thickness_in_inch < 0.012:
-            print("stiffner thickness too small")
+            print("stiffener thickness too small")
             return math.nan
         elif thickness_in_inch < 0.040:
             return ksi2Mpa(61)
@@ -87,7 +87,7 @@ class Stiffner(object):
         elif thickness_in_inch < 0.249:
             return ksi2Mpa(65)
         else:
-            print("too large in getFcy in stiffner py")
+            print("too large in getFcy in stiffener py")
             return math.nan
 
     def get_x_of_graph(self):
@@ -107,11 +107,11 @@ class Stiffner(object):
 
         if right_axis < 0.1:
             return math.nan
-        elif right_axis < 0.1 * 5**(27 / 33):
+        elif right_axis < 0.1 * 5 ** (27 / 33):
             # 直線部分
-            left_axis = 0.5 * 2**(2.2 / 1.5)
+            left_axis = 0.5 * 2 ** (2.2 / 1.5)
         elif right_axis < 10:
-            left_axis = 10**(-0.20761) * right_axis**(-0.78427)
+            left_axis = 10 ** (-0.20761) * right_axis ** (-0.78427)
         else:
             return math.nan
         denom = mpa2Ksi(self.get_fcy())  # 分母
@@ -124,9 +124,9 @@ class Stiffner(object):
 
     def make_row(self, writer, he, de, t):
         """
-        :param cav_file:csv.writer()で取得されるもの
+        :param writer:csv.writer()で取得されるもの
         :param de:スティフナー間隔
-        :param h_e:桁フランジ断面重心距離
+        :param he:桁フランジ断面重心距離
         :param t:ウェブ厚さ
         """
         I_U = self.get_inertia_u(he, de, t)
@@ -138,7 +138,7 @@ class Stiffner(object):
 
     def make_header(self, writer):
         """ Make csv header.
-        :param cav_file:csv.writer()で取得されるもの
+        :param writer:csv.writer()で取得されるもの
         """
         header = ["web_thickness[mm]", "スティフナー厚さ", "スティフナー間隔",
                   "he", "bs1底", "bs2高さ", "I", "I_U", "M.S"]
@@ -147,11 +147,11 @@ class Stiffner(object):
 
 def main():
     """Test Function."""
-    fuck = Stiffner(2.29, 22, 19.0)
+    test = Stiffener(2.29, 22, 19.0)
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
-        fuck.make_header(writer)
-        fuck.make_row(writer, 289, 125, 2.03)
+        test.make_header(writer)
+        test.make_row(writer, 289, 125, 2.03)
 
 
 if __name__ == '__main__':

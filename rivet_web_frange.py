@@ -1,6 +1,6 @@
 """Implementation of class between web and frange."""
 # coding:utf-8
-# Author: Shun Arahata
+# Author: Shun Arahata,Hirotaka Kondo
 
 import csv
 from unit_convert import ksi2Mpa
@@ -15,7 +15,7 @@ class RivetWebFrange(Rivet):
         """Constructor.
 
         :param D:リベットの鋲径
-        :param pd_ration:リベットピッチ/リベットの鋲半径,一般に4D~6Dとすることが多い
+        :param pd_ratio:リベットピッチ/リベットの鋲半径,一般に4D~6Dとすることが多い
         :param N:リベット列数
         :param web:結合されるweb
         """
@@ -26,17 +26,17 @@ class RivetWebFrange(Rivet):
         self.web_ = web
 
     def get_shear_force(self, Sf, he):
-        """Ps=qmax*p/Nを返す.
+        """Ps=q_max*p/Nを返す.
 
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        qmax = Sf / he
-        Ps = qmax * self.p1_ / self.N_
+        q_max = Sf / he
+        Ps = q_max * self.p1_ / self.N_
         return Ps
 
     def get_ms(self, Sf, he):
-        """M.S.=Pallow/Ps-1.
+        """M.S.=P_allow/Ps-1.
 
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
@@ -54,24 +54,23 @@ class RivetWebFrange(Rivet):
         """
         return self.web_.get_web_hole_loss_ms(self.p1_, self.D_, Sf, he)
 
-    def make_row(self, writer, Sf, he):
-        """Make CSV ROW.
-
-        :param cav_file:csv.writer()で取得されるもの
-        :param Sf:前桁の分担荷重
+    def make_row(self, writer, sf, he):
+        """
+        Make CSV ROW.
+        :param writer:csv.writer()で取得されるもの
+        :param sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        Ps = self.get_shear_force(Sf, he)
-        ms = self.get_ms(Sf, he)
-        ms_web_hole = self.get_web_ms(Sf, he)
-        value = [Sf / he * 1000, self.N_, self.D_,
+        Ps = self.get_shear_force(sf, he)
+        ms = self.get_ms(sf, he)
+        ms_web_hole = self.get_web_ms(sf, he)
+        value = [sf / he * 1000, self.N_, self.D_,
                  self.p1_, Ps, ms, ms_web_hole]
         writer.writerow(value)
 
     def make_header(self, writer):
         """Make Header of CSV.
-
-        :param cav_file:csv.writer()で取得されるもの
+        :param writer:csv.writer()で取得されるもの
         """
         header = ["qmax", "N", "D", "pitch", "Ps", "M.S", "M.S.web hole loss"]
         writer.writerow(header)
