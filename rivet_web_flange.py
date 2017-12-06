@@ -22,7 +22,7 @@ class RivetWebFlange(Rivet):
         super().__init__(D)
         self.F_su = ksi2Mpa(30)  # AD
         self.p1 = D * pd_ratio
-        self.N_ = N
+        self.N = N
         self.web = web
 
     def get_shear_force(self, Sf, he):
@@ -32,7 +32,7 @@ class RivetWebFlange(Rivet):
         :param he:桁フランジ断面重心距離
         """
         q_max = Sf / he
-        Ps = q_max * self.p1 / self.N_
+        Ps = q_max * self.p1 / self.N
         return Ps
 
     def get_ms(self, Sf, he):
@@ -62,17 +62,18 @@ class RivetWebFlange(Rivet):
         :param he:桁フランジ断面重心距離
         """
         Ps = self.get_shear_force(sf, he)
-        ms = self.get_ms(sf, he)
         ms_web_hole = self.get_web_ms(sf, he)
-        value = [self.web.y_left, self.web.y_right, sf / he * 1000, self.N_, self.D_,
-                 self.p1, Ps, ms, ms_web_hole]
+        value = [self.web.y_left, self.web.y_right, sf / he * 1000, self.N, self.D_,
+                 self.p1, Ps, ms_web_hole]
         writer.writerow(value)
 
     def make_header(self, writer):
         """Make Header of CSV.
         :param writer:csv.writer()で取得されるもの
         """
-        header = ["左端STA[mm]", "右端STA[mm]", "q_max", "N", "D", "pitch", "Ps", "M.S.", "M.S. of web hole loss"]
+        header = ["左端STA[mm]", "右端STA[mm]", "q_max[N/m]", "N",
+                  "D[mm]", "p[mm]", "Ps",
+                  "M.S. of web hole loss"]
         writer.writerow(header)
 
 
