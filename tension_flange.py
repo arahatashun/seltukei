@@ -73,24 +73,25 @@ class TensionFlange(Flange):
                  self.b_bottom, self.b_height, p, a, ft, ftu, ms]
         writer.writerow(value)
 
-    def make_header(self, writer):
-        """ Make Header of csv.
 
-        :param writer:csv.writer()で取得されるもの
-        """
-        header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "momentum[N*m]", "tf[mm]", "b_bottom_f1[mm]",
-                  "b_height_f2[mm]", "P[N]", "A[mm^2]", "ft[MPa]", "Ftu[MPa]", "M.S."]
-        writer.writerow(header)
+def make_header(writer):
+    """
+    Make Header of csv.
+    :param writer:csv.writer()で取得されるもの
+    """
+    header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "momentum[N*m]", "tf[mm]", "b_bottom_f1[mm]",
+              "b_height_f2[mm]", "P[N]", "A[mm^2]", "ft[MPa]", "Ftu[MPa]", "M.S."]
+    writer.writerow(header)
 
 
 def main():
     """Test Function."""
-    web2 = Web(625, 1000, 3, 2.03)
-    test2 = TensionFlange(6.60, 36, 42.5, web2)
+    web = Web(625, 1000, 3, 2.03)
+    test = TensionFlange(6.60, 36, 42.5, web)
     with open('tension_flange_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
-        test2.make_header(writer)
-        test2.make_row(writer, 74623, 297)
+        make_header(writer)
+        test.make_row(writer, 74623, 297)
 
 
 if __name__ == '__main__':

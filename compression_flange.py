@@ -90,23 +90,25 @@ class CompressionFlange(Flange):
                  self.b_bottom, self.b_height, p, a, fc, sqrt, fcc, ms]
         writer.writerow(value)
 
-    def make_header(self, writer):
-        """
-        :param writer:csv.writer()で取得されるもの
-        """
-        header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "momentum[N*m]",
-                  "tf[mm]", "b_bottom_f1[mm]", "b_height_f2[mm]", "P[N]", "A[mm^2]", "fc[MPa]", "sqrt(Fcy/E)(b/t)",
-                  "Fcc[MPa]", "M.S."]
-        writer.writerow(header)
+
+def make_header(writer):
+    """
+    :param writer:csv.writer()で取得されるもの
+    """
+    header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "momentum[N*m]",
+              "tf[mm]", "b_bottom_f1[mm]", "b_height_f2[mm]", "P[N]", "A[mm^2]", "fc[MPa]", "sqrt(Fcy/E)(b/t)",
+              "Fcc[MPa]", "M.S."]
+    writer.writerow(header)
+
 
 def test():
     """Test function."""
-    web1 = Web(625, 1000, 3, 2.03)
-    test1 = CompressionFlange(6.0, 34.5, 34.5, web1)
+    web = Web(625, 1000, 3, 2.03)
+    test = CompressionFlange(6.0, 34.5, 34.5, web)
     with open('compression_flange_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
-        test1.make_header(writer)
-        test1.make_row(writer, 74623, 297)
+        make_header(writer)
+        test.make_row(writer, 74623, 297)
 
 
 if __name__ == '__main__':

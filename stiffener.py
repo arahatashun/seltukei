@@ -136,13 +136,15 @@ class Stiffener(object):
                  self.bs1_bottom_, self.bs2_height_, I, I_U, ms]
         writer.writerow(value)
 
-    def make_header(self, writer):
-        """ Make csv header.
-        :param writer:csv.writer()で取得されるもの
-        """
-        header = ["web_thickness[mm]", "スティフナー厚さ", "スティフナー間隔",
-                  "he", "bs1底", "bs2高さ", "I", "I_U", "M.S"]
-        writer.writerow(header)
+
+def make_header(writer):
+    """
+    Make csv header.
+    :param writer:csv.writer()で取得されるもの
+    """
+    header = ["web_thickness[mm]", "スティフナー厚さ", "スティフナー間隔",
+              "he", "bs1底", "bs2高さ", "I", "I_U", "M.S"]
+    writer.writerow(header)
 
 
 def main():
@@ -150,7 +152,7 @@ def main():
     test = Stiffener(2.29, 22, 19.0)
     with open('test.csv', 'a') as f:
         writer = csv.writer(f)
-        test.make_header(writer)
+        make_header(writer)
         test.make_row(writer, 289, 125, 2.03)
 
 

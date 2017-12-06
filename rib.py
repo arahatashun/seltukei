@@ -8,7 +8,6 @@ from tension_flange import TensionFlange
 from rivet_web_flange import RivetWebFlange
 from rivet_web_stiffener import RivetWebStiffener
 
-
 # リブ左端の座標
 LEFT_ARRAY = [625, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
 # リブの間隔
@@ -54,26 +53,26 @@ class Rib(object):
     def add_web(self, division, thickness_index):
         """ Add web to rib.
 
-        :param division: number of stiffners+1
+        :param division: number of stiffeners + 1
         :param thickness_index:thickness of web
         """
         thickness = THICKNESS_7075[thickness_index]
         self.web = Web(self.y_left, self.y_right, division, thickness)
 
-    def add_compression_frange(self, thickness, b_bottom, b_height):
+    def add_compression_flange(self, thickness, b_bottom, b_height, web):
         """ Add flange(compression).
 
         :param thickness:フランジ厚さ
         :param b_bottom:フランジ底長さ
         :param b_height:フランジ高さ
         """
-        self.cfrange = CompressionFlange(thickness, b_bottom, b_height)
+        self.cflange = CompressionFlange(thickness, b_bottom, b_height, web)
 
-    def add_tension_frange(self, thickness, b_bottom, b_height):
-        self.tfrange = TensionFlange(thickness, b_bottom, b_height)
+    def add_tension_flange(self, thickness, b_bottom, b_height, web):
+        self.tflange = TensionFlange(thickness, b_bottom, b_height, web)
 
     def add_rivet_stiffener(self, D, stiffener, web):
-        self.rivet_stffener = RivetWebStiffener(D, self.stiffener, self.web)
+        self.rivet_stiffener = RivetWebStiffener(D, self.stiffener, self.web)
 
     def add_rivet_flange(self, D, pd_ratio, N):
         """

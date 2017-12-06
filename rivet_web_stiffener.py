@@ -133,14 +133,15 @@ class RivetWebStiffener(Rivet):
                  fir, fcc, pf, ms, ms_web_hole]
         writer.writerow(value)
 
-    def make_header(self, writer):
-        """
-        CSV header.
-        :param writer:csv.writer()で取得されるもの
-        """
-        header = ["q_max", "D", "rivet pitch", "Fir",
-                  "Fcc", "Pf", "M.S", "M.S.web hole loss"]
-        writer.writerow(header)
+
+def make_header(writer):
+    """
+    CSV header.
+    :param writer:csv.writer()で取得されるもの
+    """
+    header = ["q_max", "D", "rivet pitch", "Fir",
+              "Fcc", "Pf", "M.S", "M.S.web hole loss"]
+    writer.writerow(header)
 
 
 def main():
@@ -152,7 +153,7 @@ def main():
     print("webMS", test.get_web_ms(37429, 297))
     with open('rivet_web_stiffener_test.csv', 'a') as f:
         writer = csv.writer(f)
-        test.make_header(writer)
+        make_header(writer)
         test.make_row(writer, 38429, 297, 125)
 
 

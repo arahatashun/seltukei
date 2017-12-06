@@ -67,23 +67,24 @@ class RivetWebFlange(Rivet):
                  self.p1, Ps, ms_web_hole]
         writer.writerow(value)
 
-    def make_header(self, writer):
-        """Make Header of CSV.
-        :param writer:csv.writer()で取得されるもの
-        """
-        header = ["左端STA[mm]", "右端STA[mm]", "q_max[N/m]", "N",
-                  "D[mm]", "p[mm]", "Ps",
-                  "M.S. of web hole loss"]
-        writer.writerow(header)
+
+def make_header(writer):
+    """Make Header of CSV.
+    :param writer:csv.writer()で取得されるもの
+    """
+    header = ["左端STA[mm]", "右端STA[mm]", "q_max[N/m]", "N",
+              "D[mm]", "p[mm]", "Ps",
+              "M.S. of web hole loss"]
+    writer.writerow(header)
 
 
 def main():
     """Test Function."""
-    web1 = Web(625, 1000, 3, 2.03)
-    test = RivetWebFlange(3.175, 19.05, 2, web1)
+    web = Web(625, 1000, 3, 2.03)
+    test = RivetWebFlange(3.175, 19.05, 2, web)
     with open('rivet_web_flange_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
-        test.make_header(writer)
+        make_header(writer)
         test.make_row(writer, 38429, 297)
 
 
