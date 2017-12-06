@@ -1,10 +1,6 @@
 """implementation of rib"""
 # coding:utf-8
 # Author: Shun Arahata
-from scipy import interpolate
-import numpy as np
-import math
-from unit_convert import get_hf
 from stiffener import Stiffener
 from web import Web
 from compression_flange import CompressionFlange
@@ -18,48 +14,71 @@ LEFT_ARRAY = [625, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
 # リブの間隔
 RIB_WIDTH = [375, 500, 500, 500, 500, 500, 500, 500, 500]
 
+THICKNESS_7075 = [0.41, 0.51, 0.64, 0.81, 1.02,
+                  1.27, 1.60, 1.80, 2.03, 2.29, 2.54, 3.18]
+
+
 class Rib(object):
     """Ribのクラス.
 
     分割数からのスティフナー間隔の計算やheの計算を主に受け持つ
     キーワード変数によるコンストラクタ
     csv のwriterオブジェクトを受け取るものを追加する
+
+    Attributes:
+        y_left:リブ左端座標
+        y_right:リブ右端座標
+        width:リブの大きさ
+        web:ウェブ
+
     """
 
-    def __init__(self, **kwargs):
-        """constructor.
+    def __init__(self, y_index):
+        """Constructor.
 
-        :param **kwargs:ウェブ諸元のdictionary
-        {
-            "y_index",Rib 左端の座標のindex
-            "web_thickness",ウェブの厚さ
-            "stiffner counts",stiffnerの枚数
-            "stiffner thickness",stiffner厚さ
-            "stiffner bottom",stiffner 底の長さ
-            "stiffner height",stiffner 高さ
-            "compression frange thickness",フランジ圧縮側厚さ
-            "comprssion frange height",フランジ圧縮側高さ
-            "compression frange width"フランジ圧縮側幅
-            "tension frange height",フランジ引張側高さ
-            "tension frange width",フランジ引張側幅
-            "tension frange thickenss",フランジ引張側厚さ
-            "rivet stifner D",スティフナーリベットの直径
-            "rivet frange D",フランジのリベット直径
-            "rivet frange pd ration",フランジのリベットピッチ/リベットの鋲半径
-            "rivet frange N",フランジのリベット列数
-        }
+        :param y_index:リブ左端位置のindex
         """
-        assert kwargs["y_index"] < len(LEFT_ARRAY), "rib index too large"
+        self.y_left = LEFT_ARRAY[y_index]
+        self.width = RIB_WIDTH[y_index]
+        self.y_right = self.y_left + self.width
 
-    def get_web_iterval(rib_distance, stiffner_counts):
-        """ウェブ(スティフナー)間隔取得.
+    def add_stiffener(self, thickness, bs1_bottom, bs2_height):
+        """ Add Stiffener.
 
-        スティフナーの個数とリブの間隔を受け取りウェブの間隔を返す.
-        ウェブの間隔はスティフナーの間隔と同じ.
-        スティフナーはリブを等間隔に分割するものとする.
-        :param rib_distance:リブの間隙
-        :param stiffner_counts:スティフナーの個数
-        :return web_interval:ウェブの間隔
+        :param thickness: stiffener厚さ
+        :param bs1_bottom:stiffener bottom長さ
+        :param bs2_height:stiffener 高さ
         """
-        web_interval = rib_distance / (stiffner_counts+1)
-        return web_interval
+        self.stiffener = Stiffener(thickness, bs1_bottom, bs2_height)
+
+    def add_web(self, division, thickness_index):
+        """ Add web to rib.
+
+        :param division: number of stiffners+1
+        :param thickness_index:thickness of web
+        """
+        thickness = THICKNESS_7075[thickness_index]
+        self.web = Web(self.y_left, self.y_right, division, thickness)
+
+    def add_compression_frange(self, thickness, b_bottom, b_height):
+        """ Add frange(compression).
+
+        :param thickness:フランジ厚さ
+        :param b_bottom:フランジ底長さ
+        :param b_height:フランジ高さ
+        """
+        self.cfrange = CompressionFlange(thickness, b_bottom, b_height)
+
+    def add_tension_frange(self, thickness, b_bottom, b_height):
+        self.tfrange = TensionFrange(thickness, b_bottom, b_height)
+
+    def add_rivet_stiffener(self, D, stiffener, web):
+        self.rivet_stffener = RivetWebStiffener(D, self.stiffener, self.web)
+
+    def add_rivet_flange(self, D, pd_ratio, N):
+        """
+        :param D:リベットの鋲径
+        :param pd_ratio:リベットピッチ/リベットの鋲半径,一般に4D~6Dとすることが多い
+        :param N:リベット列数
+        """
+        self.ribet_flange = RivetWebFlange(D, pd_ratio, N, self.web)
