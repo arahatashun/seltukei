@@ -1,5 +1,9 @@
 # for fucking Macintosh
 .DS_Store
+
+#for fucking IDE
+.idea/
+.project
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -104,4 +108,3 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
