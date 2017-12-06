@@ -29,7 +29,7 @@ class Rivet(object):
     """
 
     def get_p_allow(self):
-        """Pallow=pi/4*D^2*Fsu."""
+        """P_allow=pi/4*D^2*Fsu."""
         return np.pi / 4 * self.D_**2 * self.F_su_
 
 
