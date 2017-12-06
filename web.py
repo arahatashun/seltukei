@@ -147,14 +147,14 @@ class Web(object):
                  fscr, fsu, fs, ms]
         writer.writerow(value)
 
-    def make_header(self, writer):
-        """
-        Csv header.
-        :param writer:csv.writer()で取得されるもの
-        """
-        header = ["左端STA[mm]", "右端STA[mm]", "分割数", "間隔de[mm]", "web厚さ[mm]",
+def make_web_header(self, writer):
+    """
+    Csv header.
+    :param writer:csv.writer()で取得されるもの
+    """
+    header = ["左端STA[mm]", "右端STA[mm]", "分割数", "間隔de[mm]", "web厚さ[mm]",
                   "STA最小におけるweb高さ[mm]", "q_max[N/m]", "F_scr[MPa]", "F_su[MPa]", "f_s[MPa]", "M.S."]
-        writer.writerow(header)
+    writer.writerow(header)
 
 
 def main():
@@ -162,7 +162,7 @@ def main():
     test = Web(625, 1000, 3, 2.03)
     with open('test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
-        test.make_header(writer)
+        make_web_header(writer)
         test.make_row(writer, 38429, 297)
 
 
