@@ -1,6 +1,6 @@
-"""Implementation of class between web and frange."""
+"""Implementation of class between web and flange."""
 # coding:utf-8
-# Author: Shun Arahata,Hirotaka Kondo
+# Authofwstr: Shun Arahata,Hirotaka Kondo
 
 import csv
 from unit_convert import ksi2Mpa

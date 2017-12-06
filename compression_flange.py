@@ -98,8 +98,7 @@ class CompressionFlange(Flange):
                   "tf[mm]", "b_bottom_f1[mm]", "b_height_f2[mm]", "P[N]", "A[mm^2]", "fc[MPa]", "sqrt(Fcy/E)(b/t)",
                   "Fcc[MPa]", "M.S."]
         writer.writerow(header)
-
-
+f
 def test():
     """Test function."""
     web1 = Web(625, 1000, 3, 2.03)
