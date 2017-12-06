@@ -1,4 +1,4 @@
-""" unit conver functions."""
+""" unit conver functions　and other functions."""
 # coding:utf-8
 # Author: Shun Arahata
 import numpy as np
@@ -24,3 +24,13 @@ def mpa2Ksi(pa):
 def lbs2N(lbs):
     return 4.4482216282509 * lbs
 
+def get_hf(sta):		
+    """前桁高さ取得関数.		
+     :param sta: staの値		
+     :return hf: 前桁高さ		
+     """		
+     x = np.array([625, 5000])		
+     y = np.array([320, 130])		
+     f = interpolate.interp1d(x, y, kind='linear')		
+     hf = f(sta)		
+     return hf
