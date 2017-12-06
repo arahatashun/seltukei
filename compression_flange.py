@@ -101,7 +101,7 @@ def make_header(writer):
     writer.writerow(header)
 
 
-def test():
+def main():
     """Test function."""
     web = Web(625, 1000, 3, 2.03)
     test = CompressionFlange(6.0, 34.5, 34.5, web)
@@ -112,4 +112,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    main()

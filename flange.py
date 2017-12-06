@@ -59,7 +59,7 @@ class Flange:
         return self.get_axial_force(momentum, h_e) / self.get_area(web_thickness)
 
 
-def test():
+def main():
     """Test Function."""
     test = Flange(6, 30, 30)
     print("A[mm^2]", test.get_area(1.6))
@@ -71,4 +71,4 @@ def test():
 
 
 if __name__ == '__main__':
-    test()
+    main()
