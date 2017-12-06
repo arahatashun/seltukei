@@ -4,8 +4,20 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa, mm2inch, get_hf
+from unit_convert import ksi2Mpa, mm2inch
 import csv
+
+
+def get_hf(sta):
+    """前桁高さ取得関数.
+    :param sta: staの値
+    :return hf: 前桁高さ
+    """
+    x = np.array([625, 5000])
+    y = np.array([320, 130])
+    f = interpolate.interp1d(x, y, kind='linear')
+    hf = f(sta)
+    return hf
 
 
 class Web(object):
@@ -117,6 +129,17 @@ class Web(object):
         ms = min(f_su, f_scr) / self.get_shear_force(sf, he) - 1
         return ms
 
+    def get_fsj(self, p, d, sf, he):
+        """
+        :param p: リベット間隔[mm]
+        :param d: リベットの直径[mm]
+        :param sf: 前桁の分担荷重[N]
+        :param he: 桁フランジ断面重心距離[mm]
+        :return: M.S. 安全率
+        """
+        f_sj = self.get_shear_force(sf, he) * p / (p - d)
+        return f_sj
+
     def get_web_hole_loss_ms(self, p, d, sf, he):
         """
         ウェブホールロスの計算.
@@ -126,7 +149,7 @@ class Web(object):
         :param he:桁フランジ断面重心距離[mm]
         :return: M.S. 安全率
         """
-        f_sj = self.get_shear_force(sf, he) * p / (p - d)
+        f_sj = self.get_fsj(p, d, sf, he)
         ms = self.get_fsu() / f_sj - 1
         return ms
 
@@ -160,7 +183,7 @@ def make_web_header(self, writer):
 def main():
     """ Test function."""
     test = Web(625, 1000, 3, 2.03)
-    with open('test.csv', 'a', encoding="Shift_JIS") as f:
+    with open('web_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         make_web_header(writer)
         test.make_row(writer, 38429, 297)

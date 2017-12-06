@@ -42,10 +42,10 @@ class Flange:
         """ フランジの軸力を求める.
 
         :param momentum:前桁負担分モーメント
-        :param h_e:桁フランジ断面重心距離
+        :param h_e:桁フランジ断面重心距離[mm]
         :return axial_force: [N]
         """
-        axial_force = momentum / h_e * 1000
+        axial_force = momentum / h_e * 1000  # 単位を[N]に
         return axial_force
 
     def get_stress_force(self, momentum, h_e, web_thickness):
@@ -54,8 +54,8 @@ class Flange:
         :param momentum:前桁分担曲げモーメント
         :param h_e:桁フランジ断面重心距離
         :param web_thickness:ウェブ厚さ
+        :return: 応力[MPa]
         """
-        #  [MPa]
         return self.get_axial_force(momentum, h_e) / self.get_area(web_thickness)
 
 
@@ -64,8 +64,8 @@ def main():
     test = Flange(6.0, 34.5, 34.5)
     A = test.get_area(2.03)
     print("A", A)
-    cofg = test.get_center_of_gravity()
-    print("cofg", cofg)
+    cg = test.get_center_of_gravity()
+    print("C.G.", cg)
     ax = test.get_axial_force(74623, 297)
     print("P[N]", ax)
     f = test.get_stress_force(74623, 297, 2.03)

@@ -22,7 +22,7 @@ class CompressionFlange(Flange):
         self.E_ = ksi2Mpa(10.3 * 10 ** 3)
 
     def get_fcy(self):
-        """Get fcy og 7075."""
+        """Get fcy of 7075."""
         thickness_in_inch = mm2inch(self.thickness_)
 
         if thickness_in_inch < 0.012:
