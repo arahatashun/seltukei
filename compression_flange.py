@@ -18,6 +18,7 @@ class CompressionFlange(Flange):
         :param thickness:フランジ厚さ[mm]
         :param b_bottom:フランジ底長さ[mm]
         :param b_height:フランジ高さ[mm]
+        :param web:このflangeが属するwebのクラス
         """
         super().__init__(thickness, b_bottom, b_height)
         self.E = ksi2Mpa(10.3 * 10 ** 3)

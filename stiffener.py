@@ -5,46 +5,52 @@ from scipy import interpolate
 import numpy as np
 import math
 from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi
+from web import Web
 import csv
 
 
 class Stiffener(object):
     """Stiffener class."""
 
-    def __init__(self, thickness, bs1_bottom, bs2_height):
+    def __init__(self, thickness, bs1_bottom, bs2_height, web):
         """Constructor.
 
-        :param thickness: stiffener厚さ
-        :param bs1_bottom:stiffener bottom長さ
-        :param bs2_height:stiffener 高さ
+        :param thickness: stiffener厚さ[mm]
+        :param bs1_bottom:stiffener bottom長さ[mm]
+        :param bs2_height:stiffener 高さ[mm]
+        :param web:このstiffenerが属するwebのクラス
         """
-        self.thickness_ = thickness
-        self.bs1_bottom_ = bs1_bottom
-        self.bs2_height_ = bs2_height
-        self.E_ = ksi2Mpa(10.3 * 10 ** 3)
+        self.thickness = thickness
+        self.bs1_bottom = bs1_bottom
+        self.bs2_height = bs2_height
+        self.E = ksi2Mpa(10.3 * 10 ** 3)
+        self.web = web
 
     def get_inertia(self):
-        """Inertia of Stiffener."""
-        first = self.bs1_bottom_ * self.thickness_ ** 3
-        second = self.thickness_ * self.bs2_height_ ** 3
-        third = -self.thickness_ ** 4
+        """
+        Inertia of Stiffener.[mm^4]
+        """
+        first = self.bs1_bottom * self.thickness ** 3
+        second = self.thickness * self.bs2_height ** 3
+        third = -self.thickness ** 4
         inertia = 1 / 3 * (first + second + third)
         return inertia
 
     def get_area(self):
-        """ Stiffener断面積."""
-        return (self.bs1_bottom_ + self.bs2_height_) * self.thickness_ - self.thickness_ ** 2
+        """ Stiffener断面積.[mm^2]"""
+        return (self.bs1_bottom + self.bs2_height) * self.thickness - self.thickness ** 2
 
-    def get_inertia_u(self, he, de, t):
-        """ Get Necessary Inertia.
-
-        :param he: 桁フランジ断面重心距離
-        :param de: スティフナー間隔
-        :param t:ウェブ厚さ
+    def get_inertia_u(self, he):
         """
+        Get Necessary Inertia.
+        p11の表参照
+        :param he: 桁フランジ断面重心距離[mm]
+        """
+        de = self.web.width_b  # webのwidth_bとdeは同一
+        t = self.web.thickness  # webの厚さ[mm]
         x_value = he / de
         if x_value < 1.0:
-            print("too small in getIntertialU in stiffener py")
+            print("too small to get Inertia U in stiffener.py")
             return math.nan
 
         elif x_value <= 4.0:
@@ -57,24 +63,23 @@ class Stiffener(object):
             return inertia_necessary
 
         else:
-            print("too large in getIntertialU in stiffener py")
+            print("too large to get Inertia U in stiffener.py")
             return math.nan
 
-    def get_ms(self, he, de, t):
+    def get_ms(self, he):
         """ MS (I>IU)
         :param he 桁フランジ断面重心距離
-        :param de: スティフナー間隔
-        :param t:ウェブ厚さ
         """
-        return self.get_inertia() / self.get_inertia_u(he, de, t) - 1
+        return self.get_inertia() / self.get_inertia_u(he) - 1
 
     def get_fcy(self):
         """ F_cy of 7075."""
-        thickness_in_inch = mm2inch(self.thickness_)
+        thickness_in_inch = mm2inch(self.thickness)
 
         if thickness_in_inch < 0.012:
             print("stiffener thickness too small")
             return math.nan
+
         elif thickness_in_inch < 0.040:
             return ksi2Mpa(61)
 
@@ -93,8 +98,8 @@ class Stiffener(object):
     def get_x_of_graph(self):
         """Get X of Graph 7075(in page 12)."""
 
-        bpert = self.bs1_bottom_ / self.thickness_  # b/t
-        x_value = np.sqrt(self.get_fcy() / self.E_) * bpert
+        b_per_t = self.bs1_bottom / self.thickness  # b/t
+        x_value = np.sqrt(self.get_fcy() / self.E) * b_per_t
         return x_value
 
     def get_clippling_stress(self):
@@ -122,18 +127,16 @@ class Stiffener(object):
 
         return Fcc
 
-    def make_row(self, writer, he, de, t):
+    def make_row(self, writer, he):
         """
         :param writer:csv.writer()で取得されるもの
-        :param de:スティフナー間隔
         :param he:桁フランジ断面重心距離
-        :param t:ウェブ厚さ
         """
-        I_U = self.get_inertia_u(he, de, t)
+        I_U = self.get_inertia_u(he)
         I = self.get_inertia()
-        ms = self.get_ms(he, de, t)
-        value = [t, self.thickness_, de, he,
-                 self.bs1_bottom_, self.bs2_height_, I, I_U, ms]
+        ms = self.get_ms(he)
+        value = [self.web.thickness, self.thickness, self.web.width_b, he,
+                 self.bs1_bottom, self.bs2_height, I, I_U, ms]
         writer.writerow(value)
 
 
@@ -149,11 +152,12 @@ def make_header(writer):
 
 def main():
     """Test Function."""
-    test = Stiffener(2.29, 22, 19.0)
-    with open('test.csv', 'a') as f:
+    web = Web(625, 1000, 3, 2.03)
+    test = Stiffener(2.29, 22, 19.0, web)
+    with open('stiffener_test.csv', 'a') as f:
         writer = csv.writer(f)
         make_header(writer)
-        test.make_row(writer, 289, 125, 2.03)
+        test.make_row(writer, 289)
 
 
 if __name__ == '__main__':

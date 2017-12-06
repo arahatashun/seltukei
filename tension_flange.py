@@ -13,9 +13,10 @@ class TensionFlange(Flange):
 
     def __init__(self, thickness, b_bottom, b_height, web):
         """Constructor.
-        :param thickness:フランジ厚さ
-        :param b_bottom:フランジ底長さ
-        :param b_height:フランジ高さ
+        :param thickness:フランジ厚さ[mm]
+        :param b_bottom:フランジ底長さ[mm]
+        :param b_height:フランジ高さ[mm]
+        :param web:このflangeが属するwebのクラス
         """
         super().__init__(thickness, b_bottom, b_height)
         self.web = web
