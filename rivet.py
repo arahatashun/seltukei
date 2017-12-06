@@ -13,7 +13,7 @@ class Rivet(object):
 
         :param D:リベットの鋲径(直径mm)
         """
-        self.D_ = D
+        self.D = D
         self.F_su_ = ksi2Mpa(30)  # とりあえずAD鋲を仮定
 
     """
@@ -30,7 +30,7 @@ class Rivet(object):
 
     def get_p_allow(self):
         """P_allow=pi/4*D^2*Fsu."""
-        return np.pi / 4 * self.D_**2 * self.F_su_
+        return np.pi / 4 * self.D**2 * self.F_su_
 
 
 def main():

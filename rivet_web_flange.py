@@ -1,6 +1,6 @@
 """Implementation of class between web and flange."""
 # coding:utf-8
-# Authofwstr: Shun Arahata,Hirotaka Kondo
+# Author: Shun Arahata,Hirotaka Kondo
 
 import csv
 from unit_convert import ksi2Mpa
@@ -17,7 +17,7 @@ class RivetWebFlange(Rivet):
         :param D:リベットの鋲径
         :param pd_ratio:リベットピッチ/リベットの鋲半径,一般に4D~6Dとすることが多い
         :param N:リベット列数
-        :param web:結合されるweb
+        :param web:リベットによってフランジと結合されるwebのクラス
         """
         super().__init__(D)
         self.F_su = ksi2Mpa(30)  # AD
@@ -25,34 +25,34 @@ class RivetWebFlange(Rivet):
         self.N = N
         self.web = web
 
-    def get_shear_force(self, Sf, he):
+    def get_shear_force(self, sf, he):
         """Ps=q_max*p/Nを返す.
 
-        :param Sf:前桁の分担荷重
+        :param sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        q_max = Sf / he
-        Ps = q_max * self.p1 / self.N
-        return Ps
+        q_max = sf / he
+        ps = q_max * self.p1 / self.N
+        return ps
 
-    def get_ms(self, Sf, he):
+    def get_ms(self, sf, he):
         """M.S.=P_allow/Ps-1.
 
-        :param Sf:前桁の分担荷重
+        :param sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        Pallow = self.get_p_allow()
-        Ps = self.get_shear_force(Sf, he)
-        ms = Pallow / Ps
+        p_allow = self.get_p_allow()
+        ps = self.get_shear_force(sf, he)
+        ms = p_allow / ps
         return ms
 
-    def get_web_ms(self, Sf, he):
+    def get_web_ms(self, sf, he):
         """ウェブホールロスの計算.
 
-        :param Sf:前桁の分担荷重
+        :param sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        return self.web.get_web_hole_loss_ms(self.p1, self.D_, Sf, he)
+        return self.web.get_web_hole_loss_ms(self.p1, self.D, sf, he)
 
     def make_row(self, writer, sf, he):
         """
@@ -61,10 +61,11 @@ class RivetWebFlange(Rivet):
         :param sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        Ps = self.get_shear_force(sf, he)
+        p_allow = self.get_p_allow()
+        ps = self.get_shear_force(sf, he)
         ms_web_hole = self.get_web_ms(sf, he)
-        value = [self.web.y_left, self.web.y_right, sf / he * 1000, self.N, self.D_,
-                 self.p1, Ps, ms_web_hole]
+        value = [self.web.y_left, self.web.y_right, sf / he * 1000, self.N, self.D,
+                 self.p1, ps, p_allow, ms_web_hole]
         writer.writerow(value)
 
 
@@ -73,7 +74,7 @@ def make_header(writer):
     :param writer:csv.writer()で取得されるもの
     """
     header = ["左端STA[mm]", "右端STA[mm]", "q_max[N/m]", "N",
-              "D[mm]", "p[mm]", "Ps",
+              "D[mm]", "p[mm]", "Ps[N]", "P_allow[N]",
               "M.S. of web hole loss"]
     writer.writerow(header)
 
@@ -85,7 +86,7 @@ def main():
     with open('rivet_web_flange_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         make_header(writer)
-        test.make_row(writer, 38429, 297)
+        test.make_row(writer, 32117, 297)
 
 
 if __name__ == '__main__':
