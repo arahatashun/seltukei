@@ -43,10 +43,10 @@ class Flange:
 
         :param momentum:前桁負担分モーメント
         :param h_e:桁フランジ断面重心距離
-        :return axialforce: [N]
+        :return axial_force: [N]
         """
-        axialforce = momentum / h_e * 1000
-        return axialforce
+        axial_force = momentum / h_e * 1000
+        return axial_force
 
     def get_stress_force(self, momentum, h_e, web_thickness):
         """Get f_c or f_t.
