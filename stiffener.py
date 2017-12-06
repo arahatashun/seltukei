@@ -113,17 +113,15 @@ class Stiffener(object):
         if right_axis < 0.1:
             return math.nan
         elif right_axis < 0.1 * 5 ** (27 / 33):
-            # 直線部分
+            # 一定部分
             left_axis = 0.5 * 2 ** (2.2 / 1.5)
         elif right_axis < 10:
             left_axis = 10 ** (-0.20761) * right_axis ** (-0.78427)
         else:
             return math.nan
-        denom = mpa2Ksi(self.get_fcy())  # 分母
-        # print("left",left_axis)
-        # print("denom",denom)
-        numer = left_axis * denom
-        Fcc = ksi2Mpa(numer)
+        lower = mpa2Ksi(self.get_fcy())  # 分母
+        upper = left_axis * lower
+        Fcc = ksi2Mpa(upper)
 
         return Fcc
 
@@ -135,7 +133,7 @@ class Stiffener(object):
         I_U = self.get_inertia_u(he)
         I = self.get_inertia()
         ms = self.get_ms(he)
-        value = [self.web.thickness, self.thickness, self.web.width_b, he,
+        value = [self.web.y_left, self.web.y_right, self.web.thickness, self.web.width_b, he, self.thickness,
                  self.bs1_bottom, self.bs2_height, I, I_U, ms]
         writer.writerow(value)
 
@@ -145,8 +143,8 @@ def make_header(writer):
     Make csv header.
     :param writer:csv.writer()で取得されるもの
     """
-    header = ["web_thickness[mm]", "スティフナー厚さ", "スティフナー間隔",
-              "he", "bs1底", "bs2高さ", "I", "I_U", "M.S"]
+    header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "スティフナー間隔de[mm]", "he[mm]", "スティフナー厚さts[mm]",
+              "bs1_bottom[mm]", "bs2_height[mm]", "I[mm^4]", "I_U[mm^4]", "M.S."]
     writer.writerow(header)
 
 
@@ -154,7 +152,7 @@ def main():
     """Test Function."""
     web = Web(625, 1000, 3, 2.03)
     test = Stiffener(2.29, 22, 19.0, web)
-    with open('stiffener_test.csv', 'a') as f:
+    with open('stiffener_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         make_header(writer)
         test.make_row(writer, 289)

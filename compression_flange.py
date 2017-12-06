@@ -57,7 +57,7 @@ class CompressionFlange(Flange):
         if right_axis < 0.1:
             return math.nan
         elif right_axis < 0.1 * 5 ** (27 / 33):
-            # 直線部分
+            # 一定部分
             # print("フランジ 直線部分")
             left_axis = 0.5 * 2 ** (2.2 / 1.5)
         elif right_axis < 10:
