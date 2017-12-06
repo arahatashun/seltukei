@@ -4,7 +4,7 @@
 from stiffener import Stiffener
 from web import Web
 from compression_flange import CompressionFlange
-from tension_frange import TensionFrange
+from tension_flange import TensionFlange
 from rivet_web_flange import RivetWebFlange
 from rivet_web_stiffener import RivetWebStiffener
 
@@ -61,7 +61,7 @@ class Rib(object):
         self.web = Web(self.y_left, self.y_right, division, thickness)
 
     def add_compression_frange(self, thickness, b_bottom, b_height):
-        """ Add frange(compression).
+        """ Add flange(compression).
 
         :param thickness:フランジ厚さ
         :param b_bottom:フランジ底長さ
@@ -70,7 +70,7 @@ class Rib(object):
         self.cfrange = CompressionFlange(thickness, b_bottom, b_height)
 
     def add_tension_frange(self, thickness, b_bottom, b_height):
-        self.tfrange = TensionFrange(thickness, b_bottom, b_height)
+        self.tfrange = TensionFlange(thickness, b_bottom, b_height)
 
     def add_rivet_stiffener(self, D, stiffener, web):
         self.rivet_stffener = RivetWebStiffener(D, self.stiffener, self.web)
