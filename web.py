@@ -158,7 +158,7 @@ class Web(object):
                  fscr, fsu, fs, ms]
         writer.writerow(value)
 
-def make_web_header(self, writer):
+def make_web_header(writer):
     """
     Csv header.
     :param writer:csv.writer()で取得されるもの
