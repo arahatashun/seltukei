@@ -8,18 +8,6 @@ from unit_convert import ksi2Mpa, mm2inch
 import csv
 
 
-def get_hf(sta):
-    """前桁高さ取得関数.
-    :param sta: staの値
-    :return hf: 前桁高さ
-    """
-    x = np.array([625, 5000])
-    y = np.array([320, 130])
-    f = interpolate.interp1d(x, y, kind='linear')
-    hf = f(sta)
-    return hf
-
-
 class Web(object):
     """
     web class.
