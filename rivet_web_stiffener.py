@@ -150,7 +150,7 @@ def main():
     test = RivetWebStiffener(6.35, stiffener, web)
     print("MS", test.get_ms(125))
     print("webMS", test.get_web_ms(37429, 297))
-    with open('test.csv', 'a') as f:
+    with open('rivet_web_stiffener_test.csv', 'a') as f:
         writer = csv.writer(f)
         test.make_header(writer)
         test.make_row(writer, 38429, 297, 125)

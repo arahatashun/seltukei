@@ -20,10 +20,10 @@ class RivetWebFlange(Rivet):
         :param web:結合されるweb
         """
         super().__init__(D)
-        self.F_su_ = ksi2Mpa(30)  # AD
-        self.p1_ = D * pd_ratio
+        self.F_su = ksi2Mpa(30)  # AD
+        self.p1 = D * pd_ratio
         self.N_ = N
-        self.web_ = web
+        self.web = web
 
     def get_shear_force(self, Sf, he):
         """Ps=q_max*p/Nを返す.
@@ -32,7 +32,7 @@ class RivetWebFlange(Rivet):
         :param he:桁フランジ断面重心距離
         """
         q_max = Sf / he
-        Ps = q_max * self.p1_ / self.N_
+        Ps = q_max * self.p1 / self.N_
         return Ps
 
     def get_ms(self, Sf, he):
@@ -52,7 +52,7 @@ class RivetWebFlange(Rivet):
         :param Sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        return self.web_.get_web_hole_loss_ms(self.p1_, self.D_, Sf, he)
+        return self.web.get_web_hole_loss_ms(self.p1, self.D_, Sf, he)
 
     def make_row(self, writer, sf, he):
         """
@@ -64,23 +64,23 @@ class RivetWebFlange(Rivet):
         Ps = self.get_shear_force(sf, he)
         ms = self.get_ms(sf, he)
         ms_web_hole = self.get_web_ms(sf, he)
-        value = [sf / he * 1000, self.N_, self.D_,
-                 self.p1_, Ps, ms, ms_web_hole]
+        value = [self.web.y_left, self.web.y_right, sf / he * 1000, self.N_, self.D_,
+                 self.p1, Ps, ms, ms_web_hole]
         writer.writerow(value)
 
     def make_header(self, writer):
         """Make Header of CSV.
         :param writer:csv.writer()で取得されるもの
         """
-        header = ["qmax", "N", "D", "pitch", "Ps", "M.S", "M.S.web hole loss"]
+        header = ["左端STA[mm]", "右端STA[mm]", "q_max", "N", "D", "pitch", "Ps", "M.S.", "M.S. of web hole loss"]
         writer.writerow(header)
 
 
 def main():
     """Test Function."""
-    unti = Web(625, 1000, 3, 2.03)
-    test = RivetWebFlange(3.175, 19.05, 2, unti)
-    with open('test.csv', 'a') as f:
+    web1 = Web(625, 1000, 3, 2.03)
+    test = RivetWebFlange(3.175, 19.05, 2, web1)
+    with open('rivet_web_flange_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         test.make_header(writer)
         test.make_row(writer, 38429, 297)

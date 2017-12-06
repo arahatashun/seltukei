@@ -117,6 +117,17 @@ class Web(object):
         ms = min(f_su, f_scr) / self.get_shear_force(sf, he) - 1
         return ms
 
+    def get_fsj(self, p, d, sf, he):
+        """
+        :param p: リベット間隔[mm]
+        :param d: リベットの直径[mm]
+        :param sf: 前桁の分担荷重[N]
+        :param he: 桁フランジ断面重心距離[mm]
+        :return: M.S. 安全率
+        """
+        f_sj = self.get_shear_force(sf, he) * p / (p - d)
+        return f_sj
+
     def get_web_hole_loss_ms(self, p, d, sf, he):
         """
         ウェブホールロスの計算.
@@ -126,7 +137,7 @@ class Web(object):
         :param he:桁フランジ断面重心距離[mm]
         :return: M.S. 安全率
         """
-        f_sj = self.get_shear_force(sf, he) * p / (p - d)
+        f_sj = self.get_fsj(p, d, sf, he)
         ms = self.get_fsu() / f_sj - 1
         return ms
 
@@ -160,7 +171,7 @@ class Web(object):
 def main():
     """ Test function."""
     test = Web(625, 1000, 3, 2.03)
-    with open('test.csv', 'a', encoding="Shift_JIS") as f:
+    with open('web_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         test.make_header(writer)
         test.make_row(writer, 38429, 297)
