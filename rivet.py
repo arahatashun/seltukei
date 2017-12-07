@@ -14,7 +14,7 @@ class Rivet(object):
         :param D:リベットの鋲径(直径mm)
         """
         self.D = D
-        self.F_su_ = ksi2Mpa(30)  # とりあえずAD鋲を仮定
+        self.F_su = ksi2Mpa(30)  # とりあえずAD鋲を仮定
 
     """
     def getAD8(self,thickness):
@@ -30,13 +30,13 @@ class Rivet(object):
 
     def get_p_allow(self):
         """P_allow=pi/4*D^2*Fsu."""
-        return np.pi / 4 * self.D**2 * self.F_su_
+        return np.pi / 4 * self.D**2 * self.F_su
 
 
 def main():
     """Test Function."""
     r = Rivet(6.35)
-    print("Pallow", r.get_p_allow())
+    print("P_allow", r.get_p_allow())
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa, mm2inch,get_hf
+from unit_convert import ksi2Mpa, mm2inch, get_hf
 import csv
 
 
@@ -137,8 +137,9 @@ class Web(object):
         :param he:桁フランジ断面重心距離[mm]
         :return: M.S. 安全率
         """
-        f_sj = self.get_fsj(p, d, sf, he)
-        ms = self.get_fsu() / f_sj - 1
+        f_scr = self.get_buckling_shear_force()
+        f_su = self.get_fsu()
+        ms = min(f_su, f_scr) / self.get_fsj(p, d, sf, he) - 1
         return ms
 
     def make_row(self, writer, sf, he):
@@ -158,13 +159,14 @@ class Web(object):
                  fscr, fsu, fs, ms]
         writer.writerow(value)
 
+
 def make_web_header(writer):
     """
     Csv header.
     :param writer:csv.writer()で取得されるもの
     """
     header = ["左端STA[mm]", "右端STA[mm]", "分割数", "間隔de[mm]", "web厚さ[mm]",
-                  "STA最小におけるweb高さ[mm]", "q_max[N/m]", "F_scr[MPa]", "F_su[MPa]", "f_s[MPa]", "M.S."]
+              "STA最小におけるweb高さ[mm]", "q_max[N/m]", "F_scr[MPa]", "F_su[MPa]", "f_s[MPa]", "M.S."]
     writer.writerow(header)
 
 
