@@ -92,7 +92,7 @@ class CompressionFlange(Flange):
         writer.writerow(value)
 
 
-def make_header(writer):
+def make_cflange_header(writer):
     """
     :param writer:csv.writer()で取得されるもの
     """
@@ -108,7 +108,7 @@ def main():
     test = CompressionFlange(6.0, 34.5, 34.5, web)
     with open('compression_flange_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
-        make_header(writer)
+        make_cflange_header(writer)
         test.make_row(writer, 74623, 297)
 
 
