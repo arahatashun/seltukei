@@ -88,8 +88,8 @@ class RivetWebStiffener(Rivet):
         講義ノート2p.3のグラフを線形補間して作成
         :return: Fir
         """
-        x = [12, 16, 20, 23, 28, 30, 33, 35, 40, 48, 60, 80]
-        y = [64, 60, 56, 50, 45, 40, 32, 30, 23, 16, 10, 6]
+        x = [9, 12, 16, 20, 23, 28, 30, 33, 35, 40, 48, 60, 80]
+        y = [68, 64, 60, 56, 50, 45, 40, 32, 30, 23, 16, 10, 6]
         f = interpolate.interp1d(x, y)
         fir_in_ksi = f(self.rivet_pitch / self.web.thickness)
         fir_in_mpa = ksi2Mpa(fir_in_ksi)
@@ -155,8 +155,8 @@ class RivetWebStiffener(Rivet):
     def make_row_web_hole(self, writer, sf, he):
         """
         :param writer: csv.writer()で取得されるもの
-        :param sf:
-        :param he:
+        :param sf:前桁荷重負担分[N]
+        :param he:フランジ間断面重心距離[mm]
         :return:
         """
         fs = self.web.get_shear_force(sf, he)
@@ -184,7 +184,7 @@ def make_header_buckling(writer):
     :param writer:csv.writer()で取得されるもの
     """
     header = ["左端STA[mm]", "右端STA[mm]", "b_bottom_s1[mm]", "ts[mm]", "Fcc[MPa]", "Fir[MPa]",
-              "p[mm]", "M.S."]
+              "p[mm]"]
     writer.writerow(header)
 
 
@@ -200,18 +200,18 @@ def make_header_web_hole(writer):
 def main():
     """Test Function."""
     web = Web(625, 1000, 3, 2.03)
-    stiffener = Stiffener(2.03, 65, 20, web)
-    test = RivetWebStiffener(6.35, stiffener, web)
-    with open('rivet_web_stiffener_shear_test.csv', 'a') as f:
+    stiffener = Stiffener(2.03, 20, 20, web)
+    test = RivetWebStiffener(3.175, stiffener, web)
+    with open('rivet_web_stiffener_shear_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         make_header_shear(writer)
         test.make_row_shear(writer)
-    with open('rivet_web_stiffener_buckling_test.csv', 'a') as f:
+    with open('rivet_web_stiffener_buckling_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         make_header_buckling(writer)
         test.make_row_buckling(writer)
 
-    with open('rivet_web_stiffener_web_hole_test.csv', 'a') as f:
+    with open('rivet_web_stiffener_web_hole_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         make_header_web_hole(writer)
         test.make_row_web_hole(writer, 32119, 297)
