@@ -154,6 +154,7 @@ class RivetWebStiffener(Rivet):
         fcc = self.stiffener.get_clippling_stress()
         value = [self.web.y_left, self.web.y_right, self.stiffener.bs1_bottom, self.stiffener.thickness, fcc, fir,
                  self.rivet_pitch]
+        writer.writerow(value)
 
     def make_row_web_hole(self, writer, sf, he):
         """
@@ -163,6 +164,8 @@ class RivetWebStiffener(Rivet):
         :return:
         """
         ms = self.web.get_web_hole_loss_ms(self.rivet_pitch, self.D, sf, he)
+        value = [self.web.y_left, self.web.y_right, self.rivet_pitch, self.D, ms]
+        writer.writerow(value)
 
 
 def make_header_shear(writer):
@@ -190,8 +193,7 @@ def make_header_web_hole(writer):
     CSV header web hole.
     :param writer:csv.writer()で取得されるもの
     """
-    header = ["左端STA[mm]", "右端STA[mm]", "K[MPa]", "As[mm^2]", "dc[mm]", "D[mm]", "p[mm]",
-              "Pf", "P_allow[N]", "M.S."]
+    header = ["左端STA[mm]", "右端STA[mm]", "p[mm]", "D[mm]", "M.S."]
     writer.writerow(header)
 
 
