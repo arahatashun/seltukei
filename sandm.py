@@ -155,6 +155,15 @@ def get_s(y_w, limit_div=50):
     s = _get_sa(y_w, limit_div) - _get_si(y_w, limit_div)
     return s
 
+def get_sf(y_w, limit_div=50):
+    """
+    y_wにおける前桁負担分せん断力を計算
+    :param y_w:
+    :param limit_div:
+    :return:
+    """
+    return get_s(y_w, limit_div)*1.5*0.8
+
 
 def get_m(y_w, limit_div=50):
     """
@@ -166,6 +175,15 @@ def get_m(y_w, limit_div=50):
     integral = quad(lambda yp, y: (ETA_A * _get_ccz(yp) / 1000 - N_Z * _get_rho(yp) * 1000) * (yp - y) / 1000, y_w,
                     HALF_SPAN, args=y_w, limit=limit_div)
     return integral[0] / 1000
+
+def get_mf(y_w, limit_div=50):
+    """
+    y_wに於ける前桁負担分曲げモーメントMfを計算
+    :param y_w:
+    :param limit_div: quadによる積分計算の分割幅を調整(defaultは50,大きくすると計算時間長くなる)
+    :return:
+    """
+    return get_m(y_w,limit_div)*1.5*0.8
 
 
 def _get_csv():
@@ -194,12 +212,12 @@ def _make_table():
         writer.writerow(
             ["y[mm]", "cla", "clb", "cd", "cl", "cz", "C[mm]", "C*cz[mm]", 'w[kg/mm]',
              'sa[N]', 'si[N]',
-             'S[N]', 'M[N*m]'])
+             'S[N]', 'M[N*m]','Sf[N]','Mf[N*m]'])
         for i in LEFT_ARRAY:
             writer.writerow(
                 [i, _get_cla(i), _get_clb(i), _get_cd(i), _get_cl(i), _get_cz(i), _get_chord(i), _get_ccz(i),
                  _get_rho(i),
-                 _get_sa(i, 1), _get_si(i, 1), get_s(i, 1), get_m(i, 1)])
+                 _get_sa(i, 1), _get_si(i, 1), get_s(i, 1), get_m(i, 1), get_sf(i,1), get_mf(i,1)])
 
 
 if __name__ == "__main__":
