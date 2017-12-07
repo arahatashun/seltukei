@@ -127,12 +127,10 @@ class RivetWebStiffener(Rivet):
         ms = self.get_p_allow() / self.get_rivet_load() - 1
         return ms
 
-    def make_row_shear(self, writer, sf, he):
+    def make_row_shear(self, writer):
         """
         CSVのrow出力.
         :param writer:csv.writer()で取得されるもの
-        :param sf:前桁の分担荷重
-        :param he:桁フランジ断面重心距離
         """
         k = 172  # [MPa](p.13経験式)
         area = self.stiffener.get_area()
@@ -143,11 +141,9 @@ class RivetWebStiffener(Rivet):
                  pf, p_allow, ms]
         writer.writerow(value)
 
-    def make_row_buckling(self, writer, sf, he):
+    def make_row_buckling(self, writer):
         """
         :param writer: csv.writer()で取得されるもの
-        :param sf:
-        :param he:
         :return:
         """
         fir = self.get_inter_rivet_buckling()
@@ -163,8 +159,12 @@ class RivetWebStiffener(Rivet):
         :param he:
         :return:
         """
+        fs = self.web.get_shear_force(sf, he)
+        fsu = self.web.get_fsu()
+        fsj = self.web.get_fsj(self.rivet_pitch, self.D, sf, he)
         ms = self.web.get_web_hole_loss_ms(self.rivet_pitch, self.D, sf, he)
-        value = [self.web.y_left, self.web.y_right, self.rivet_pitch, self.D, ms]
+        f_scr = self.web.get_buckling_shear_force()
+        value = [self.web.y_left, self.web.y_right, self.rivet_pitch, self.D, fs, fsj, fsu, f_scr, ms]
         writer.writerow(value)
 
 
@@ -193,7 +193,7 @@ def make_header_web_hole(writer):
     CSV header web hole.
     :param writer:csv.writer()で取得されるもの
     """
-    header = ["左端STA[mm]", "右端STA[mm]", "p[mm]", "D[mm]", "M.S."]
+    header = ["左端STA[mm]", "右端STA[mm]", "p[mm]", "D[mm]", "fs[MPa]", "fsj[MPa]", "Fsu[MPa]", "fscr[MPa]", "M.S."]
     writer.writerow(header)
 
 
@@ -205,11 +205,11 @@ def main():
     with open('rivet_web_stiffener_shear_test.csv', 'a') as f:
         writer = csv.writer(f)
         make_header_shear(writer)
-        test.make_row_shear(writer, 32119, 297)
+        test.make_row_shear(writer)
     with open('rivet_web_stiffener_buckling_test.csv', 'a') as f:
         writer = csv.writer(f)
         make_header_buckling(writer)
-        test.make_row_buckling(writer, 32119, 297)
+        test.make_row_buckling(writer)
 
     with open('rivet_web_stiffener_web_hole_test.csv', 'a') as f:
         writer = csv.writer(f)

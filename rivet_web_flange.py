@@ -21,7 +21,7 @@ class RivetWebFlange(Rivet):
         """
         super().__init__(D)
         self.F_su = ksi2Mpa(30)  # AD
-        self.p1 = D * pd_ratio
+        self.rivet_pitch = D * pd_ratio
         self.N = N
         self.web = web
 
@@ -32,7 +32,7 @@ class RivetWebFlange(Rivet):
         :param he:桁フランジ断面重心距離
         """
         q_max = sf / he
-        ps = q_max * self.p1 / self.N
+        ps = q_max * self.rivet_pitch / self.N
         return ps
 
     def get_ms(self, sf, he):
@@ -52,7 +52,7 @@ class RivetWebFlange(Rivet):
         :param sf:前桁の分担荷重
         :param he:桁フランジ断面重心距離
         """
-        return self.web.get_web_hole_loss_ms(self.p1, self.D, sf, he)
+        return self.web.get_web_hole_loss_ms(self.rivet_pitch, self.D, sf, he)
 
     def make_row_shear(self, writer, sf, he):
         """
@@ -65,7 +65,7 @@ class RivetWebFlange(Rivet):
         ps = self.get_shear_force(sf, he)
         ms = self.get_ms(sf, he)
         value = [self.web.y_left, self.web.y_right, sf / he * 1000, self.N, self.D,
-                 self.p1, ps, p_allow, ms]
+                 self.rivet_pitch, ps, p_allow, ms]
         writer.writerow(value)
 
     def make_row_web_hole(self, writer, sf, he):
@@ -77,12 +77,12 @@ class RivetWebFlange(Rivet):
         :return:
         """
         fs = self.web.get_shear_force(sf, he)
-        fsj = self.web.get_fsj(self.p1, self.D, sf, he)
+        fsj = self.web.get_fsj(self.rivet_pitch, self.D, sf, he)
         fsu = self.web.get_fsu()
-        ms = self.web.get_web_hole_loss_ms(self.p1, self.D, sf, he)
-        fscr = self.web.get_buckling_shear_force()
+        ms = self.web.get_web_hole_loss_ms(self.rivet_pitch, self.D, sf, he)
+        f_scr = self.web.get_buckling_shear_force()
         value = [self.web.y_left, self.web.y_right, self.D,
-                 self.p1, fs, fsj, fsu, fscr, ms]
+                 self.rivet_pitch, fs, fsj, fsu, f_scr, ms]
         writer.writerow(value)
 
 
