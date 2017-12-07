@@ -1,6 +1,6 @@
 """Implementation of Rivet between Web and Stiffener."""
 # coding:utf-8
-# Author: Shun Arahata,Hirotaka Kondo
+# Author:Shun Arahata,Hirotaka Kondo
 from scipy import interpolate
 import numpy as np
 import math
@@ -22,14 +22,13 @@ class RivetWebStiffener(Rivet):
         :param web (Web):webオブジェクト
         """
         super().__init__(D)
-        self.stiffner_ = stiffener
+        self.stiffener = stiffener
         self.web_ = web
         self.rivet_pitch_ = self.decide_rivet_pitch()
-        self.F_su_ = ksi2Mpa(41)  # DD錠を利用する
+        self.F_su_ = ksi2Mpa(41)  # DD鋲を利用する
 
     def get_steep_of_inter_rivet_buckling(self):
         """鋲間座屈のウェブthicknessによるFirの直線の傾きを求める.
-
         :return: steep [ksi/(inch/inch)]
         """
         thickness_in_inch = mm2inch(self.web_.thickness_)
@@ -53,7 +52,6 @@ class RivetWebStiffener(Rivet):
 
     def segment_of_inter_rivet_buckling(self):
         """Firの傾きは別の関数で得られるのでp/t=20におけるFirを提供する.
-
         :return fir_at_20: [ksi]
         """
         skin_thickness = self.web_.thickness_
@@ -69,7 +67,7 @@ class RivetWebStiffener(Rivet):
         """
         Firを与える
         鋲間座屈の直線の式を作る
-        :rivet_spaceing: リベット間隔mm
+        :rivet_spacing: リベット間隔[mm]
         :return fir_in_ksi:Fir[MPa]
         """
         steep = self.get_steep_of_inter_rivet_buckling()
@@ -81,9 +79,9 @@ class RivetWebStiffener(Rivet):
 
     def decide_rivet_pitch(self):
         """"リベットピッチ幅を決める"""
-        fcc = self.stiffner_.get_clippling_stress()
+        fcc = self.stiffener.get_clippling_stress()
         print("fcc", fcc)
-        for rivet_spacing in np.linspace(6 * self.D_, 4 * self.D_, 100):
+        for rivet_spacing in np.linspace(6 * self.D, 4 * self.D, 100):
             fir = self.get_inter_rivet_buckling(rivet_spacing)
             print(fir, fcc)
             if fir > fcc:
@@ -97,7 +95,7 @@ class RivetWebStiffener(Rivet):
 
         :param stiffener_pitch:スティフナーピッチ
         """
-        area = self.stiffner_.get_area()
+        area = self.stiffener.get_area()
         p_2 = self.rivet_pitch_
         d_c = stiffener_pitch
         k = 172  # [MPa]
@@ -114,7 +112,7 @@ class RivetWebStiffener(Rivet):
 
     def get_web_ms(self, Sf, he):
         """Web_hole_loss_ms."""
-        return self.web_.get_web_hole_loss_ms(self.rivet_pitch_, self.D_, Sf, he)
+        return self.web_.get_web_hole_loss_ms(self.rivet_pitch_, self.D, Sf, he)
 
     def make_row(self, writer, Sf, he, stiffener_pitch):
         """
@@ -125,11 +123,11 @@ class RivetWebStiffener(Rivet):
         :param stiffener_pitch: stiffener 間隔
         """
         fir = self.get_inter_rivet_buckling(self.rivet_pitch_)
-        fcc = self.stiffner_.get_clippling_stress()
+        fcc = self.stiffener.get_clippling_stress()
         ms = self.get_ms(stiffener_pitch)
         ms_web_hole = self.get_web_ms(Sf, he)
         pf = self.get_rivet_load(stiffener_pitch)
-        value = [Sf / he * 1000, self.D_, self.rivet_pitch_,
+        value = [Sf / he * 1000, self.D, self.rivet_pitch_,
                  fir, fcc, pf, ms, ms_web_hole]
         writer.writerow(value)
 
@@ -146,7 +144,8 @@ def make_header(writer):
 
 def main():
     """Test Function."""
-    stiffener = Stiffener(2.03, 65, 20)
+    web = Web(625, 1000, 3, 2.03)
+    stiffener = Stiffener(2.03, 65, 20, web)
     web = Web(625, 1000, 1.8, 125)
     test = RivetWebStiffener(6.35, stiffener, web)
     print("MS", test.get_ms(125))
