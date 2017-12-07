@@ -75,7 +75,7 @@ class TensionFlange(Flange):
         writer.writerow(value)
 
 
-def make_header(writer):
+def make_tflange_header(writer):
     """
     Make Header of csv.
     :param writer:csv.writer()で取得されるもの
@@ -91,7 +91,7 @@ def main():
     test = TensionFlange(6.60, 36, 42.5, web)
     with open('tension_flange_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
-        make_header(writer)
+        make_tflange_header(writer)
         test.make_row(writer, 74623, 297)
 
 
