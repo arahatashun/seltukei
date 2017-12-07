@@ -152,6 +152,8 @@ class RivetWebStiffener(Rivet):
         """
         fir = self.get_inter_rivet_buckling()
         fcc = self.stiffener.get_clippling_stress()
+        value = [self.web.y_left, self.web.y_right, self.stiffener.bs1_bottom, self.stiffener.thickness, fcc, fir,
+                 self.rivet_pitch]
 
     def make_row_web_hole(self, writer, sf, he):
         """
@@ -178,8 +180,8 @@ def make_header_buckling(writer):
     CSV header shear.
     :param writer:csv.writer()で取得されるもの
     """
-    header = ["左端STA[mm]", "右端STA[mm]", "b_bottom_s1[mm]", "ts[mm]", "Fcy[MPa]","E[MPa]",
-              "Pf[N]", "M.S."]
+    header = ["左端STA[mm]", "右端STA[mm]", "b_bottom_s1[mm]", "ts[mm]", "Fcc[MPa]", "Fir[MPa]",
+              "p[mm]", "M.S."]
     writer.writerow(header)
 
 
