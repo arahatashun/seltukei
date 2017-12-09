@@ -97,9 +97,21 @@ class Rib(object):
         :return he:桁フランジ断面重心距離
         """
         self.he = self.hf - \
-            (self.tflange.get_center_of_gravity() +
-             self.cflange.get_center_of_gravity())
+                  (self.tflange.get_center_of_gravity() +
+                   self.cflange.get_center_of_gravity())
         return self.he
+
+    def get_total_volume(self):
+        """
+        この区間に於けるウェブ,２つのフランジ,スティフナーの総体積を計算する
+        :return: volume[cm^3]
+        """
+        length_rib2rib = self.web.y_left - self.web.y_right
+        v1 = self.web.get_volume()
+        v2 = self.stiffener.get_volume()
+        v3 = self.cflange.get_volume(length_rib2rib)
+        v4 = self.tflange.get_volume(length_rib2rib)
+        return v1 + v2 + v3 + v4
 
     def web_csv(self):
         """
@@ -117,11 +129,10 @@ class Rib(object):
         self.tflange.make_row(self.mf, self.he)
 
     def rivet_stiffener_csv(self):
-        self.rivet_stiffener.write_all_row(self.sf , self.he)
+        self.rivet_stiffener.write_all_row(self.sf, self.he)
 
     def rivet_flange_csv(self):
         self.rivet_stiffener.write_all_row(self.sf, self.he)
-
 
 
 def main():
@@ -146,7 +157,7 @@ def main():
     sta625.add_compression_flange(5.0, 45, 40)
     sta625.add_tension_flange(5.0, 45, 40)
     sta625.add_rivet_stiffener(6.35)
-    sta625.add_rivet_flange(6.35,4,2)
+    sta625.add_rivet_flange(6.35, 4, 2)
     sta625.add_rivet_stiffener(6.35)
     he = sta625.set_he()
     sta625.web_csv()
