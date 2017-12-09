@@ -1,3 +1,6 @@
+# for results
+results/*.csv
+
 # for fucking Hideyuki Omi
 .DS_Store
 
