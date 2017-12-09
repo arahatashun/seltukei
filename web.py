@@ -142,7 +142,7 @@ class Web(object):
         ms = min(f_su, f_scr) / self.get_fsj(p, d, sf, he) - 1
         return ms
 
-    def make_row(self, writer, sf, he):
+    def make_row(self, sf, he):
         """
         Csv output.
         :param writer:csv.writer()で取得されるもの
@@ -157,7 +157,9 @@ class Web(object):
         value = [self.y_left, self.y_right, self.division, self.width_b, self.thickness, self.height_a,
                  q_max,
                  fscr, fsu, fs, ms]
-        writer.writerow(value)
+        with open('results/web.csv', 'a', encoding="Shift_JIS") as f:
+            writer = csv.writer(f)
+            writer.writerow(value)
 
     def get_volume(self):
         """
@@ -172,23 +174,20 @@ class Web(object):
         return v / 10 / 10 / 10  # 単位を[cm^3]に
 
 
-def make_web_header(writer):
-    """
-    Csv header.
-    :param writer:csv.writer()で取得されるもの
-    """
-    header = ["左端STA[mm]", "右端STA[mm]", "分割数", "間隔de[mm]", "web厚さ[mm]",
+def make_web_header():
+    with open('results/web.csv', 'a', encoding="Shift_JIS") as f:
+        writer = csv.writer(f)
+        header = ["左端STA[mm]", "右端STA[mm]", "分割数", "間隔de[mm]", "web厚さ[mm]",
               "STA最小におけるweb高さ[mm]", "q_max[N/m]", "F_scr[MPa]", "F_su[MPa]", "f_s[MPa]", "M.S."]
-    writer.writerow(header)
+        writer.writerow(header)
 
 
 def main():
     """ Test function."""
     test = Web(625, 1000, 3, 2.03)
-    with open('web_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_web_header(writer)
-        test.make_row(writer, 38429, 297)
+    make_web_header()
+    test.make_row(38429, 297)
+
 
 
 if __name__ == '__main__':
