@@ -29,11 +29,11 @@ class RivetWebStiffener(Rivet):
 
     """
     def get_steep_of_inter_rivet_buckling(self):
-        
+
         鋲間座屈のウェブthicknessによるFirの直線の傾きを求める.
         講義ノートp.3
         :return: steep [ksi/(inch/inch)]
-        
+
         thickness_in_inch = mm2inch(self.web.thickness)
         x = [0.125, 0.100, 0.090, 0.080, 0.071, 0.063,
              0.050, 0.040, 0.032, 0.025, 0.020, 0.016]
@@ -59,7 +59,7 @@ class RivetWebStiffener(Rivet):
     def segment_of_inter_rivet_buckling(self):
         Firの傾きは別の関数で得られるのでp/t=20におけるFirを提供する.
         :return fir_at_20: [ksi]
-        
+
         skin_thickness = self.web.thickness
         x = [0.125, 0.100, 0.090, 0.080, 0.071, 0.063,
              0.050, 0.040, 0.032, 0.025, 0.020, 0.016]
@@ -71,11 +71,11 @@ class RivetWebStiffener(Rivet):
     """
     """
     def get_inter_rivet_buckling(self):
-        
+
         Firを与える
         鋲間座屈の直線の式を作る
         :return fir_in_ksi:Fir[MPa]
-        
+
         steep = self.get_steep_of_inter_rivet_buckling()
         x = self.rivet_pitch / self.web.thickness  # p3のx軸のp/t
         fir_in_ksi = steep * x
