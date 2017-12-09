@@ -168,53 +168,70 @@ class RivetWebStiffener(Rivet):
         writer.writerow(value)
 
 
-def make_header_shear(writer):
-    """
-    CSV header shear.
-    :param writer:csv.writer()で取得されるもの
-    """
-    header = ["左端STA[mm]", "右端STA[mm]", "K[MPa]", "As[mm^2]", "dc[mm]", "D[mm]", "p[mm]",
+    def make_header_shear(self, writer):
+        """
+        CSV header shear.
+        :param writer:csv.writer()で取得されるもの
+        """
+        header = ["左端STA[mm]", "右端STA[mm]", "K[MPa]", "As[mm^2]", "dc[mm]", "D[mm]", "p[mm]",
               "Pf[N]", "P_allow[N]", "M.S."]
-    writer.writerow(header)
+        writer.writerow(header)
 
 
-def make_header_buckling(writer):
-    """
-    CSV header shear.
-    :param writer:csv.writer()で取得されるもの
-    """
-    header = ["左端STA[mm]", "右端STA[mm]", "b_bottom_s1[mm]", "ts[mm]", "Fcc[MPa]", "Fir[MPa]",
+    def make_header_buckling(self, writer):
+        """
+        CSV header shear.
+        :param writer:csv.writer()で取得されるもの
+        """
+        header = ["左端STA[mm]", "右端STA[mm]", "b_bottom_s1[mm]", "ts[mm]", "Fcc[MPa]", "Fir[MPa]",
               "p[mm]"]
-    writer.writerow(header)
+        writer.writerow(header)
 
 
-def make_header_web_hole(writer):
-    """
-    CSV header web hole.
-    :param writer:csv.writer()で取得されるもの
-    """
-    header = ["左端STA[mm]", "右端STA[mm]", "p[mm]", "D[mm]", "fs[MPa]", "fsj[MPa]", "Fsu[MPa]", "fscr[MPa]", "M.S."]
-    writer.writerow(header)
+    def make_header_web_hole(self, writer):
+        """
+        CSV header web hole.
+        :param writer:csv.writer()で取得されるもの
+        """
+        header = ["左端STA[mm]", "右端STA[mm]", "p[mm]", "D[mm]", "fs[MPa]", "fsj[MPa]", "Fsu[MPa]", "fscr[MPa]", "M.S."]
+        writer.writerow(header)
 
+    def make_all_header(self):
+        with open('results/rivet_web_stiffener_shear.csv', 'a', encoding="Shift_JIS") as shear:
+            shear_writer = csv.writer(shear)
+            self.make_header_shear(shear_writer)
+        with open('results/rivet_web_stiffener_buckling.csv', 'a', encoding="Shift_JIS") as buckling:
+            buckling_writer = csv.writer(buckling)
+            self.make_header_buckling(buckling_writer)
+        with open('results/rivet_web_stiffener_web_hole.csv', 'a', encoding="Shift_JIS") as holeloss:
+            holeloss_writer = csv.writer(holeloss)
+            self.make_header_web_hole(holeloss_writer)
+
+    def write_all_row(self, sf, he):
+        """
+        :param writer: csv.writer()で取得されるもの
+        :param sf:前桁荷重負担分[N]
+        :param he:フランジ間断面重心距離[mm]
+        :return:
+        """
+        with open('results/rivet_web_stiffener_shear.csv', 'a', encoding="Shift_JIS") as shear:
+            shear_writer = csv.writer(shear)
+            self.make_row_shear(shear_writer)
+        with open('results/rivet_web_stiffener_buckling.csv', 'a', encoding="Shift_JIS") as buckling:
+            buckling_writer = csv.writer(buckling)
+            self.make_row_buckling(buckling_writer)
+        with open('results/rivet_web_stiffener_web_hole.csv', 'a', encoding="Shift_JIS") as holeloss:
+            holeloss_writer = csv.writer(holeloss)
+            self.make_row_web_hole(holeloss_writer,sf,he)
 
 def main():
     """Test Function."""
     web = Web(625, 1000, 3, 2.03)
     stiffener = Stiffener(2.03, 20, 20, web)
     test = RivetWebStiffener(3.175, stiffener, web)
-    with open('rivet_web_stiffener_shear_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_header_shear(writer)
-        test.make_row_shear(writer)
-    with open('rivet_web_stiffener_buckling_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_header_buckling(writer)
-        test.make_row_buckling(writer)
+    test.make_all_header()
+    test.write_all_row(32119, 297)
 
-    with open('rivet_web_stiffener_web_hole_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_header_web_hole(writer)
-        test.make_row_web_hole(writer, 32119, 297)
 
 
 if __name__ == '__main__':
