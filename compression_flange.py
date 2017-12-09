@@ -75,7 +75,7 @@ class CompressionFlange(Flange):
         ms = self.get_fcc() / self.get_stress_force(momentum, h_e, self.web.thickness) - 1
         return ms
 
-    def make_row(self, writer, momentum, h_e):
+    def make_row(self, momentum, h_e):
         """
         :param writer:csv.writer()で取得されるもの
         :param momentum:前桁分担曲げモーメント[N*m]
@@ -89,27 +89,26 @@ class CompressionFlange(Flange):
         sqrt = self.get_x_of_graph()  # p12グラフのx軸の値
         value = [self.web.y_left, self.web.y_right, self.web.thickness, momentum, self.thickness,
                  self.b_bottom, self.b_height, p, a, fc, sqrt, fcc, ms]
-        writer.writerow(value)
+        with open('results/compression_flange.csv', 'a', encoding="Shift_JIS") as f:
+            writer = csv.writer(f)
+            writer.writerow(value)
 
 
-def make_cflange_header(writer):
-    """
-    :param writer:csv.writer()で取得されるもの
-    """
+def make_cflange_header():
     header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "momentum[N*m]",
               "tf[mm]", "b_bottom_f1[mm]", "b_height_f2[mm]", "P[N]", "A[mm^2]", "fc[MPa]", "sqrt(Fcy/E)(b/t)",
               "Fcc[MPa]", "M.S."]
-    writer.writerow(header)
+    with open('results/compression_flange.csv', 'a', encoding="Shift_JIS") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
 
 
 def main():
     """Test function."""
     web = Web(625, 1000, 3, 2.03)
     test = CompressionFlange(6.0, 34.5, 34.5, web)
-    with open('compression_flange_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_cflange_header(writer)
-        test.make_row(writer, 74623, 297)
+    make_cflange_header()
+    test.make_row(74623, 297)
 
 
 if __name__ == '__main__':
