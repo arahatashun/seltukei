@@ -132,7 +132,7 @@ class Rib(object):
         self.rivet_stiffener.write_all_row(self.sf, self.he)
 
     def rivet_flange_csv(self):
-        self.rivet_stiffener.write_all_row(self.sf, self.he)
+        self.rivet_flange.write_all_row(self.sf, self.he)
 
 
 def main():
