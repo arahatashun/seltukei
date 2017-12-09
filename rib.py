@@ -106,7 +106,7 @@ class Rib(object):
         この区間に於けるウェブ,２つのフランジ,スティフナーの総体積を計算する
         :return: volume[cm^3]
         """
-        length_rib2rib = self.web.y_left - self.web.y_right
+        length_rib2rib = self.web.y_right - self.web.y_left
         v1 = self.web.get_volume()
         v2 = self.stiffener.get_volume()
         v3 = self.cflange.get_volume(length_rib2rib)
