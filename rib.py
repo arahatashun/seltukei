@@ -8,7 +8,7 @@ from tension_flange import TensionFlange, make_tflange_header
 from rivet_web_flange import RivetWebFlange
 from rivet_web_stiffener import RivetWebStiffener
 from unit_convert import get_hf
-from sandm.py import get_sf, get_mf
+from sandm import get_sf, get_mf
 import csv
 
 # リブ左端の座標
@@ -80,7 +80,7 @@ class Rib(object):
         self.tflange = TensionFlange(thickness, b_bottom, b_height, self.web)
         self.set_he()
 
-    def add_rivet_stiffener(self, D,):
+    def add_rivet_stiffener(self, D):
         self.rivet_stiffener = RivetWebStiffener(D, self.stiffener, self.web)
 
     def add_rivet_flange(self, D, pd_ratio, N):
@@ -89,7 +89,7 @@ class Rib(object):
         :param pd_ratio:リベットピッチ/リベットの鋲半径,一般に4D~6Dとすることが多い
         :param N:リベット列数
         """
-        self.ribet_flange = RivetWebFlange(D, pd_ratio, N, self.web)
+        self.rivet_flange = RivetWebFlange(D, pd_ratio, N, self.web)
 
     def set_he(self):
         """rivet重心位置計算によりheを計算.
@@ -101,30 +101,27 @@ class Rib(object):
              self.cflange.get_center_of_gravity())
         return self.he
 
-    def web_csv(self, writer):
+    def web_csv(self):
         """
         Csv output.
-        :param writer:csv.writer()で取得されるもの
         """
-        self.web.make_row(writer, self.sf, self.he)
+        self.web.make_row(self.sf, self.he)
 
-    def stiffener_csv(self, writer):
-        """
-        :param writer:csv.writer()で取得されるもの
-        :param he:桁フランジ断面重心距離
-        """
-        self.stiffener.make_row(writer, self.he)
+    def stiffener_csv(self):
+        self.stiffener.make_row(self.he)
 
-    def cflange_csv(self, writer):
-        """
-        :param writer:csv.writer()で取得されるもの
-        :param momentum:前桁分担曲げモーメント[N*m]
-        :param h_e:桁フランジ断面重心距離[mm]
-        """
-        self.cflange.make_row(writer, self.mf, self.he)
+    def cflange_csv(self):
+        self.cflange.make_row(self.mf, self.he)
 
-    def tflange_csv(self, writer):
-        self.tflange.make_row(writer, self.mf, self.he)
+    def tflange_csv(self):
+        self.tflange.make_row(self.mf, self.he)
+
+    def rivet_stiffener_csv(self):
+        self.rivet_stiffener.write_all_row(self.sf , self.he)
+
+    def rivet_flange_csv(self):
+        self.rivet_stiffener.write_all_row(self.sf, self.he)
+
 
 
 def main():
@@ -148,49 +145,15 @@ def main():
     sta625.add_stiffener(1.27, 40, 30)
     sta625.add_compression_flange(5.0, 45, 40)
     sta625.add_tension_flange(5.0, 45, 40)
-    with open('sta625.csv', 'w', encoding='Shift_JIS') as f:
-        writer = csv.writer(f)
-        make_web_header(writer)
-        he = sta625.get_he()
-        print("he", he)
-        sta625.web.make_row(writer, 32116 * 1.2, he)
-        make_tflange_header(writer)
-        sta625.tflange.make_row(writer, 61676 * 1.2, he)
-        make_cflange_header(writer)
-        sta625.cflange.make_row(writer, 61676 * 1.2, he)
-    """
-    stiffner_thickness = 0.81  # mm
-    stiffner_bs1 = 20
-    stiffner_bs2 = 15
-    web_thickness = 1.02
-    web_distance = 70  # stiffener 間隔でもある
-    hf = getHf(sta + web_distance)
-    tension_frange_thickness = 3.0
-    tension_frange_bottom = 25
-    tension_frange_height = 20
-    compression_frange_thickness = 3.0
-    compression_frange_bottom = 30
-    compression_frange_height = 20
-    rivet_web_stiffner_diameter = 6.35  # DD8
-    rivet_web_frange_N = 2
-    rivet_web_frange_D = 6.35
-    rivet_web_pdratio = 6
-    """
-    sta3000 = Rib(5)
-    sta3000.add_web(1.02, 7)
-    sta3000.add_stiffener(0.81, 20, 15)
-    sta3000.add_compression_flange(3.0, 30, 20)
-    sta3000.add_tension_flange(3.0, 30, 20)
-    with open('sta3000.csv', 'w', encoding='Shift_JIS') as f:
-        writer = csv.writer(f)
-        make_web_header(writer)
-        he = sta3000.get_he()
-        print("he", he)
-        sta3000.web.make_row(writer, 11463 * 1.2, he)
-        make_tflange_header(writer)
-        sta3000.tflange.make_row(writer, 9585 * 1.2, he)
-        make_cflange_header(writer)
-        sta3000.cflange.make_row(writer, 9585 * 1.2, he)
+    sta625.add_rivet_stiffener(6.35)
+    sta625.add_rivet_flange(6.35,4,2)
+    sta625.add_rivet_stiffener(6.35)
+    he = sta625.set_he()
+    sta625.web_csv()
+    sta625.tflange_csv()
+    sta625.cflange_csv()
+    sta625.rivet_stiffener_csv()
+    sta625.rivet_flange_csv()
 
 
 if __name__ == '__main__':
