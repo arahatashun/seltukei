@@ -113,7 +113,7 @@ def _make_header_web_hole(writer):
     header = ["左端STA[mm]", "右端STA[mm]", "D[mm]", "p[mm]", "fs[MPa]", "fsj[MPa]", "Fsu[MPa]", "fscr[MPa]", "M.S."]
     writer.writerow(header)
 
-def make_all_header():
+def rivet_wf_make_all_header():
     with open('results/rivet_web_flange_shear_test.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         _make_header_shear(writer)
@@ -130,7 +130,7 @@ def main():
     """Test Function."""
     web = Web(625, 1000, 3, 2.03)
     test = RivetWebFlange(3.175, 6, 2, web)
-    make_all_header()
+    rivet_wf_make_all_header()
     test.write_all_row(32117,297)
 
 if __name__ == '__main__':
