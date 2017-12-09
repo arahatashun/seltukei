@@ -4,7 +4,7 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi
+from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi, get_hf
 from web import Web
 import csv
 
@@ -136,6 +136,16 @@ class Stiffener(object):
         value = [self.web.y_left, self.web.y_right, self.web.thickness, self.web.width_b, he, self.thickness,
                  self.bs1_bottom, self.bs2_height, I, I_U, ms]
         writer.writerow(value)
+
+    def get_volume(self):
+        """
+        stiffenerの体積を計算する
+        self.web.divisionが1のときはstiffener0個なので体積0となる
+        :return: volume[mm^3]
+        """
+        area = (self.bs1_bottom + self.bs2_height) * self.thickness - self.thickness ** 2  # [mm^2]
+        height = (get_hf(self.web.y_left) + get_hf(self.web.y_right)) / 2  # [mm]
+        return area * height * (self.web.division - 1) / 1000  # [cm^3]
 
 
 def make_header(writer):
