@@ -91,10 +91,10 @@ class RivetWebFlange(Rivet):
         :param he: 桁フランジ断面重心距離[mm]
         :return:
         """
-        with open('results/rivet_web_flange_shear_test.csv', 'a', encoding="Shift_JIS") as f:
+        with open('results/rivet_web_flange_shear.csv', 'a', encoding="Shift_JIS") as f:
             writer = csv.writer(f)
             self.make_row_shear(writer, sf,he)
-        with open('results/rivet_web_flange_web_hole_test.csv', 'a', encoding="Shift_JIS") as f:
+        with open('results/rivet_web_flange_web_hole.csv', 'a', encoding="Shift_JIS") as f:
             writer = csv.writer(f)
             self.make_row_web_hole(writer, sf,he)
 
@@ -114,10 +114,10 @@ def _make_header_web_hole(writer):
     writer.writerow(header)
 
 def rivet_wf_make_all_header():
-    with open('results/rivet_web_flange_shear_test.csv', 'a', encoding="Shift_JIS") as f:
+    with open('results/rivet_web_flange_shear.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         _make_header_shear(writer)
-    with open('results/rivet_web_flange_web_hole_test.csv', 'a', encoding="Shift_JIS") as f:
+    with open('results/rivet_web_flange_web_hole.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         _make_header_web_hole(writer)
 
