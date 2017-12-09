@@ -125,7 +125,7 @@ class Stiffener(object):
 
         return Fcc
 
-    def make_row(self, writer, he):
+    def make_row(self, he):
         """
         :param writer:csv.writer()で取得されるもの
         :param he:桁フランジ断面重心距離
@@ -135,7 +135,9 @@ class Stiffener(object):
         ms = self.get_ms(he)
         value = [self.web.y_left, self.web.y_right, self.web.thickness, self.web.width_b, he, self.thickness,
                  self.bs1_bottom, self.bs2_height, I, I_U, ms]
-        writer.writerow(value)
+        with open('results/stiffener_test.csv', 'a', encoding="Shift_JIS") as f:
+            writer = csv.writer(f)
+            writer.writerow(value)
 
     def get_volume(self):
         """
@@ -148,24 +150,24 @@ class Stiffener(object):
         return area * height * (self.web.division - 1) / 1000  # [cm^3]
 
 
-def make_header(writer):
+def make_stiffener_header():
     """
     Make csv header.
-    :param writer:csv.writer()で取得されるもの
+
     """
     header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "スティフナー間隔de[mm]", "he[mm]", "スティフナー厚さts[mm]",
               "bs1_bottom[mm]", "bs2_height[mm]", "I[mm^4]", "I_U[mm^4]", "M.S."]
-    writer.writerow(header)
+    with open('results/stiffener_test.csv', 'a', encoding="Shift_JIS") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
 
 
 def main():
     """Test Function."""
     web = Web(625, 1000, 3, 2.03)
     test = Stiffener(2.29, 22, 19.0, web)
-    with open('stiffener_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_header(writer)
-        test.make_row(writer, 289)
+    make_stiffener_header()
+    test.make_row(289)
 
 
 if __name__ == '__main__':
