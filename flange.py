@@ -58,6 +58,16 @@ class Flange:
         """
         return self.get_axial_force(momentum, h_e) / self.get_area(web_thickness)
 
+    def get_volume(self, length_rib2rib):
+        """
+        フランジの体積を計算する
+        :param length_rib2rib: フランジの長さ[mm]
+        :return: volume[cm^3]
+        """
+        area = (self.b_height + self.b_bottom + self.thickness / 2) * self.thickness - self.thickness ** 2  # [mm^2]
+        v = area * length_rib2rib  # [mm^3]
+        return v / 1000  # [cm^3]
+
 
 def main():
     """Test Function."""

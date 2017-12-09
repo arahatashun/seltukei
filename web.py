@@ -159,6 +159,18 @@ class Web(object):
                  fscr, fsu, fs, ms]
         writer.writerow(value)
 
+    def get_volume(self):
+        """
+        y_leftとy_rightで囲まれた部分のウェブの体積を計算
+        台形として面積を計算し,そこにthicknessをかけて体積を出す
+        :return: V[cm^3]
+        """
+        min_y = get_hf(self.y_left)  # [mm]
+        max_y = get_hf(self.y_right)  # [mm]
+        area = (min_y + max_y) * (self.y_right - self.y_left) / 2  # [mm^2]
+        v = area * self.thickness  # [mm^3]
+        return v / 10 / 10 / 10  # 単位を[cm^3]に
+
 
 def make_web_header(writer):
     """
