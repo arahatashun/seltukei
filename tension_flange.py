@@ -58,7 +58,7 @@ class TensionFlange(Flange):
         ms = self.get_f_tu() / self.get_stress_force(momentum, h_e, self.web.thickness) - 1
         return ms
 
-    def make_row(self, writer, momentum, h_e):
+    def make_row(self,momentum, h_e):
         """ Make row of csv.
 
         :param writer:csv.writer()で取得されるもの
@@ -72,27 +72,29 @@ class TensionFlange(Flange):
         ms = self.get_ms(momentum, h_e)
         value = [self.web.y_left, self.web.y_right, self.web.thickness, momentum, self.thickness,
                  self.b_bottom, self.b_height, p, a, ft, ftu, ms]
-        writer.writerow(value)
+        with open('results/tension_flange_test.csv', 'a', encoding="Shift_JIS") as f:
+            writer = csv.writer(f)
+            writer.writerow(value)
 
 
-def make_tflange_header(writer):
+def make_tflange_header():
     """
     Make Header of csv.
     :param writer:csv.writer()で取得されるもの
     """
     header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "momentum[N*m]", "tf[mm]", "b_bottom_f1[mm]",
               "b_height_f2[mm]", "P[N]", "A[mm^2]", "ft[MPa]", "Ftu[MPa]", "M.S."]
-    writer.writerow(header)
+    with open('results/tension_flange_test.csv', 'a', encoding="Shift_JIS") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
 
 
 def main():
     """Test Function."""
     web = Web(625, 1000, 3, 2.03)
     test = TensionFlange(6.60, 36, 42.5, web)
-    with open('tension_flange_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_tflange_header(writer)
-        test.make_row(writer, 74623, 297)
+    make_tflange_header()
+    test.make_row(74623, 297)
 
 
 if __name__ == '__main__':
