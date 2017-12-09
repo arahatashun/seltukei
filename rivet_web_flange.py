@@ -86,35 +86,51 @@ class RivetWebFlange(Rivet):
         writer.writerow(value)
 
 
-def make_header_shear(writer):
-    """Make Header of CSV shear M.S.
-    :param writer:csv.writer()で取得されるもの
-    """
-    header = ["左端STA[mm]", "右端STA[mm]", "q_max[N/m]", "N", "D[mm]", "p[mm]", "Ps[N]", "P_allow[N]", "M.S."]
-    writer.writerow(header)
+    def make_header_shear(self,writer):
+        """Make Header of CSV shear M.S.
+        :param writer:csv.writer()で取得されるもの
+        """
+        header = ["左端STA[mm]", "右端STA[mm]", "q_max[N/m]", "N", "D[mm]", "p[mm]", "Ps[N]", "P_allow[N]", "M.S."]
+        writer.writerow(header)
 
 
-def make_header_web_hole(writer):
-    """Make Header of CSV web hole loss.
-    :param writer:csv.writer()で取得されるもの
-    """
-    header = ["左端STA[mm]", "右端STA[mm]", "D[mm]", "p[mm]", "fs[MPa]", "fsj[MPa]", "Fsu[MPa]", "fscr[MPa]", "M.S."]
-    writer.writerow(header)
+    def make_header_web_hole(self,writer):
+        """Make Header of CSV web hole loss.
+        :param writer:csv.writer()で取得されるもの
+        """
+        header = ["左端STA[mm]", "右端STA[mm]", "D[mm]", "p[mm]", "fs[MPa]", "fsj[MPa]", "Fsu[MPa]", "fscr[MPa]", "M.S."]
+        writer.writerow(header)
+
+    def make_all_header(self):
+        with open('results/rivet_web_flange_shear_test.csv', 'a', encoding="Shift_JIS") as f:
+            writer = csv.writer(f)
+            self.make_header_shear(writer)
+        with open('results/rivet_web_flange_web_hole_test.csv', 'a', encoding="Shift_JIS") as f:
+            writer = csv.writer(f)
+            self.make_header_web_hole(writer)
+
+    def write_all_row(self, sf, he):
+        """
+        :param sf: 前桁の分担荷重[N]
+        :param he: 桁フランジ断面重心距離[mm]
+        :return:
+        """
+        with open('results/rivet_web_flange_shear_test.csv', 'a', encoding="Shift_JIS") as f:
+            writer = csv.writer(f)
+            self.make_row_shear(writer, sf,he)
+        with open('results/rivet_web_flange_web_hole_test.csv', 'a', encoding="Shift_JIS") as f:
+            writer = csv.writer(f)
+            self.make_row_web_hole(writer, sf,he)
+
+
 
 
 def main():
     """Test Function."""
     web = Web(625, 1000, 3, 2.03)
     test = RivetWebFlange(3.175, 6, 2, web)
-    with open('rivet_web_flange_shear_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_header_shear(writer)
-        test.make_row_shear(writer, 32117, 297)
-    with open('rivet_web_flange_web_hole_test.csv', 'a', encoding="Shift_JIS") as f:
-        writer = csv.writer(f)
-        make_header_web_hole(writer)
-        test.make_row_web_hole(writer, 32117, 297)
-
+    test.make_all_header()
+    test.write_all_row(32117,297)
 
 if __name__ == '__main__':
     main()
