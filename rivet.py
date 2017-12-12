@@ -30,7 +30,16 @@ class Rivet(object):
 
     def get_p_allow(self):
         """P_allow=pi/4*D^2*Fsu."""
-        return np.pi / 4 * self.D**2 * self.F_su
+        # print(np.pi / 4 * self.D ** 2 * self.F_su)
+        return np.pi / 4 * self.D ** 2 * self.F_su
+
+    '''
+    def get_p_allow(self):
+        """講義ノート2 p6のグラフのAD8"""
+        
+        print(1560 * 4.45)
+        return 1560 * 4.45  # [N]
+    '''
 
 
 def main():
