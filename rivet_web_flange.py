@@ -54,6 +54,15 @@ class RivetWebFlange(Rivet):
         """
         return self.web.get_web_hole_loss_ms(self.rivet_pitch, self.D, sf, he)
 
+    def get_web_hole_loss(self, sf, he):
+        """
+        :param sf: f:前桁荷重負担分[N]
+        :param he: he:フランジ間断面重心距離[mm]
+        :return: ウェブホールロスのM.S.
+        """
+        ms = self.web.get_web_hole_loss_ms(self.rivet_pitch, self.D, sf, he)
+        return ms
+
     def make_row_shear(self, writer, sf, he):
         """
         Make CSV Row for shear.

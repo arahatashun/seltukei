@@ -36,7 +36,6 @@ class Flange:
         area1 = (self.b_height - self.thickness) * self.thickness
         area2 = (self.b_bottom + self.thickness / 2) * self.thickness
         y = (area1 * (self.thickness / 2) + area2 / 2 * (self.b_bottom + self.thickness / 2)) / (area1 + area2)
-        print(y)
         return y
 
     def get_axial_force(self, momentum, h_e):

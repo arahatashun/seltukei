@@ -2,24 +2,21 @@
 # coding:utf-8
 # Author: Shun Arahata
 from stiffener import Stiffener
-from web import Web, make_web_header
-from compression_flange import CompressionFlange, make_cflange_header
-from tension_flange import TensionFlange, make_tflange_header
+from web import Web
+from compression_flange import CompressionFlange
+from tension_flange import TensionFlange
 from rivet_web_flange import RivetWebFlange
 from rivet_web_stiffener import RivetWebStiffener
 from unit_convert import get_hf
-from sandm import get_sf, get_mf
-import csv
+
+# from sandm import get_sf, get_mf
 
 # リブ左端の座標
 LEFT_ARRAY = [625, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
 # リブの間隔
 RIB_WIDTH = [375, 500, 500, 500, 500, 500, 500, 500, 500]
-
-"""
-THICKNESS_7075 = [0.41, 0.51, 0.64, 0.81, 1.02,
-                  1.27, 1.60, 1.80, 2.03, 2.29, 2.54, 3.18]
-"""
+SF_LIST = [38540]  # だれか全部追加して
+MF_LIST = [74012]  # だれか全部追加して
 
 
 class Rib(object):
@@ -46,20 +43,20 @@ class Rib(object):
         self.width = RIB_WIDTH[y_index]
         self.y_right = self.y_left + self.width
         self.hf = get_hf(self.y_left)
-        self.sf = get_sf(self.y_left)
-        self.mf = get_mf(self.y_left)
+        self.sf = SF_LIST[y_index]
+        self.mf = MF_LIST[y_index]
+        # self.sf = get_sf(self.y_left) 計算速度のボトルネック
+        # self.mf = get_mf(self.y_left) 計算速度のボトルネック
 
     def add_web(self, thickness, division_count):
         """ Add web to rib.
-
-        :param division: number of stiffeners + 1
-        :param thickness_index:thickness of web
+        :param division_count: number of stiffeners + 1
+        :param thickness:thickness of web
         """
         self.web = Web(self.y_left, self.y_right, division_count, thickness)
 
     def add_stiffener(self, thickness, bs1_bottom, bs2_height):
         """ Add Stiffener.
-
         :param thickness: stiffener厚さ
         :param bs1_bottom:stiffener bottom長さ
         :param bs2_height:stiffener 高さ
@@ -93,12 +90,9 @@ class Rib(object):
 
     def set_he(self):
         """rivet重心位置計算によりheを計算.
-        :param hf:前桁高さ[mm]
         :return he:桁フランジ断面重心距離
         """
-        self.he = self.hf - \
-                  (self.tflange.get_center_of_gravity() +
-                   self.cflange.get_center_of_gravity())
+        self.he = self.hf - (self.tflange.get_center_of_gravity() + self.cflange.get_center_of_gravity())
         return self.he
 
     def get_total_volume(self):
@@ -112,6 +106,24 @@ class Rib(object):
         v3 = self.cflange.get_volume(length_rib2rib)
         v4 = self.tflange.get_volume(length_rib2rib)
         return v1 + v2 + v3 + v4
+
+    def decide_ms(self):
+        """
+        全てのM.S.を計算して,それが全て正ならTrueを返す
+        :return:
+        """
+        ms1 = self.web.get_ms(self.sf, self.he)
+        ms2 = self.stiffener.get_ms(self.he)
+        ms3 = self.cflange.get_ms(self.mf, self.he)
+        ms4 = self.tflange.get_ms(self.mf, self.he)
+        ms5 = self.rivet_stiffener.get_ms()
+        ms6 = self.rivet_stiffener.get_web_hole_loss(self.sf, self.he)
+        ms7 = self.rivet_flange.get_ms(self.sf, self.he)
+        ms8 = self.rivet_flange.get_web_hole_loss(self.sf, self.he)
+        if ms1 >= 0 and ms2 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:
+            return True
+        else:
+            return False
 
     def web_csv(self):
         """
@@ -138,18 +150,18 @@ class Rib(object):
 def main():
     """
     web_thickness = 1.80
-    web_distance = 80  # stiffener 間隔でもある
+    web_distance = 80  # stiffener間隔でもある
     hf = getHf(sta + web_distance)
-    tension_frange_thickness = 6.0
-    tension_frange_bottom = 50
-    tension_frange_height = 40
-    compression_frange_thickness = 6.0
-    compression_frange_bottom = 45
-    compression_frange_height = 40
-    rivet_web_stiffner_diameter = 6.35  # DD8
-    rivet_web_frange_N = 2
-    rivet_web_frange_D = 6.35
-    rivet_web_pdratio = 6
+    tension_flange_thickness = 6.0
+    tension_flange_bottom = 50
+    tension_flange_height = 40
+    compression_flange_thickness = 6.0
+    compression_flange_bottom = 45
+    compression_flange_height = 40
+    rivet_web_stiffener_diameter = 6.35  # DD8
+    rivet_web_flange_N = 2
+    rivet_web_flange_D = 6.35
+    rivet_web_pd_ratio = 6
     """
     sta625 = Rib(0)
     sta625.add_web(1.60, 5)
@@ -159,7 +171,7 @@ def main():
     sta625.add_rivet_stiffener(6.35)
     sta625.add_rivet_flange(6.35, 4, 2)
     sta625.add_rivet_stiffener(6.35)
-    he = sta625.set_he()
+    sta625.set_he()
     sta625.web_csv()
     sta625.tflange_csv()
     sta625.cflange_csv()

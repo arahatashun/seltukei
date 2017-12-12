@@ -98,11 +98,11 @@ class RivetWebStiffener(Rivet):
     def decide_rivet_pitch(self):
         """"リベットピッチ幅を決める"""
         fcc = self.stiffener.get_clippling_stress()
-        print("fcc", fcc)
+        # print("fcc", fcc)
         for rivet_spacing in np.linspace(6 * self.D, 4 * self.D, 100):
             self.rivet_pitch = rivet_spacing
             fir = self.get_inter_rivet_buckling()
-            print(fir, fcc)
+            # print(fir, fcc)
             if fir > fcc:
                 return rivet_spacing
 
@@ -152,6 +152,15 @@ class RivetWebStiffener(Rivet):
                  self.rivet_pitch]
         writer.writerow(value)
 
+    def get_web_hole_loss(self, sf, he):
+        """
+        :param sf: f:前桁荷重負担分[N]
+        :param he: he:フランジ間断面重心距離[mm]
+        :return: ウェブホールロスのM.S.
+        """
+        ms = self.web.get_web_hole_loss_ms(self.rivet_pitch, self.D, sf, he)
+        return ms
+
     def make_row_web_hole(self, writer, sf, he):
         """
         :param writer: csv.writer()で取得されるもの
@@ -182,7 +191,8 @@ class RivetWebStiffener(Rivet):
             self.make_row_buckling(buckling_writer)
         with open('results/rivet_web_stiffener_web_hole.csv', 'a', encoding="Shift_JIS") as holeloss:
             holeloss_writer = csv.writer(holeloss)
-            self.make_row_web_hole(holeloss_writer,sf,he)
+            self.make_row_web_hole(holeloss_writer, sf, he)
+
 
 def _make_header_shear(writer):
     """
@@ -212,6 +222,7 @@ def _make_header_web_hole(writer):
     header = ["左端STA[mm]", "右端STA[mm]", "p[mm]", "D[mm]", "fs[MPa]", "fsj[MPa]", "Fsu[MPa]", "fscr[MPa]", "M.S."]
     writer.writerow(header)
 
+
 def rivet_ws_make_all_header():
     with open('results/rivet_web_stiffener_shear.csv', 'a', encoding="Shift_JIS") as shear:
         shear_writer = csv.writer(shear)
@@ -224,7 +235,6 @@ def rivet_ws_make_all_header():
         _make_header_web_hole(holeloss_writer)
 
 
-
 def main():
     """Test Function."""
     web = Web(625, 1000, 3, 2.03)
@@ -232,7 +242,6 @@ def main():
     test = RivetWebStiffener(3.175, stiffener, web)
     rivet_ws_make_all_header()
     test.write_all_row(32119, 297)
-
 
 
 if __name__ == '__main__':
