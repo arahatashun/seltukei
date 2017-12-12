@@ -95,17 +95,17 @@ class Rib(object):
         self.he = self.hf - (self.tflange.get_center_of_gravity() + self.cflange.get_center_of_gravity())
         return self.he
 
-    def get_total_volume(self):
+    def get_total_mass(self):
         """
-        この区間に於けるウェブ,２つのフランジ,スティフナーの総体積を計算する
-        :return: volume[cm^3]
+        この区間に於けるウェブ,２つのフランジ,スティフナーの総重量を計算する
+        :return: total_mass[kg]
         """
         length_rib2rib = self.web.y_right - self.web.y_left
         v1 = self.web.get_volume()
         v2 = self.stiffener.get_volume()
         v3 = self.cflange.get_volume(length_rib2rib)
         v4 = self.tflange.get_volume(length_rib2rib)
-        return v1 + v2 + v3 + v4
+        return (v1 + v2 + v3 + v4) * 3.0 / 1000  # {kg]
 
     def decide_ms(self):
         """
