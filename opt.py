@@ -24,12 +24,6 @@ STIFFENER_B_LIST = np.array([20 + i for i in range(20)])
 FLANGE_B_LIST = np.array([20 + i for i in range(20)])
 
 
-# リブ左端の座標
-# LEFT_ARRAY = [625, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
-# リブの間隔
-# RIB_WIDTH = [375, 500, 500, 500, 500, 500, 500, 500, 500]
-
-
 def init_header():
     """header 作成"""
     # delete
