@@ -178,7 +178,6 @@ class RivetWebStiffener(Rivet):
 
     def write_all_row(self, sf, he):
         """
-        :param writer: csv.writer()で取得されるもの
         :param sf:前桁荷重負担分[N]
         :param he:フランジ間断面重心距離[mm]
         :return:
