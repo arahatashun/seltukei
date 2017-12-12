@@ -43,7 +43,7 @@ class RivetWebFlange(Rivet):
         """
         p_allow = self.get_p_allow()
         ps = self.get_shear_force(sf, he)
-        ms = p_allow / ps
+        ms = p_allow / ps - 1
         return ms
 
     def get_web_ms(self, sf, he):

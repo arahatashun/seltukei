@@ -77,7 +77,6 @@ class CompressionFlange(Flange):
 
     def make_row(self, momentum, h_e):
         """
-        :param writer:csv.writer()で取得されるもの
         :param momentum:前桁分担曲げモーメント[N*m]
         :param h_e:桁フランジ断面重心距離[mm]
         """
