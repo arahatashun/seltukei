@@ -15,8 +15,8 @@ from unit_convert import get_hf
 LEFT_ARRAY = [625, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500]
 # リブの間隔
 RIB_WIDTH = [375, 500, 500, 500, 500, 500, 500, 500, 500]
-SF_LIST = [38540]  # だれか全部追加して
-MF_LIST = [74012]  # だれか全部追加して
+SF_LIST = [38540, 35357]  # だれか全部追加して
+MF_LIST = [74012, 60233]  # だれか全部追加して
 
 
 class Rib(object):
@@ -120,6 +120,7 @@ class Rib(object):
         ms6 = self.rivet_stiffener.get_web_hole_loss(self.sf, self.he)
         ms7 = self.rivet_flange.get_ms(self.sf, self.he)
         ms8 = self.rivet_flange.get_web_hole_loss(self.sf, self.he)
+        print(ms1, ms2, ms3, ms4, ms5, ms6, ms7, ms8)
         if ms1 >= 0 and ms2 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:
             return True
         else:
