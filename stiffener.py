@@ -49,13 +49,16 @@ class Stiffener(object):
         de = self.web.width_b  # webのwidth_bとdeは同一
         t = self.web.thickness  # webの厚さ[mm]
         x_value = he / de
+        """
+        どうしても1未満のところがほしいので
+        原点から勝手に補完直線引くようにした
         if x_value < 1.0:
             print("too small to get Inertia U in stiffener.py")
             return math.nan
-
-        elif x_value <= 4.0:
-            x = np.array([1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
-            y = np.array([0.1, 0.6, 1.5, 2.5, 3.7, 4.8, 6.2])
+        """
+        if x_value <= 4.0:
+            x = np.array([0, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0])
+            y = np.array([0, 0.1, 0.6, 1.5, 2.5, 3.7, 4.8, 6.2])
             f = interpolate.interp1d(x, y, kind='linear')
             fraction = f(x_value)
             denominator = he * t ** 3

@@ -5,6 +5,7 @@ import numpy as np
 from scipy import interpolate
 from scipy.integrate import quad
 import csv
+import matplotlib.pyplot as plt
 
 C_L = 1.4  # 最大揚力係数
 C_ROOT = 2.13 * 1000  # rootのchord長[mm]
@@ -19,7 +20,7 @@ Y_REP_FOR_C = np.array(
 C_LA_REP = np.array([0.835, 1.021, 1.095, 1.089, 0.993,
                      0.833, 0.662, 0.548, 0])  # [no dim]
 C_LB_REP = np.array([0.049, 0.044, 0.005, -0.033, -
-                     0.062, -0.067, -0.056, -0.043, 0])  # [no dim]
+0.062, -0.067, -0.056, -0.043, 0])  # [no dim]
 C_D_REP = np.array([0.1679, 0.1303, 0.1105, 0.1065, 0.1163,
                     0.1314, 0.1354, 0.1302, 0])  # [no dim]
 
@@ -155,6 +156,7 @@ def get_s(y_w, limit_div=50):
     s = _get_sa(y_w, limit_div) - _get_si(y_w, limit_div)
     return s
 
+
 def get_sf(y_w, limit_div=50):
     """
     y_wにおける前桁負担分せん断力を計算
@@ -162,7 +164,7 @@ def get_sf(y_w, limit_div=50):
     :param limit_div:
     :return:
     """
-    return get_s(y_w, limit_div)*1.5*0.8
+    return get_s(y_w, limit_div) * 1.5 * 0.8
 
 
 def get_m(y_w, limit_div=50):
@@ -176,6 +178,7 @@ def get_m(y_w, limit_div=50):
                     HALF_SPAN, args=y_w, limit=limit_div)
     return integral[0] / 1000
 
+
 def get_mf(y_w, limit_div=50):
     """
     y_wに於ける前桁負担分曲げモーメントMfを計算
@@ -183,7 +186,7 @@ def get_mf(y_w, limit_div=50):
     :param limit_div: quadによる積分計算の分割幅を調整(defaultは50,大きくすると計算時間長くなる)
     :return:
     """
-    return get_m(y_w,limit_div)*1.5*0.8
+    return get_m(y_w, limit_div) * 1.5 * 0.8
 
 
 def _get_csv():
@@ -212,16 +215,41 @@ def _make_table():
         writer.writerow(
             ["y[mm]", "cla", "clb", "cd", "cl", "cz", "C[mm]", "C*cz[mm]", 'w[kg/mm]',
              'sa[N]', 'si[N]',
-             'S[N]', 'M[N*m]','Sf[N]','Mf[N*m]'])
+             'S[N]', 'M[N*m]', 'Sf[N]', 'Mf[N*m]'])
         for i in LEFT_ARRAY:
             writer.writerow(
                 [i, _get_cla(i), _get_clb(i), _get_cd(i), _get_cl(i), _get_cz(i), _get_chord(i), _get_ccz(i),
                  _get_rho(i),
-                 _get_sa(i, 1), _get_si(i, 1), get_s(i, 1), get_m(i, 1), get_sf(i,1), get_mf(i,1)])
+                 _get_sa(i, 1), _get_si(i, 1), get_s(i, 1), get_m(i, 1), get_sf(i, 1), get_mf(i, 1)])
+
+
+def plot_sm():
+    y_list = np.array([i for i in range(625, 5001)])
+    s, m, s_rep, m_rep, y_rep = [], [], [], [], []
+    for i in y_list:
+        s.append(get_s(i, 1))
+        m.append(get_m(i, 1))
+        print(i, s[-1], m[-1])
+        if i == 625 or i % 500 == 0:
+            s_rep.append(s[-1])
+            m_rep.append(m[-1])
+            y_rep.append(i)
+    plt.plot(y_rep, s_rep, marker='o', label='S[N]', ls='None', color='b')
+    plt.plot(y_rep, m_rep, marker='^', label='M[N*m]', ls='None', color='g')
+    plt.plot(y_list, s, color='b')
+    plt.plot(y_list, m, color='g')
+    plt.legend()
+    plt.xlim(625, 5000)
+    plt.ylim(0, 70000)
+    plt.xticks([625, 1000, 2000, 3000, 4000, 5000])
+    plt.xlabel('STA')
+    plt.ylabel('S[N] & M[N*m]')
+    plt.show()
 
 
 if __name__ == "__main__":
-    _make_table()
+    # _make_table()
     # _get_csv()
     # for i in range(625, 5000):
-    #print("M at STA{0} is {1} [N*m]".format(i, get_m(i, 1)))
+    # print("M at STA{0} is {1} [N*m]".format(i, get_m(i, 1)))
+    plot_sm()

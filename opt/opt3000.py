@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 # Author: Hirotaka Kondo
 import os
 import csv
@@ -10,7 +11,6 @@ from compression_flange import make_cflange_header
 from rivet_web_stiffener import rivet_ws_make_all_header
 from rivet_web_flange import rivet_wf_make_all_header
 from rib import Rib
-import numpy as np
 import numba
 
 """
@@ -25,11 +25,12 @@ import numba
 # WEB_THICKNESS_LIST = [1.60, 1.80, 2.03]  # web厚さ[mm]の候補リスト
 # RIVET_DICT = {3: 2.38125, 4: 3.175, 5: 3.96875, 6: 4.7625, 8: 6.35}  # リベット径[mm]の候補辞書(keyは呼び番号)
 RIVET_DICT = {5: 3.96875, 6: 4.7625}  # リベット径[mm]の候補辞書(keyは呼び番号)
-DIVISION_LIST = [3,4, 5, 6]  # webの分割数の候補リスト
+DIVISION_LIST = [3, 4]  # webの分割数の候補リスト
 # STIFFENER_THICKNESS_LIST = [1.80, 2.03, 2.29, 2.54, 3.18]  # 適当
-FLANGE_THICKNESS_LIST = [5 + i for i in range(5)]  # 適当
-STIFFENER_B_LIST = [15 + 2 * i for i in range(10)]
-FLANGE_B_LIST = [15 + 2 * i for i in range(10)]
+FLANGE_THICKNESS_LIST = [2.5 + i * 0.5 for i in range(10)]  # 適当
+STIFFENER_B_LIST = [10 + i for i in range(10)]
+STIFFENER_B_BOTTOM_LIST = [15 + i for i in range(5)]
+FLANGE_B_LIST = [25 + i for i in range(10)]
 
 
 def init_header():
@@ -63,7 +64,7 @@ def make_sta1000():
         len(STIFFENER_B_LIST) ** 2 * len(FLANGE_B_LIST) ** 2 * len(DIVISION_LIST) ** 2 * len(RIVET_DICT.values()) ** 2
     for fc_thickness in FLANGE_THICKNESS_LIST:
         for ft_thickness in FLANGE_THICKNESS_LIST:
-            for bs1 in STIFFENER_B_LIST:
+            for bs1 in STIFFENER_B_BOTTOM_LIST:
                 for bs2 in STIFFENER_B_LIST:
                     for bf1 in FLANGE_B_LIST:
                         for bf2 in FLANGE_B_LIST:
@@ -72,13 +73,13 @@ def make_sta1000():
                                     for div in DIVISION_LIST:
                                         for D1 in RIVET_DICT.values():
                                             for D2 in RIVET_DICT.values():
-                                                sta625 = Rib(3)
-                                                sta625.add_web(1.27, div)
-                                                sta625.add_stiffener(1.60, bs1, bs2)
+                                                sta625 = Rib(5)
+                                                sta625.add_web(1.60, div)
+                                                sta625.add_stiffener(1.80, bs1, bs2)
                                                 sta625.add_compression_flange(fc_thickness, bf1, bf2)
                                                 sta625.add_tension_flange(ft_thickness, bf3, bf4)
                                                 sta625.add_rivet_stiffener(D1)
-                                                sta625.add_rivet_flange(D2, 4, 2)
+                                                sta625.add_rivet_flange(D2, 6, 2)
                                                 sta625.set_he()
                                                 if sta625.decide_ms() == True:
                                                     mass = sta625.get_total_mass()  # [kg]

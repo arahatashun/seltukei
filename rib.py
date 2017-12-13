@@ -8,6 +8,7 @@ from tension_flange import TensionFlange
 from rivet_web_flange import RivetWebFlange
 from rivet_web_stiffener import RivetWebStiffener
 from unit_convert import get_hf
+import math
 
 # from sandm import get_sf, get_mf
 
@@ -105,6 +106,7 @@ class Rib(object):
         v2 = self.stiffener.get_volume()
         v3 = self.cflange.get_volume(length_rib2rib)
         v4 = self.tflange.get_volume(length_rib2rib)
+        print(v1, v2, v3, v4)
         return (v1 + v2 + v3 + v4) * 3.0 / 1000  # {kg]
 
     def decide_ms(self):
@@ -121,7 +123,10 @@ class Rib(object):
         ms7 = self.rivet_flange.get_ms(self.sf, self.he)
         ms8 = self.rivet_flange.get_web_hole_loss(self.sf, self.he)
         print(ms1, ms2, ms3, ms4, ms5, ms6, ms7, ms8)
-        if ms1 >= 0 and ms2 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:
+        if (math.isnan(ms2)):  # ms2==nanは,stiffenerがそもそもないときに起こる場合がほとんどなので...
+            if ms1 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:
+                return True
+        elif ms1 >= 0 and ms2 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:
             return True
         else:
             return False
