@@ -70,13 +70,13 @@ class Flange:
 
 def main():
     """Test Function."""
-    test = Flange(6, 30, 30)
-    print("A[mm^2]", test.get_area(1.6))
+    test = Flange(1.6, 10, 10)
+    #print("A[mm^2]", test.get_area(1.6))
     print("C.G.[mm]", test.get_center_of_gravity())
-    ax = test.get_axial_force(74623, 297)
-    print("P[N]", ax)
-    f = test.get_stress_force(74623, 297, 2.03)
-    print("fc[MPa]", f)
+    #ax = test.get_axial_force(74623, 297)
+    #print("P[N]", ax)
+    #f = test.get_stress_force(74623, 297, 2.03)
+    #print("fc[MPa]", f)
 
 
 if __name__ == '__main__':

@@ -200,7 +200,7 @@ def _get_csv():
             ["y[mm]", "cla", "clb", "cd", "cl", "cz", "C[mm]", "C*cz[mm]", 'w[kg/mm]',
              'sa[N]', 'si[N]',
              'S[N]', 'M[N*m]'])
-        for i in range(625, 5000):
+        for i in range(625, 5001):
             writer.writerow(
                 [i, _get_cla(i), _get_clb(i), _get_cd(i), _get_cl(i), _get_cz(i), _get_chord(i), _get_ccz(i),
                  _get_rho(i),
@@ -249,7 +249,7 @@ def plot_sm():
 
 if __name__ == "__main__":
     # _make_table()
-    # _get_csv()
+    _get_csv()
     # for i in range(625, 5000):
     # print("M at STA{0} is {1} [N*m]".format(i, get_m(i, 1)))
-    plot_sm()
+    # plot_sm()
