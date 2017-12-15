@@ -135,6 +135,7 @@ class Rib(object):
         """
         Csv output.
         """
+        self.set_he()
         self.web.make_row(self.sf, self.he)
 
     def stiffener_csv(self):

@@ -1,5 +1,7 @@
 """Flange Base Class."""
 
+from scipy.interpolate import interp1d
+from unit_convert import mpa2Ksi
 
 # coding:utf-8
 # Author: Hirotaka Kondo
@@ -67,16 +69,34 @@ class Flange:
         v = area * length_rib2rib  # [mm^3]
         return v / 1000  # [cm^3]
 
+    @staticmethod
+    def read_sn_graph(maximum_stress):
+        """s-nカーブ読み取り.応力比R=0,
+
+        :param maximum_stress: 最大応力[MPa]
+        :return fatigie_life:繰り返し回数
+        """
+        maximum_stress_ksi = mpa2Ksi(maximum_stress)
+        y = [8, 7, 6, 5, 4, 3]
+        x = [9.8, 10, 12, 18, 30, 60]
+        f = interp1d(x, y, kind='linear')
+        multiplier = f(maximum_stress_ksi)
+        print("multiplier", multiplier)
+        fatigue_life = 10**multiplier
+        return fatigue_life
+
+
 
 def main():
     """Test Function."""
     test = Flange(1.6, 10, 10)
-    #print("A[mm^2]", test.get_area(1.6))
+    # print("A[mm^2]", test.get_area(1.6))
     print("C.G.[mm]", test.get_center_of_gravity())
-    #ax = test.get_axial_force(74623, 297)
-    #print("P[N]", ax)
-    #f = test.get_stress_force(74623, 297, 2.03)
-    #print("fc[MPa]", f)
+    print(test.read_sn_graph(259.9))
+    # ax = test.get_axial_force(74623, 297)
+    # print("P[N]", ax)
+    # f = test.get_stress_force(74623, 297, 2.03)
+    # print("fc[MPa]", f)
 
 
 if __name__ == '__main__':
