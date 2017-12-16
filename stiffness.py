@@ -55,8 +55,8 @@ def cal_flange_I(flange_area, he):
 def make_header_stiffness():
     """Make csv header."""
     header1 = ["", "", "ウェブ", "", "", "圧縮側フランジ", "", "", "引張側フランジ", "", "", "合計"]
-    header2 = ["STA", "$h_e$[mm]", "ウェブ厚さ[mm]", "I[$mm^4$]", "EI[$Nm^2$]", "有効断面積[$mm^2]", "I[$mm^4$]", "EI[$Nm^2$]",
-               "有効断面積[$mm^2]", "I[$mm^4$]", "EI[$Nm^2$]", "EI[$Nm^2$]"]
+    header2 = ["STA", "$h_e$[mm]", "ウェブ厚さ[mm]", "I[$mm^4$]", "EI[$Nm^2$]", "有効断面積[$mm^2$]", "I[$mm^4$]", "EI[$Nm^2$]",
+               "有効断面積[$mm^2$]", "I[$mm^4$]", "EI[$Nm^2$]", "EI[$Nm^2$]"]
     with open('results/stiffness.csv', 'a', encoding="Shift_JIS") as f:
         writer = csv.writer(f)
         writer.writerow(header1)
