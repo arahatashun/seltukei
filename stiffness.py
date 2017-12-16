@@ -6,7 +6,7 @@ main関数内の変数を自分の値に変えて実行するだけ.
 # -*- coding: utf-8 -*-
 # Author: Hirotaka Kondo
 from rib import Rib
-from unit_convert import ksi2Mpa
+from unit_convert import ksi2Mpa, get_hf
 import csv
 import matplotlib.pyplot as plt
 from scipy import interpolate
@@ -84,6 +84,24 @@ def make_stiffness_row(sta):
     return EI_w + EI_c + EI_t
 
 
+def cal_EI_sta5000(sta4500):
+    """
+    翼端部だけ剛性計算用の値が用意されてないので,
+    専用関数を作成
+    :param sta4500:
+    :return:
+    """
+    web_t = sta4500.web.thickness
+    he = sta4500.he + get_hf(5000) - get_hf(4500)
+    E = ksi2Mpa(10.3 * 1000)  # ヤング率[N/mm^2]
+    area_c = sta4500.cflange.get_area(web_t)
+    area_t = sta4500.tflange.get_area(web_t)
+    I_w = cal_web_I(web_t, get_hf(5000))
+    I_c = cal_flange_I(area_c, he)
+    I_t = cal_flange_I(area_t, he)
+    return E * (I_w + I_c + I_t) / 10 ** 6  # [N*m^2]
+
+
 def plot(sta_EI_list):
     """
     EIのグラフ作成用
@@ -147,7 +165,9 @@ def main():
     sta3500 = get_rib(6, 1.6, 3, 2, 20, 20, 2, 20, 20)
     sta4000 = get_rib(7, 1.6, 3, 2, 10, 10, 2, 10, 10)
     sta4500 = get_rib(8, 1.6, 2, 1.6, 10, 10, 1.6, 10, 10)
+
     make_header_stiffness()
+
     sta_EI_list = []
     sta_EI_list.append(make_stiffness_row(sta625))
     sta_EI_list.append(make_stiffness_row(sta1000))
@@ -158,7 +178,7 @@ def main():
     sta_EI_list.append(make_stiffness_row(sta3500))
     sta_EI_list.append(make_stiffness_row(sta4000))
     sta_EI_list.append(make_stiffness_row(sta4500))
-    sta_EI_list.append(0)  # STA5000
+    sta_EI_list.append(cal_EI_sta5000(sta4500))  # STA5000
     cal_ave(sta_EI_list)
     plot(sta_EI_list)
 
