@@ -118,8 +118,8 @@ def plot(sta_EI_list):
     sp = interpolate.InterpolatedUnivariateSpline(LEFT_ARRAY, sta_EI_list)
     sx = np.linspace(LEFT_ARRAY[0], LEFT_ARRAY[-1], 100)
     sy = sp(sx)
-    plt.plot(LEFT_ARRAY, sta_EI_list, "bo")
-    plt.plot(sx, sy, "b")
+    plt.plot(LEFT_ARRAY, sta_EI_list, "ko")
+    plt.plot(sx, sy, "black")
     plt.show()
     plt.savefig('results/stiffness.pgf')
     # pgfについては
