@@ -100,10 +100,10 @@ class RivetWebFlange(Rivet):
         :param he: 桁フランジ断面重心距離[mm]
         :return:
         """
-        with open('results/rivet_web_flange_shear.csv', 'a', encoding="Shift_JIS") as f:
+        with open('results/rivet_web_flange_shear.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
             self.make_row_shear(writer, sf, he)
-        with open('results/rivet_web_flange_web_hole.csv', 'a', encoding="Shift_JIS") as f:
+        with open('results/rivet_web_flange_web_hole.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
             self.make_row_web_hole(writer, sf, he)
 
@@ -112,7 +112,7 @@ def _make_header_shear(writer):
     """Make Header of CSV shear M.S.
     :param writer:csv.writer()で取得されるもの
     """
-    header = ["左端STA[mm]", "右端STA[mm]", "q_max[N/m]", "N", "D[mm]", "p[mm]", "Ps[N]", "P_allow[N]", "M.S."]
+    header = ["左端STA[mm]", "右端STA[mm]", "$q_{max}$[N/m]", "N", "D[mm]", "p[mm]", "Ps[N]", "$P_{allow}$[N]", "M.S."]
     writer.writerow(header)
 
 
@@ -120,15 +120,16 @@ def _make_header_web_hole(writer):
     """Make Header of CSV web hole loss.
     :param writer:csv.writer()で取得されるもの
     """
-    header = ["左端STA[mm]", "右端STA[mm]", "D[mm]", "p[mm]", "fs[MPa]", "fsj[MPa]", "Fsu[MPa]", "fscr[MPa]", "M.S."]
+    header = ["左端STA[mm]", "右端STA[mm]", "D[mm]", "p[mm]", "$f_s$[MPa]", "$f_{sj}$[MPa]", "$F_{su}$[MPa]",
+              "$f_{scr}$[MPa]", "M.S."]
     writer.writerow(header)
 
 
 def rivet_wf_make_all_header():
-    with open('results/rivet_web_flange_shear.csv', 'a', encoding="Shift_JIS") as f:
+    with open('results/rivet_web_flange_shear.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         _make_header_shear(writer)
-    with open('results/rivet_web_flange_web_hole.csv', 'a', encoding="Shift_JIS") as f:
+    with open('results/rivet_web_flange_web_hole.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         _make_header_web_hole(writer)
 

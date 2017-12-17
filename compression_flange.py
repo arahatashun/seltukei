@@ -88,16 +88,16 @@ class CompressionFlange(Flange):
         sqrt = self.get_x_of_graph()  # p12グラフのx軸の値
         value = [self.web.y_left, self.web.y_right, self.web.thickness, momentum, self.thickness,
                  self.b_bottom, self.b_height, p, a, fc, sqrt, fcc, ms]
-        with open('results/compression_flange.csv', 'a', encoding="Shift_JIS") as f:
+        with open('results/compression_flange.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(value)
 
 
 def make_cflange_header():
-    header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "momentum[N*m]",
-              "tf[mm]", "b_bottom_f1[mm]", "b_height_f2[mm]", "P[N]", "A[mm^2]", "fc[MPa]", "sqrt(Fcy/E)(b/t)",
-              "Fcc[MPa]", "M.S."]
-    with open('results/compression_flange.csv', 'a', encoding="Shift_JIS") as f:
+    header = ["左端STA[mm]", "右端STA[mm]", "web thickness[mm]", "Momentum[N*m]",
+              "$t_f$[mm]", "b bottom f1[mm]", "b height f2[mm]", "P[N]", "A[${mm}^2$]", "fc[MPa]", "√(Fcy/E)(b/t)",
+              "$F_{cc}$[MPa]", "M.S."]
+    with open('results/compression_flange.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
 

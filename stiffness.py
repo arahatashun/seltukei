@@ -57,7 +57,7 @@ def make_header_stiffness():
     header1 = ["", "", "ウェブ", "", "", "圧縮側フランジ", "", "", "引張側フランジ", "", "", "合計"]
     header2 = ["STA", "$h_e$[mm]", "ウェブ厚さ[mm]", "I[$mm^4$]", "EI[$Nm^2$]", "有効断面積[$mm^2$]", "I[$mm^4$]", "EI[$Nm^2$]",
                "有効断面積[$mm^2$]", "I[$mm^4$]", "EI[$Nm^2$]", "EI[$Nm^2$]"]
-    with open('results/stiffness.csv', 'a', encoding="Shift_JIS") as f:
+    with open('results/stiffness.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(header1)
         writer.writerow(header2)
@@ -77,7 +77,7 @@ def make_stiffness_row(sta):
     EI_t = E * I_t / 10 ** 6  # [N*m^2]
     value = [sta.y_left, he, web_t, I_w, EI_w, area_c, I_c,
              EI_c, area_t, I_t, EI_t, EI_w + EI_c + EI_t]
-    with open('results/stiffness.csv', 'a', encoding="Shift_JIS") as f:
+    with open('results/stiffness.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(value)
 

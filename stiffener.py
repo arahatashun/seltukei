@@ -138,7 +138,7 @@ class Stiffener(object):
         ms = self.get_ms(he)
         value = [self.web.y_left, self.web.y_right, self.web.thickness, self.web.width_b, he, self.thickness,
                  self.bs1_bottom, self.bs2_height, I, I_U, ms]
-        with open('results/stiffener.csv', 'a', encoding="Shift_JIS") as f:
+        with open('results/stiffener.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(value)
 
@@ -158,9 +158,9 @@ def make_stiffener_header():
     Make csv header.
 
     """
-    header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "スティフナー間隔de[mm]", "he[mm]", "スティフナー厚さts[mm]",
-              "bs1_bottom[mm]", "bs2_height[mm]", "I[mm^4]", "I_U[mm^4]", "M.S."]
-    with open('results/stiffener.csv', 'a', encoding="Shift_JIS") as f:
+    header = ["左端STA[mm]", "右端STA[mm]", "web thickness[mm]", "スティフナー間隔de[mm]", "he[mm]", "スティフナー厚さts[mm]",
+              "bs1 bottom[mm]", "bs2 height[mm]", "I[${mm}^4$]", "I_U[${mm}^4$]", "M.S."]
+    with open('results/stiffener.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
 
