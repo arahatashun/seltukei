@@ -1,3 +1,6 @@
+# for fucking software
+*.xlsx
+
 # for results
 results/*.csv
 
