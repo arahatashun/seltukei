@@ -70,7 +70,7 @@ class TensionFlange(Flange):
         ms = self.get_ms(momentum, h_e)
         value = [self.web.y_left, self.web.y_right, self.web.thickness, momentum, self.thickness,
                  self.b_bottom, self.b_height, p, a, ft, ftu, ms]
-        with open('results/tension_flange.csv', 'a', encoding="Shift_JIS") as f:
+        with open('results/tension_flange.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(value)
 
@@ -79,9 +79,9 @@ def make_tflange_header():
     """
     Make Header of csv.
     """
-    header = ["左端STA[mm]", "右端STA[mm]", "web_thickness[mm]", "momentum[N*m]", "tf[mm]", "b_bottom_f1[mm]",
-              "b_height_f2[mm]", "P[N]", "A[mm^2]", "ft[MPa]", "Ftu[MPa]", "M.S."]
-    with open('results/tension_flange.csv', 'a', encoding="Shift_JIS") as f:
+    header = ["左端STA[mm]", "右端STA[mm]", "web thickness[mm]", "Momentum[N*m]", "$t_{f}$[mm]", "b bottom f1[mm]",
+              "b height f2[mm]", "P[N]", "A[${mm}^2$]", "$f_t$[MPa]", "$F_{tu}$[MPa]", "M.S."]
+    with open('results/tension_flange.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
 
