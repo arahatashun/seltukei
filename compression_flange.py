@@ -3,7 +3,7 @@
 # Author: Hirotaka Kondo
 import numpy as np
 import math
-from web import Web
+from scipy.interpolate import interp1d
 from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi
 from flange import Flange
 import csv
@@ -118,13 +118,48 @@ def make_cflange_header():
         writer = csv.writer(f)
         writer.writerow(header)
 
+def make_fatigue_header():
+    """
+    Make Header of csv.
+    """
+    header = ["荷重[LMT]", "応力[MPa]", "n[1/khr]", "N[回]", "n/N"]
+    with open('results/compression_flange_fatigue.csv', 'a', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+
+
+def write_fatigue_row(maximum_stress):
+    """
+    write row of csv
+    :param maximum_stress:LMT[MPa]
+    """
+    accumulated_loss = 0  # 累積損失
+    with open('results/compression_flange_fatigue.csv', 'a', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        for (lmt, n) in zip([40, 50, 60, 70, 80, 90, 100], [20000, 6000, 2000, 600, 200, 60, 20]):
+            stress = maximum_stress * lmt / 100
+            N = read_sn_graph(stress)
+            value = [lmt, stress, n, N, n / N]
+            writer.writerow(value)
+            accumulated_loss = accumulated_loss + n / N
+
+    print("累積損失", accumulated_loss)
+    h = 1000 / accumulated_loss
+    print("平均寿命", h)
+    s_f = 2
+    print("安全寿命", h / s_f)
+
 
 def main():
     """Test function."""
+    """
     web = Web(625, 1000, 3, 2.03)
     test = CompressionFlange(6.0, 34.5, 34.5, web)
     make_cflange_header()
     test.make_row(74623, 297)
+    """
+    make_fatigue_header()
+    write_fatigue_row(268.6)
 
 
 if __name__ == '__main__':
