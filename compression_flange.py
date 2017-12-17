@@ -92,6 +92,23 @@ class CompressionFlange(Flange):
             writer = csv.writer(f)
             writer.writerow(value)
 
+    @staticmethod
+    def read_sn_graph(maximum_stress):
+        """s-nカーブ読み取り.応力比R=0,
+
+        :param maximum_stress: 最大応力[MPa]
+        :return fatigue_life:繰り返し回数
+        """
+        maximum_stress_ksi = mpa2Ksi(maximum_stress)
+        # print(maximum_stress_ksi)
+        y = [7, 6, 5, 4, 3.3]  # 上面フランジ(edited by knd)
+        x = [6, 11, 18.5, 32, 40]  # 上面フランジ(edited by knd)
+        f = interp1d(x, y, kind='linear')
+        multiplier = f(maximum_stress_ksi)
+        print("multiplier", multiplier)
+        fatigue_life = 10 ** multiplier
+        return fatigue_life
+
 
 def make_cflange_header():
     header = ["左端STA[mm]", "右端STA[mm]", "web thickness[mm]", "Momentum[N*m]",
