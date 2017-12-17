@@ -3,7 +3,8 @@
 # Author: Hirotaka Kondo
 import math
 import csv
-from unit_convert import mm2inch, ksi2Mpa
+from scipy.interpolate import interp1d
+from unit_convert import mm2inch, ksi2Mpa, mpa2Ksi
 from flange import Flange
 from web import Web
 
@@ -75,6 +76,17 @@ class TensionFlange(Flange):
             writer.writerow(value)
 
 
+def make_tflange_header():
+    """
+    Make Header of csv.
+    """
+    header = ["左端STA[mm]", "右端STA[mm]", "web thickness[mm]", "Momentum[N*m]", "$t_{f}$[mm]", "b bottom f1[mm]",
+              "b height f2[mm]", "P[N]", "A[${mm}^2$]", "$f_t$[MPa]", "$F_{tu}$[MPa]", "M.S."]
+    with open('results/tension_flange.csv', 'a', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+
+
 def read_sn_graph(maximum_stress):
     """s-nカーブ読み取り.応力比R=0,
 
@@ -92,23 +104,48 @@ def read_sn_graph(maximum_stress):
     return fatigue_life
 
 
-def make_tflange_header():
+def make_fatigue_header():
     """
     Make Header of csv.
     """
-    header = ["左端STA[mm]", "右端STA[mm]", "web thickness[mm]", "Momentum[N*m]", "$t_{f}$[mm]", "b bottom f1[mm]",
-              "b height f2[mm]", "P[N]", "A[${mm}^2$]", "$f_t$[MPa]", "$F_{tu}$[MPa]", "M.S."]
-    with open('results/tension_flange.csv', 'a', encoding="utf-8") as f:
+    header = ["荷重[LMT]", "応力[MPa]", "n[1/khr]", "N[回]", "n/N"]
+    with open('results/tension_flange_fatigue.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
 
 
+def write_fatigue_row(maximum_stress):
+    """
+    write row of csv
+    :param maximum_stress:LMT[MPa]
+    """
+    accumulated_loss = 0  # 累積損失
+    with open('results/tension_flange_fatigue.csv', 'a', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        for (lmt, n) in zip([40, 50, 60, 70, 80, 90, 100], [20000, 6000, 2000, 600, 200, 60, 20]):
+            stress = maximum_stress * lmt / 100
+            N = read_sn_graph(stress)
+            value = [lmt, stress, n, N, n / N]
+            writer.writerow(value)
+            accumulated_loss = accumulated_loss + n / N
+
+    print("累積損失", accumulated_loss)
+    h = 1000 / accumulated_loss
+    print("平均寿命", h)
+    s_f = 2
+    print("安全寿命", h / s_f)
+
+
 def main():
     """Test Function."""
+    """
     web = Web(625, 1000, 3, 2.03)
     test = TensionFlange(6.60, 36, 42.5, web)
     make_tflange_header()
     test.make_row(74623, 297)
+    """
+    make_fatigue_header()
+    write_fatigue_row(268.6)
 
 
 if __name__ == '__main__':
