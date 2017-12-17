@@ -159,7 +159,7 @@ def make_stiffener_header():
 
     """
     header = ["左端STA[mm]", "右端STA[mm]", "web thickness[mm]", "スティフナー間隔de[mm]", "he[mm]", "スティフナー厚さts[mm]",
-              "bs1 bottom[mm]", "bs2 height[mm]", "I[${mm}^4$]", "I_U[${mm}^4$]", "M.S."]
+              "bs1 bottom[mm]", "bs2 height[mm]", "I[${mm}^4$]", "$I_U$[${mm}^4$]", "M.S."]
     with open('results/stiffener.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
