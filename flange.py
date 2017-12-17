@@ -74,7 +74,7 @@ class Flange:
         """s-nカーブ読み取り.応力比R=0,
 
         :param maximum_stress: 最大応力[MPa]
-        :return fatigie_life:繰り返し回数
+        :return fatigue_life:繰り返し回数
         """
         maximum_stress_ksi = mpa2Ksi(maximum_stress)
         y = [8, 7, 6, 5, 4, 3]
