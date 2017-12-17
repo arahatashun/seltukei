@@ -157,7 +157,7 @@ class Web(object):
         value = [self.y_left, self.y_right, self.division, self.width_b, self.thickness, self.height_a,
                  q_max,
                  fscr, fsu, fs, ms]
-        with open('results/web.csv', 'a', encoding="Shift_JIS") as f:
+        with open('results/web.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(value)
 
@@ -175,10 +175,11 @@ class Web(object):
 
 
 def make_web_header():
-    with open('results/web.csv', 'a', encoding="Shift_JIS") as f:
+    with open('results/web.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         header = ["左端STA[mm]", "右端STA[mm]", "分割数", "間隔de[mm]", "web厚さ[mm]",
-              "STA最小におけるweb高さ[mm]", "q_max[N/m]", "F_scr[MPa]", "F_su[MPa]", "f_s[MPa]", "M.S."]
+                  "STA最小におけるweb高さ[mm]", "$q_{max}$[N/m]", "$F_{scr}$[MPa]", "$F_{su}$[MPa]", "$f_{s}$[MPa]",
+                  "M.S."]
         writer.writerow(header)
 
 
@@ -187,7 +188,6 @@ def main():
     test = Web(625, 1000, 3, 2.03)
     make_web_header()
     test.make_row(38429, 297)
-
 
 
 if __name__ == '__main__':
