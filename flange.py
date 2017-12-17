@@ -3,6 +3,7 @@
 from scipy.interpolate import interp1d
 from unit_convert import mpa2Ksi
 
+
 # coding:utf-8
 # Author: Hirotaka Kondo
 
@@ -77,22 +78,26 @@ class Flange:
         :return fatigue_life:繰り返し回数
         """
         maximum_stress_ksi = mpa2Ksi(maximum_stress)
-        y = [8, 7, 6, 5, 4, 3]
-        x = [9.8, 10, 12, 18, 30, 60]
+        print(maximum_stress_ksi)
+        # y = [8, 7, 6, 5, 4, 3] 読み取ってるグラフ違う気が
+        # x = [9.8, 10, 12, 18, 30, 60]するのですが
+        # y = [8, 7, 6, 5, 4]  # 下面フランジ(edited by knd)
+        # x = [13, 15, 18, 27, 46]  # 下面フランジ(edited by knd)
+        y = [7, 6, 5, 4, 3.3]  # 上面フランジ(edited by knd)
+        x = [6, 11, 18.5, 32, 40]  # 上面フランジ(edited by knd)
         f = interp1d(x, y, kind='linear')
         multiplier = f(maximum_stress_ksi)
         print("multiplier", multiplier)
-        fatigue_life = 10**multiplier
+        fatigue_life = 10 ** multiplier
         return fatigue_life
-
 
 
 def main():
     """Test Function."""
-    test = Flange(1.6, 10, 10)
+    test = Flange(9, 24, 34)
     # print("A[mm^2]", test.get_area(1.6))
     print("C.G.[mm]", test.get_center_of_gravity())
-    print(test.read_sn_graph(259.9))
+    print(test.read_sn_graph(109.6))
     # ax = test.get_axial_force(74623, 297)
     # print("P[N]", ax)
     # f = test.get_stress_force(74623, 297, 2.03)
