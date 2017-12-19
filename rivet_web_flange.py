@@ -74,7 +74,7 @@ class RivetWebFlange(Rivet):
         ps = self.get_shear_force(sf, he)
         ms = self.get_ms(sf, he)
         value = [self.web.y_left, self.web.y_right, int(sf / he * 1000), self.N, self.D,
-                 round_sig(self.rivet_pitch, 4), int(ps), int(p_allow), round_sig(ms)]
+                 round_sig(self.rivet_pitch, sig = 4), int(ps), int(p_allow), round_sig(ms)]
         writer.writerow(value)
 
     def make_row_web_hole(self, writer, sf, he):

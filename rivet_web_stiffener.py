@@ -4,7 +4,7 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa
+from unit_convert import ksi2Mpa, round_sig
 from rivet import Rivet
 from stiffener import Stiffener
 from web import Web
