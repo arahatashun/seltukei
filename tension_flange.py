@@ -4,7 +4,7 @@
 import math
 import csv
 from scipy.interpolate import interp1d
-from unit_convert import mm2inch, ksi2Mpa, mpa2Ksi
+from unit_convert import mm2inch, ksi2Mpa, mpa2Ksi, round_sig
 from flange import Flange
 from web import Web
 
@@ -73,7 +73,8 @@ class TensionFlange(Flange):
                  self.b_bottom, self.b_height, p, a, ft, ftu, ms]
         with open('results/tension_flange.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(value)
+            round_value = map(lambda x: round_sig(x), value)
+            writer.writerow(round_value)
 
 
 def make_tflange_header():
