@@ -4,7 +4,7 @@
 import numpy as np
 import math
 from scipy.interpolate import interp1d
-from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi
+from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi, round_sig
 from flange import Flange
 import csv
 
@@ -87,7 +87,8 @@ class CompressionFlange(Flange):
         fc = self.get_stress_force(momentum, h_e, self.web.thickness)
         sqrt = self.get_x_of_graph()  # p12グラフのx軸の値
         value = [self.web.y_left, self.web.y_right, self.web.thickness, momentum, self.thickness,
-                 self.b_bottom, self.b_height, p, a, fc, sqrt, fcc, ms]
+                 self.b_bottom, self.b_height, int(p), round_sig(a), round_sig(fc), round_sig(sqrt), round_sig(fcc),
+                 round_sig(ms)]
         with open('results/compression_flange.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(value)
@@ -117,6 +118,7 @@ def make_cflange_header():
     with open('results/compression_flange.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
         writer.writerow(header)
+
 
 def make_fatigue_header():
     """
