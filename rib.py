@@ -77,7 +77,6 @@ class Rib(object):
 
     def add_tension_flange(self, thickness, b_bottom, b_height):
         self.tflange = TensionFlange(thickness, b_bottom, b_height, self.web)
-        self.set_he()
 
     def add_rivet_stiffener(self, D):
         self.rivet_stiffener = RivetWebStiffener(D, self.stiffener, self.web)
@@ -96,6 +95,28 @@ class Rib(object):
         """
         self.he = self.hf - (self.tflange.get_center_of_gravity() + self.cflange.get_center_of_gravity())
         return self.he
+
+    def could_be_hit(self):
+        """リベットを打てるかどうか.printによる警告"""
+        if self.stiffener.bs1_bottom < 4 * self.rivet_stiffener.D:
+            print("ERROR Rivet: stiffener bs1 too small")
+
+        if self.cflange.b_height < 4 * self.rivet_stiffener.D:
+            print("WARING Rivet: cflange height bf2 may be too small")
+
+        if self.tflange.b_height < 4 * self.rivet_stiffener.D:
+            print("WARING Rivet: tflange height bf2 may be too small")
+
+        if self.rivet_flange.N == 2:
+            ratio = 2+3+2 # 縁距離+千鳥間隔
+        elif self.rivet_flange.N == 1:
+            ratio = 2+2
+
+        if self.tflange.b_bottom < ratio * self.rivet_flange.D:
+            print("WARING Rivet: tflange bottom bf1 may be too small")
+
+        if self.cflange.b_bottom < ratio * self.rivet_flange.D:
+            print("WARING Rivet: cflange bottom bf1 may be too small")
 
     def get_total_mass(self):
         """
@@ -136,6 +157,7 @@ class Rib(object):
         """
         Csv output.
         """
+        self.could_be_hit()
         self.set_he()
         self.web.make_row(self.sf, self.he)
 
