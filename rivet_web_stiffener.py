@@ -4,7 +4,7 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa, round_sig, round_list
+from unit_convert import ksi2Mpa, round_sig
 from rivet import Rivet
 from stiffener import Stiffener
 from web import Web
@@ -139,7 +139,8 @@ class RivetWebStiffener(Rivet):
         p_allow = self.get_p_allow()
         value = [self.web.y_left, self.web.y_right, k, area, self.web.width_b, self.D, self.rivet_pitch,
                  pf, p_allow, ms]
-        writer.writerow(value)
+        round_value = map(lambda x: round_sig(x), value)
+        writer.writerow(round_value)
 
     def make_row_buckling(self, writer):
         """
@@ -176,7 +177,8 @@ class RivetWebStiffener(Rivet):
         ms = self.web.get_web_hole_loss_ms(self.rivet_pitch, self.D, sf, he)
         f_scr = self.web.get_buckling_shear_force()
         value = [self.web.y_left, self.web.y_right, self.rivet_pitch, self.D, fs, fsj, fsu, f_scr, ms]
-        writer.writerow(value)
+        round_value = map(lambda x: round_sig(x), value)
+        writer.writerow(round_value)
 
     def write_all_row(self, sf, he):
         """
