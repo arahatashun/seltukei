@@ -144,14 +144,16 @@ class Rib(object):
         ms6 = self.rivet_stiffener.get_web_hole_loss(self.sf, self.he)
         ms7 = self.rivet_flange.get_ms(self.sf, self.he)
         ms8 = self.rivet_flange.get_web_hole_loss(self.sf, self.he)
-        print(ms1, ms2, ms3, ms4, ms5, ms6, ms7, ms8)
+        # print(ms1, ms2, ms3, ms4, ms5, ms6, ms7, ms8)
         if (math.isnan(ms2)):  # ms2==nanは,stiffenerがそもそもないときに起こる場合がほとんどなので...
             if ms1 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:
                 return True
         elif ms1 >= 0 and ms2 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:
             return True
         else:
+            print("WARNING: MS,0")
             return False
+
 
     def web_csv(self):
         """
