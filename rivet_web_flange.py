@@ -3,7 +3,7 @@
 # Author: Shun Arahata,Hirotaka Kondo
 
 import csv
-from unit_convert import ksi2Mpa
+from unit_convert import ksi2Mpa, round_sig
 from rivet import Rivet
 from web import Web
 
@@ -73,8 +73,8 @@ class RivetWebFlange(Rivet):
         p_allow = self.get_p_allow()
         ps = self.get_shear_force(sf, he)
         ms = self.get_ms(sf, he)
-        value = [self.web.y_left, self.web.y_right, sf / he * 1000, self.N, self.D,
-                 self.rivet_pitch, ps, p_allow, ms]
+        value = [self.web.y_left, self.web.y_right, int(sf / he * 1000), self.N, self.D,
+                 round_sig(self.rivet_pitch,4), int(ps), int(p_allow), round_sig(ms)]
         writer.writerow(value)
 
     def make_row_web_hole(self, writer, sf, he):
