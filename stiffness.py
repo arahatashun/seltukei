@@ -109,7 +109,7 @@ def make_plot(sta_EI_list):
     # pgfについては
     # <http://sbillaudelle.de/2015/02/23/seamlessly-embedding-matplotlib-output-into-latex.html>
     # 参照
-    plt.show()
+    # plt.show()
 
 
 def cal_ave(sta_EI_list):
