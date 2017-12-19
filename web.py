@@ -2,9 +2,9 @@
 # coding:utf-8
 # Author: Hirotaka Kondo
 from scipy import interpolate
-import numpy as np
 import math
-from unit_convert import ksi2Mpa, mm2inch, get_hf
+import numpy as np
+from unit_convert import ksi2Mpa, mm2inch, get_hf, round_sig
 import csv
 
 
@@ -154,12 +154,12 @@ class Web(object):
         fscr = self.get_buckling_shear_force()
         fsu = self.get_fsu()
         ms = self.get_ms(sf, he)
-        value = [self.y_left, self.y_right, self.division, self.width_b, self.thickness, self.height_a,
-                 q_max,
-                 fscr, fsu, fs, ms]
+        value = np.array([self.y_left, self.y_right, self.division, self.width_b, self.thickness,
+                 self.height_a, q_max, fscr, fsu, fs, ms]).tolist()
+        round_value = map(lambda x: round_sig(x), value)
         with open('results/web.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(value)
+            writer.writerow(round_value)
 
     def get_volume(self):
         """
