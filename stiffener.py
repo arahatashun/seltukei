@@ -4,7 +4,7 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi, get_hf
+from unit_convert import ksi2Mpa, mm2inch, mpa2Ksi, get_hf, round_sig
 from web import Web
 import csv
 
@@ -140,7 +140,8 @@ class Stiffener(object):
                  self.bs1_bottom, self.bs2_height, I, I_U, ms]
         with open('results/stiffener.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
-            writer.writerow(value)
+            round_value = map(lambda x: round_sig(x), value)
+            writer.writerow(round_value)
 
     def get_volume(self):
         """
