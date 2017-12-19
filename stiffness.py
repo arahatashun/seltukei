@@ -4,33 +4,13 @@ main関数内の変数を自分の値に変えて実行するだけ.
 """
 # !/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Author: Hirotaka Kondo
+# Author: Hirotaka Kondo, Shun Arahata
 from rib import Rib
 from unit_convert import ksi2Mpa, get_hf
 import csv
 import matplotlib.pyplot as plt
 from scipy import interpolate
 import numpy as np
-
-
-def get_rib(index, web_t, div, fc_t, bcf1, bcf2, ft_t, btf1, btf2):
-    """
-    :param index: Ribを定める番号 Ribクラスのy_indexに準拠
-    :param web_t: web厚さ[mm]
-    :param div:  分割数
-    :param fc_t: 圧縮側フランジ厚さ[mm]
-    :param bcf1: 圧縮側フランジbottom_length[mm]
-    :param bcf2: 圧縮側フランジheight[mm]
-    :param ft_t: 引張側フランジ厚さ[mm]
-    :param btf1: 引張側フランジbottom_length[mm]
-    :param btf2: 圧縮側フランジheight[mm]
-    :return:
-    """
-    rib = Rib(index)
-    rib.add_web(web_t, div)
-    rib.add_compression_flange(fc_t, bcf1, bcf2)
-    rib.add_tension_flange(ft_t, btf1, btf2)
-    return rib
 
 
 def cal_web_I(web_t, height):
@@ -64,6 +44,11 @@ def make_header_stiffness():
 
 
 def make_stiffness_row(sta):
+    """csv行出力
+
+    :param sta: Rib instance
+    :return: EI_w + EI_c + EI_t
+    """
     web_t = sta.web.thickness
     he = sta.he
     E = ksi2Mpa(10.3 * 1000)  # ヤング率[N/mm^2]
@@ -102,7 +87,7 @@ def cal_EI_sta5000(sta4500):
     return E * (I_w + I_c + I_t) / 10 ** 6  # [N*m^2]
 
 
-def plot(sta_EI_list):
+def make_plot(sta_EI_list):
     """
     EIのグラフ作成用
     :param sta_EI_list:
@@ -146,32 +131,21 @@ def cal_ave(sta_EI_list):
     return EI_ave
 
 
-def main():
+def calc_stiffness(sta625, sta1000, sta1500, sta2000, sta2500, sta3000, sta3500, sta4000, sta4500):
+    """外部からのinterfaceを提供.
+
+    :param sta625: Rib instance
+    :param sta1000: Rib instance
+    :param sta1500: Rib instance
+    :param sta2000: Rib instance
+    :param sta2500: Rib instance
+    :param sta3000: Rib instance
+    :param sta3500: Rib instance
+    :param sta4000: Rib instance
+    :param sta4500: Rib instance
     """
-    get_ribの引数は自分で計算したパラメータを利用
-    1番目: そのままで変えないで良い [どのRib区間かを決めるindex(Ribクラスと共通)]
-    2番目: ウェブ厚さ[mm]
-    3番目: ウェブ分割数
-    4番目: 圧縮側(上部)フランジ厚さ[mm]
-    5番目: 圧縮側(上部)フランジ底長さ[mm]
-    6番目: 圧縮側(上部)フランジ高さ[mm]
-    7番目: 引張側(下部)フランジ厚さ[mm]
-    8番目: 引張側(下側)フランジ底長さ[mm]
-    9番目: 引張側(下側)フランジ高さ[mm]
-    :return:
-    """
-    sta625 = get_rib(0, 1.6, 4, 9, 20, 20, 9, 24, 34)
-    sta1000 = get_rib(1, 1.6, 6, 8, 15, 17, 8, 21, 33)
-    sta1500 = get_rib(2, 1.6, 5, 8, 15, 15, 8, 27, 15)
-    sta2000 = get_rib(3, 1.6, 5, 5, 15, 15, 5, 15, 33)
-    sta2500 = get_rib(4, 1.6, 5, 4, 15, 15, 4, 15, 21)
-    sta3000 = get_rib(5, 1.6, 4, 2.5, 25, 25, 2.5, 25, 25)
-    sta3500 = get_rib(6, 1.6, 3, 2, 20, 20, 2, 20, 20)
-    sta4000 = get_rib(7, 1.6, 3, 2, 10, 10, 2, 10, 10)
-    sta4500 = get_rib(8, 1.6, 2, 1.6, 10, 10, 1.6, 10, 10)
 
     make_header_stiffness()
-
     sta_EI_list = []
     sta_EI_list.append(make_stiffness_row(sta625))
     sta_EI_list.append(make_stiffness_row(sta1000))
@@ -184,7 +158,7 @@ def main():
     sta_EI_list.append(make_stiffness_row(sta4500))
     sta_EI_list.append(cal_EI_sta5000(sta4500))  # STA5000
     cal_ave(sta_EI_list)
-    plot(sta_EI_list)
+    make_plot(sta_EI_list)
 
 
 if __name__ == "__main__":
