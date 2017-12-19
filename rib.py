@@ -151,7 +151,7 @@ class Rib(object):
         elif ms1 >= 0 and ms2 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:
             return True
         else:
-            print("WARNING: MS,0")
+            print("WARNING: MS<0")
             return False
 
 
