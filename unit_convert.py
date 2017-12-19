@@ -49,15 +49,19 @@ def round_list(*args, sig=3):
 
     https://stackoverflow.com/questions/3410976/how-to-round-a-number-to-significant-figures-in-python
     """
+    np.set_printoptions(suppress=True)
     absolute = np.abs(args)
     floored_num = np.floor(np.log10(absolute))
     digits = sig - np.trunc(floored_num) - 1
-    return np.round(args, decimals = sig)
+    return_list = np.round(args, decimals = sig)
+    # print(return_list)
+    return g",".join(str(x) for x in return_list)
 
 
 def main():
     q = 1.44444
     print(round_sig(q, sig =3))
+    print(round_list(1.4214141,15125))
 
 
 if __name__ == '__main__':
