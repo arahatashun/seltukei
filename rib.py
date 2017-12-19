@@ -107,7 +107,7 @@ class Rib(object):
         v2 = self.stiffener.get_volume()
         v3 = self.cflange.get_volume(length_rib2rib)
         v4 = self.tflange.get_volume(length_rib2rib)
-        print(v1, v2, v3, v4)
+        # print(v1, v2, v3, v4)
         return (v1 + v2 + v3 + v4) * 3.0 / 1000  # {kg]
 
     def decide_ms(self):
