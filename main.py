@@ -11,14 +11,15 @@ from rivet_web_stiffener import rivet_ws_make_all_header
 from rivet_web_flange import rivet_wf_make_all_header
 from rib import Rib
 
+
 def init_header():
     """header 作成"""
     # delete
     directory = 'results/'
-    test = os.listdir( directory )
+    test = os.listdir(directory)
     for item in test:
         if item.endswith(".csv"):
-            os.remove( os.path.join( directory, item ) )
+            os.remove(os.path.join(directory, item))
     # header
     make_web_header()
     make_stiffener_header()
@@ -27,15 +28,15 @@ def init_header():
     rivet_wf_make_all_header()
     rivet_ws_make_all_header()
 
+
 def make_sta625():
     sta = Rib(0)
     sta.add_web(1.60, 4)
-    sta.add_stiffener(1.27, 40, 30)
-    sta.add_compression_flange(6.5, 45, 40)
-    sta.add_tension_flange(6.5, 50, 40)
-    sta.add_rivet_stiffener(6.35)
-    sta.add_rivet_flange(6.35,6,2)
-    sta.add_rivet_stiffener(6.35)
+    sta.add_stiffener(2.0, 20, 20)
+    sta.add_compression_flange(9, 20, 20)
+    sta.add_tension_flange(9, 30, 30)
+    sta.add_rivet_stiffener(3.96875)
+    sta.add_rivet_flange(3.175, 6, 2)
     he = sta.set_he()
     sta.web_csv()
     sta.tflange_csv()
@@ -43,17 +44,80 @@ def make_sta625():
     sta.stiffener_csv()
     sta.rivet_stiffener_csv()
     sta.rivet_flange_csv()
-    print("sta625 volume", sta.get_total_volume())
+    print("sta625 mass", sta.get_total_mass())
+
+def make_sta1000():
+    sta = Rib(1)
+    sta.add_web(1.6, 6)
+    sta.add_stiffener(1.8,15, 21)
+    sta.add_compression_flange(8, 15, 20)
+    sta.add_tension_flange(9, 20, 30)
+    sta.add_rivet_stiffener(3.96875)
+    sta.add_rivet_flange(3.96875, 6, 2)
+    sta.web_csv()
+    sta.tflange_csv()
+    sta.cflange_csv()
+    sta.stiffener_csv()
+    sta.rivet_stiffener_csv()
+    sta.rivet_flange_csv()
+    print("sta1000 mass", sta.get_total_mass())
+
+def make_sta1500():
+    sta = Rib(2)
+    sta.add_web(1.6, 5)
+    sta.add_stiffener(1.8, 15, 18)
+    sta.add_compression_flange(8, 15, 15)
+    sta.add_tension_flange(8, 20, 25)
+    sta.add_rivet_stiffener(3.96875)
+    sta.add_rivet_flange(3.96875, 6, 2)
+    sta.web_csv()
+    sta.tflange_csv()
+    sta.cflange_csv()
+    sta.stiffener_csv()
+    sta.rivet_stiffener_csv()
+    sta.rivet_flange_csv()
+    print("sta1500 mass", sta.get_total_mass())
+
+def make_sta2000():
+    sta = Rib(3)
+    sta.add_web(1.6, 5)
+    sta.add_stiffener(1.8, 15, 17)
+    sta.add_compression_flange(4, 15, 15)
+    sta.add_tension_flange(5, 23, 25)
+    sta.add_rivet_stiffener(3.96875)
+    sta.add_rivet_flange(3.96875, 6, 2)
+    sta.web_csv()
+    sta.tflange_csv()
+    sta.cflange_csv()
+    sta.stiffener_csv()
+    sta.rivet_stiffener_csv()
+    sta.rivet_flange_csv()
+    print("sta2000 mass", sta.get_total_mass())
+
+def make_sta2500():
+    sta = Rib(4)
+    sta.add_web(1.6, 5)
+    sta.add_stiffener(1.8, 15, 15)
+    sta.add_compression_flange(4, 13, 16)
+    sta.add_tension_flange(4, 15, 21)
+    sta.add_rivet_stiffener(3.96875)
+    sta.add_rivet_flange(3.96875, 6, 2)
+    sta.web_csv()
+    sta.tflange_csv()
+    sta.cflange_csv()
+    sta.stiffener_csv()
+    sta.rivet_stiffener_csv()
+    sta.rivet_flange_csv()
+    print("sta2500 mass", sta.get_total_mass())
 
 def make_sta3000():
     sta = Rib(5)
-    sta.add_web(1.27, 7)
-    sta.add_stiffener(1.02, 30, 20)
-    sta.add_compression_flange(3, 35, 30)
-    sta.add_tension_flange(3, 30, 25)
-    sta.add_rivet_stiffener(6.35)
-    sta.add_rivet_flange(6.35,6,2)
-    sta.add_rivet_stiffener(6.35)
+    sta.add_web(1.6, 4)
+    sta.add_stiffener(1.8, 15, 11)
+    sta.add_compression_flange(2.5, 23, 26)
+    sta.add_tension_flange(2.5, 23, 26)
+    sta.add_rivet_stiffener(3.96875)
+    sta.add_rivet_flange(3.96875, 6, 2)
     he = sta.set_he()
     sta.web_csv()
     sta.tflange_csv()
@@ -61,12 +125,69 @@ def make_sta3000():
     sta.stiffener_csv()
     sta.rivet_stiffener_csv()
     sta.rivet_flange_csv()
+    print("sta3000 mass", sta.get_total_mass())
+
+def make_sta3500():
+    sta = Rib(6)
+    sta.add_web(1.6, 3)
+    sta.add_stiffener(1.8, 15, 10)
+    sta.add_compression_flange(2.5, 18, 22)
+    sta.add_tension_flange(2.5, 18, 22)
+    sta.add_rivet_stiffener(3.96875)
+    sta.add_rivet_flange(3.96875, 6, 2)
+    sta.web_csv()
+    sta.tflange_csv()
+    sta.cflange_csv()
+    sta.stiffener_csv()
+    sta.rivet_stiffener_csv()
+    sta.rivet_flange_csv()
+    print("sta3500 mass", sta.get_total_mass())
+
+def make_sta4000():
+    sta = Rib(7)
+    sta.add_web(1.6, 3)
+    sta.add_stiffener(1.8, 12, 6)
+    sta.add_compression_flange(2, 5, 5)
+    sta.add_tension_flange(2, 5, 5)
+    sta.add_rivet_stiffener(3.175)
+    sta.add_rivet_flange(3.175, 6, 2)
+    sta.web_csv()
+    sta.tflange_csv()
+    sta.cflange_csv()
+    sta.stiffener_csv()
+    sta.rivet_stiffener_csv()
+    sta.rivet_flange_csv()
+    print("sta4000 mass", sta.get_total_mass())
+
+def make_sta4500():
+    sta = Rib(8)
+    sta.add_web(1.6, 2)
+    sta.add_stiffener(1.27, 13, 7)
+    sta.add_compression_flange(1.0, 5, 5)
+    sta.add_tension_flange(1.0, 5, 5)
+    sta.add_rivet_stiffener(3.175)
+    sta.add_rivet_flange(3.175, 6, 2)
+    sta.web_csv()
+    sta.tflange_csv()
+    sta.cflange_csv()
+    sta.stiffener_csv()
+    sta.rivet_stiffener_csv()
+    sta.rivet_flange_csv()
+    print("sta4500 mass", sta.get_total_mass())
 
 
 def main():
     init_header()
     make_sta625()
+    make_sta1000()
+    make_sta1500()
+    make_sta2000()
+    make_sta2500()
     make_sta3000()
+    make_sta3500()
+    make_sta4000()
+    make_sta4500()
+
 
 if __name__ == '__main__':
     main()
