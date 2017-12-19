@@ -120,11 +120,11 @@ def plot(sta_EI_list):
     sy = sp(sx)
     plt.plot(LEFT_ARRAY, sta_EI_list, "ko")
     plt.plot(sx, sy, "black")
-    plt.show()
     plt.savefig('results/stiffness.pgf')
     # pgfについては
     # <http://sbillaudelle.de/2015/02/23/seamlessly-embedding-matplotlib-output-into-latex.html>
     # 参照
+    plt.show()
 
 
 def cal_ave(sta_EI_list):
