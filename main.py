@@ -96,7 +96,7 @@ def make_sta2000():
     print("sta2000 mass", sta.get_total_mass())
     return sta
 
-gg
+
 def make_sta2500():
     sta = Rib(4)
     sta.add_web(1.6, 5)
