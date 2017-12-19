@@ -4,7 +4,7 @@
 from scipy import interpolate
 import numpy as np
 import math
-from unit_convert import ksi2Mpa, round_sig
+from unit_convert import ksi2Mpa, round_sig, round_list
 from rivet import Rivet
 from stiffener import Stiffener
 from web import Web
@@ -150,7 +150,9 @@ class RivetWebStiffener(Rivet):
         fcc = self.stiffener.get_clippling_stress()
         value = [self.web.y_left, self.web.y_right, self.stiffener.bs1_bottom, self.stiffener.thickness, fcc, fir,
                  self.rivet_pitch]
-        writer.writerow(value)
+        round_value =  map(lambda x: round_sig(x), value)
+        # print("type:", type(value), type(round_value))
+        writer.writerow(round_value)
 
     def get_web_hole_loss(self, sf, he):
         """
