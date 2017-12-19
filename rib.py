@@ -8,6 +8,7 @@ from tension_flange import TensionFlange
 from rivet_web_flange import RivetWebFlange
 from rivet_web_stiffener import RivetWebStiffener
 from unit_convert import get_hf
+import csv
 import math
 
 # from sandm import get_sf, get_mf
@@ -153,6 +154,29 @@ class Rib(object):
     def rivet_flange_csv(self):
         self.rivet_flange.write_all_row(self.sf, self.he)
 
+    def write_rib_row(self):
+        """表の中身."""
+        value = [self.y_left, self.y_right, self.web.thickness, self.web.division,
+                 self.stiffener.thickness, self.stiffener.bs1_bottom, self.stiffener.bs2_height,
+                 self.cflange.thickness, self.cflange.b_bottom, self.cflange.b_height,
+                 self.tflange.thickness, self.tflange.b_bottom, self.tflange.b_height,
+                 self.rivet_stiffener.D, self.rivet_flange.D, self.rivet_flange.pd_ratio,
+                 self.rivet_flange.N, self.get_total_mass()]
+        with open('results/rib.csv', 'a', encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(value)
+
+
+def make_rib_header():
+    """リブに囲まれたSTA区間の諸元についての表のheaderを作成する."""
+    header = ["左端STA[mm]", "右端STA[mm]", "ウェブ厚さ", "分割数", "stiffener厚さts", "同bs1", "同bs2",
+              "上(圧縮側)フランジ$t_f$", "bf1", "bf2", "下(引張側)フランジ$t_f$", "bf1", "bf2",
+              "Rivet(stiffener) D", "Rivet(flange) D",
+              "同P/D", "同列数", "質量"]
+    with open('results/rib.csv', 'a', encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(header)
+
 
 def main():
     """
@@ -184,6 +208,8 @@ def main():
     sta625.cflange_csv()
     sta625.rivet_stiffener_csv()
     sta625.rivet_flange_csv()
+    make_rib_header()
+    sta625.write_rib_row()
 
 
 if __name__ == '__main__':

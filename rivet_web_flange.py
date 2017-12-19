@@ -21,6 +21,7 @@ class RivetWebFlange(Rivet):
         """
         super().__init__(D)
         self.F_su = ksi2Mpa(30)  # AD
+        self.pd_ratio = pd_ratio
         self.rivet_pitch = D * pd_ratio
         self.N = N
         self.web = web
