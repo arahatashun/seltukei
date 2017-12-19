@@ -7,7 +7,7 @@ from compression_flange import CompressionFlange
 from tension_flange import TensionFlange
 from rivet_web_flange import RivetWebFlange
 from rivet_web_stiffener import RivetWebStiffener
-from unit_convert import get_hf
+from unit_convert import get_hf, round_sig
 import csv
 import math
 
@@ -161,7 +161,7 @@ class Rib(object):
                  self.cflange.thickness, self.cflange.b_bottom, self.cflange.b_height,
                  self.tflange.thickness, self.tflange.b_bottom, self.tflange.b_height,
                  self.rivet_stiffener.D, self.rivet_flange.D, self.rivet_flange.pd_ratio,
-                 self.rivet_flange.N, self.get_total_mass()]
+                 self.rivet_flange.N, round_sig(self.get_total_mass())]
         with open('results/rib.csv', 'a', encoding="utf-8") as f:
             writer = csv.writer(f)
             writer.writerow(value)
