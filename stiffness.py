@@ -11,6 +11,7 @@ import csv
 import matplotlib.pyplot as plt
 from scipy import interpolate
 import numpy as np
+from unit_convert import round_sig
 
 
 def cal_web_I(web_t, height):
@@ -62,9 +63,10 @@ def make_stiffness_row(sta):
     EI_t = E * I_t / 10 ** 6  # [N*m^2]
     value = [sta.y_left, he, web_t, I_w, EI_w, area_c, I_c,
              EI_c, area_t, I_t, EI_t, EI_w + EI_c + EI_t]
+    round_value = map(lambda x: round_sig(x), value)
     with open('results/stiffness.csv', 'a', encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(value)
+        writer.writerow(round_value)
 
     return EI_w + EI_c + EI_t
 

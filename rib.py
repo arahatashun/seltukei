@@ -137,13 +137,29 @@ class Rib(object):
         :return:
         """
         ms1 = self.web.get_ms(self.sf, self.he)
+        if ms1 < 0:
+            print("Error :web ms")
         ms2 = self.stiffener.get_ms(self.he)
+        if ms2 < 0:
+            print("Error :stiffener ms")
         ms3 = self.cflange.get_ms(self.mf, self.he)
+        if ms3 < 0:
+            print("Error :cflange ms")
         ms4 = self.tflange.get_ms(self.mf, self.he)
+        if ms4 < 0:
+            print("Error :tflange ms")
         ms5 = self.rivet_stiffener.get_ms()
+        if ms5 < 0:
+            print("Error :rivet stiffener ms")
         ms6 = self.rivet_stiffener.get_web_hole_loss(self.sf, self.he)
+        if ms6 < 0:
+            print("Error :rivet stiffener web hole loss ms")
         ms7 = self.rivet_flange.get_ms(self.sf, self.he)
+        if ms7 < 0:
+            print("Error :rivet flange ms")
         ms8 = self.rivet_flange.get_web_hole_loss(self.sf, self.he)
+        if ms8 < 0:
+            print("Error :rivet flange web hole loss ms")
         # print(ms1, ms2, ms3, ms4, ms5, ms6, ms7, ms8)
         if (math.isnan(ms2)):  # ms2==nanは,stiffenerがそもそもないときに起こる場合がほとんどなので...
             if ms1 >= 0 and ms3 >= 0 and ms4 >= 0 and ms5 >= 0 and ms6 >= 0 and ms7 >= 0 and ms8 >= 0:

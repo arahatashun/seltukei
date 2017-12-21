@@ -142,7 +142,8 @@ def write_fatigue_row(maximum_stress):
             stress = maximum_stress * lmt / 100
             N = read_sn_graph(stress)
             value = [lmt, stress, n, N, n / N]
-            writer.writerow(value)
+            round_value = map(lambda x: round_sig(x), value)
+            writer.writerow(round_value)
             accumulated_loss = accumulated_loss + n / N
 
     print("累積損失", accumulated_loss)
@@ -161,7 +162,7 @@ def main():
     test.make_row(74623, 297)
     """
     make_fatigue_header()
-    write_fatigue_row(268.6)
+    write_fatigue_row(260)
 
 
 if __name__ == '__main__':
