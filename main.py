@@ -14,8 +14,6 @@ from stiffness import calc_stiffness
 
 
 def init_header():
-    """header 作成"""
-    # delete
     directory = 'results/'
     test = os.listdir(directory)
     for item in test:
@@ -47,14 +45,19 @@ def calc_all(sta):
 
 def make_sta625():
     sta = Rib(0)
-    sta.add_web(1.80, 4)
-    sta.add_stiffener(2.03, 13, 22)
-    sta.add_compression_flange(7, 22.5, 20)
-    sta.add_tension_flange(10, 22.5, 28)
+    sta.add_web(2.03, 3)
+    sta.add_stiffener(2.03, 16, 22)
+    sta.add_compression_flange(7, 30, 25)
+    sta.add_tension_flange(10, 30, 30)
+    """
+    sta.add_compression_flange(7, 60, 25)
+    sta.add_tension_flange(8, 60, 30)
+    """
     sta.add_rivet_stiffener(3.175)
     sta.add_rivet_flange(3.175, 6, 2)
     calc_all(sta)
     print("sta625 mass", sta.get_total_mass())
+    print("he ",sta.he)
     return sta
 
 
