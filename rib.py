@@ -112,10 +112,10 @@ class Rib(object):
         elif self.rivet_flange.N == 1:
             ratio = 2+2
 
-        if self.tflange.b_bottom < ratio * self.rivet_flange.D + self.tflange.thickness:
+        if self.tflange.b_bottom < ratio * self.rivet_flange.D + self.tflange.thickness/2:
             print("WARING Rivet: tflange bottom bf1 may be too small")
 
-        if self.cflange.b_bottom < ratio * self.rivet_flange.D + self.cflange.thickness:
+        if self.cflange.b_bottom < ratio * self.rivet_flange.D + self.cflange.thickness/2:
             print("WARING Rivet: cflange bottom bf1 may be too small")
 
     def get_total_mass(self):
